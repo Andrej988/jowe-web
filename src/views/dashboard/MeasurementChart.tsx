@@ -52,9 +52,7 @@ const MeasurementChart: React.FC<Props> = (props) => {
   const targetDiff = Math.round((1 - latestWeight / targetWeight) * -100 * 100) / 100;
   const targetReach = Math.round((targetWeight - latestWeight) * 100) / 100;
 
-  const addMeasurementHandler = (event: any) => {
-    event.stopPropagation();
-    event.nativeEvent.stopImmediatePropagation();
+  const addMeasurementHandler = () => {
     console.log('Add Measurement clicked');
     //TODO: Implement
   };

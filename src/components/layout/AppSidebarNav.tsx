@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 import { CBadge } from '@coreui/react';
 import { INavigation } from './Navigation';
@@ -69,10 +68,6 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
         items.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
     </React.Fragment>
   );
-};
-
-AppSidebarNav.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.any).isRequired,
 };
 
 export default AppSidebarNav;

@@ -92,20 +92,4 @@ const MeasurementWidget: React.FC<Props> = (props) => {
   );
 };
 
-/*MeasurementWidget.defaultProps = {
-  color: 'info',
-  title: 'Title',
-  unit: '',
-  pointStyle: '--cui-info',
-  measurements: [],
-};
-
-MeasurementWidget.propTypes = {
-  color: PropTypes.string,
-  title: PropTypes.string,
-  unit: PropTypes.string,
-  pointStyle: PropTypes.string,
-  measurements: PropTypes.any,
-};*/
-
 export default MeasurementWidget;
