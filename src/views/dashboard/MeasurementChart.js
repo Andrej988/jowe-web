@@ -1,0 +1,210 @@
+import React, { useEffect, useState } from 'react';
+
+import {
+  CButton,
+  CButtonGroup,
+  CCard,
+  CCardBody,
+  CCardFooter,
+  CCol,
+  CRow,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownItem,
+  CDropdownMenu,
+} from '@coreui/react';
+import { CChartLine } from '@coreui/react-chartjs';
+import { getStyle, hexToRgba } from '@coreui/utils';
+import CIcon from '@coreui/icons-react';
+import { cilOptions } from '@coreui/icons';
+import PropTypes from 'prop-types';
+import { toFormattedDateString } from '../../utils/date-utils';
+
+const filterMeasurements = (measurements, timeframe) => {
+  if (timeframe === 'All') {
+    return measurements.slice();
+  } else {
+    const filterFromDate =
+      timeframe === 'YTD'
+        ? new Date(new Date().getFullYear(), 0, 1)
+        : new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+
+    return measurements.slice().filter((x) => {
+      return x.date >= filterFromDate;
+    });
+  }
+};
+
+const MeasurementChart = (props) => {
+  const [timeframe, setTimeframe] = useState('All');
+  const [measurements, setMeasurements] = useState(props.measurements);
+
+  const latestMeasurement = props.measurements[props.measurements.length - 1];
+  const latestWeight = latestMeasurement.measurement;
+  const targetWeight = props.target;
+  const targetArr = Array(props.measurements.length).fill(props.target);
+  const targetDiff = Math.round((1 - latestWeight / targetWeight) * -100 * 100) / 100;
+  const targetReach = Math.round((targetWeight - latestWeight) * 100) / 100;
+
+  const addMeasurementHandler = () => {
+    console.log('Add Measurement clicked');
+    //TODO: Implement
+  };
+
+  const setTargetWeightHandler = () => {
+    console.log('Set Target Weight clicked');
+    //TODO: Implement
+  };
+
+  const onTimeframeChangeHandler = (value) => {
+    setTimeframe(value);
+  };
+
+  useEffect(() => {
+    const newMeasurements = filterMeasurements(props.measurements, timeframe);
+    setMeasurements(newMeasurements);
+  }, [props.measurements, timeframe]);
+
+  return (
+    <>
+      <CCard className="mb-4">
+        <CCardBody>
+          <CRow>
+            <CCol sm={5}>
+              <h4 id="traffic" className="card-title mb-0">
+                {props.title}
+              </h4>
+              <div className="small text-medium-emphasis">{props.subtitle}</div>
+            </CCol>
+            <CCol sm={7} className="float-end">
+              <CDropdown dark className="float-end">
+                <CDropdownToggle color="dark">
+                  <CIcon icon={cilOptions} />
+                </CDropdownToggle>
+                <CDropdownMenu>
+                  <CDropdownItem onClick={addMeasurementHandler}>Add Measurement</CDropdownItem>
+                  <CDropdownItem onClick={setTargetWeightHandler}>Set Target Weight</CDropdownItem>
+                </CDropdownMenu>
+              </CDropdown>
+
+              <CButtonGroup className="float-end me-3">
+                {['YTD', 'Year', 'All'].map((value) => (
+                  <CButton
+                    color="dark"
+                    key={value}
+                    className="mx-0"
+                    active={value === timeframe}
+                    onClick={onTimeframeChangeHandler.bind(null, value)}
+                  >
+                    {value}
+                  </CButton>
+                ))}
+              </CButtonGroup>
+            </CCol>
+          </CRow>
+          <CChartLine
+            style={{ height: '300px', marginTop: '40px' }}
+            data={{
+              labels: measurements.map((x) => toFormattedDateString(x.date)),
+              datasets: [
+                {
+                  label: 'Actual weight',
+                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
+                  borderColor: getStyle('--cui-info'),
+                  pointBackgroundColor: getStyle('--cui-info'),
+                  pointHoverBackgroundColor: getStyle('--cui-info'),
+                  borderWidth: 2,
+                  data: measurements.map((x) => x.measurement),
+                },
+                {
+                  label: 'Target weight',
+                  backgroundColor: 'transparent',
+                  borderColor: getStyle('--cui-danger'),
+                  pointBackgroundColor: getStyle('--cui-danger'),
+                  pointHoverBackgroundColor: getStyle('--cui-danger'),
+                  borderWidth: 1,
+                  borderDash: [8, 5],
+                  data: targetArr,
+                },
+              ],
+            }}
+            options={{
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+              scales: {
+                x: {
+                  grid: {
+                    drawOnChartArea: false,
+                  },
+                },
+                y: {
+                  ticks: {
+                    beginAtZero: true,
+                    maxTicksLimit: 5,
+                    stepSize: Math.ceil(250 / 5),
+                    max: 250,
+                  },
+                },
+              },
+              elements: {
+                line: {
+                  tension: 0.4,
+                },
+                point: {
+                  radius: 3,
+                  hitRadius: 10,
+                  hoverRadius: 4,
+                  hoverBorderWidth: 3,
+                },
+              },
+            }}
+          />
+        </CCardBody>
+        <CCardFooter>
+          <CRow xs={{ cols: 1 }} md={{ cols: 5 }} className="text-center">
+            <CCol className="mb-sm-2 mb-0" key={0}>
+              <div className="text-medium-emphasis">Actual Weight</div>
+              <strong>{latestWeight} kg</strong>
+            </CCol>
+            <CCol className="mb-sm-2 mb-0" key={1}>
+              <div className="text-medium-emphasis">Target Weight</div>
+              <strong>{targetWeight} kg</strong>
+            </CCol>
+            <CCol className="mb-sm-2 mb-0" key={2}>
+              <div className="text-medium-emphasis">Target Diff</div>
+              <strong>{targetDiff}%</strong>
+            </CCol>
+            <CCol className="mb-sm-2 mb-0" key={3}>
+              <div className="text-medium-emphasis">Target to Reach</div>
+              <strong>{targetReach} kg</strong>
+            </CCol>
+            <CCol className="mb-sm-2 mb-0" key={4}>
+              <div className="text-medium-emphasis">Total Measurements</div>
+              <strong>{props.measurements.length}</strong>
+            </CCol>
+          </CRow>
+        </CCardFooter>
+      </CCard>
+    </>
+  );
+};
+
+MeasurementChart.defaultProps = {
+  title: 'Title',
+  subtitle: 'Subtitle',
+  target: 0,
+  measurements: {},
+};
+
+MeasurementChart.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  target: PropTypes.number,
+  measurements: PropTypes.any,
+};
+
+export default MeasurementChart;
