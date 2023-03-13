@@ -17,16 +17,20 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
-import PropTypes from 'prop-types';
-import { getLocalDateString } from '../../utils/date-utils.js';
+import { getLocalDateString } from '../../utils/DateUtils';
+import { Measurement } from 'src/model/Measurement';
 
-const MeasurementHistory = (props) => {
-  const onInfoHandler = (id) => {
+interface Props {
+  measurements: Measurement[];
+}
+
+const MeasurementHistory: React.FC<Props> = (props) => {
+  const onInfoHandler = (id: string) => {
     console.log('info clicked for id', id);
     //TODO: Implement
   };
 
-  const onDeleteHandler = (id) => {
+  const onDeleteHandler = (id: string) => {
     console.log('delete clicked for id', id);
     //TODO: Implement
   };
@@ -56,10 +60,10 @@ const MeasurementHistory = (props) => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {props.measurements.map((item, index) => (
+                  {props.measurements.map((item: Measurement, index: number) => (
                     <CTableRow v-for="item in tableItems" key={index}>
                       <CTableDataCell className="text-center"></CTableDataCell>
-                      <CTableDataCell>{getLocalDateString(item.date, false)}</CTableDataCell>
+                      <CTableDataCell>{getLocalDateString(item.date)}</CTableDataCell>
                       <CTableDataCell>
                         {item.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </CTableDataCell>
@@ -107,14 +111,6 @@ const MeasurementHistory = (props) => {
       </CRow>
     </>
   );
-};
-
-MeasurementHistory.defaultProps = {
-  measurements: {},
-};
-
-MeasurementHistory.propTypes = {
-  measurements: PropTypes.any,
 };
 
 export default MeasurementHistory;

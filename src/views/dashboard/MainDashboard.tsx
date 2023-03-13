@@ -1,11 +1,12 @@
-import React from 'react'
+import React from 'react';
 
-import MeasurementWidgets from './MeasurementWidgets'
-import MeasurementHistory from './MeasurementHistory'
-import MeasurementChart from './MeasurementChart'
+import MeasurementWidgets from './MeasurementWidgets';
+import MeasurementHistory from './MeasurementHistory';
+import MeasurementChart from './MeasurementChart';
+import { Measurements } from 'src/model/Measurement';
 
-const MainDashboard = () => {
-  const sampleData = {
+const MainDashboard: React.FC<{}> = () => {
+  const sampleData: Measurements = {
     measurements: [
       {
         userId: 'user_001',
@@ -98,11 +99,11 @@ const MainDashboard = () => {
         },
       },
     ],
-  }
+  };
 
   const measurementsSortedByLatestDate = sampleData.measurements
     .slice()
-    .sort((a, b) => b.date - a.date)
+    .sort((a: any, b: any) => b.date - a.date);
 
   return (
     <>
@@ -110,7 +111,7 @@ const MainDashboard = () => {
       <MeasurementChart
         title="Weight"
         subtitle=""
-        target={100}
+        targetWeight={100}
         measurements={measurementsSortedByLatestDate
           .slice()
           .reverse()
@@ -119,12 +120,12 @@ const MainDashboard = () => {
               id: x.measurementId,
               date: x.date,
               measurement: x.measurements.weight,
-            }
+            };
           })}
       />
       <MeasurementHistory measurements={measurementsSortedByLatestDate.slice()} />
     </>
-  )
-}
+  );
+};
 
-export default MainDashboard
+export default MainDashboard;

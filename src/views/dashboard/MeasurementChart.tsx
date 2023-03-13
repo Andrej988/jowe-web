@@ -15,12 +15,11 @@ import {
 } from '@coreui/react';
 import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
-import CIcon from '@coreui/icons-react';
-import { cilOptions } from '@coreui/icons';
-import PropTypes from 'prop-types';
-import { toFormattedDateString } from '../../utils/date-utils';
+import { toFormattedDateString } from '../../utils/DateUtils';
+import { SimpleMeasurements } from 'src/model/Measurement';
+import styles from './MeasurementChart.module.css';
 
-const filterMeasurements = (measurements, timeframe) => {
+const filterMeasurements = (measurements: SimpleMeasurements, timeframe: string) => {
   if (timeframe === 'All') {
     return measurements.slice();
   } else {
@@ -35,18 +34,27 @@ const filterMeasurements = (measurements, timeframe) => {
   }
 };
 
-const MeasurementChart = (props) => {
+interface Props {
+  title: string;
+  subtitle: string;
+  measurements: SimpleMeasurements;
+  targetWeight: number;
+}
+
+const MeasurementChart: React.FC<Props> = (props) => {
   const [timeframe, setTimeframe] = useState('All');
   const [measurements, setMeasurements] = useState(props.measurements);
 
   const latestMeasurement = props.measurements[props.measurements.length - 1];
   const latestWeight = latestMeasurement.measurement;
-  const targetWeight = props.target;
-  const targetArr = Array(props.measurements.length).fill(props.target);
+  const targetWeight = props.targetWeight;
+  const targetArr = Array(props.measurements.length).fill(props.targetWeight);
   const targetDiff = Math.round((1 - latestWeight / targetWeight) * -100 * 100) / 100;
   const targetReach = Math.round((targetWeight - latestWeight) * 100) / 100;
 
-  const addMeasurementHandler = () => {
+  const addMeasurementHandler = (event: any) => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
     console.log('Add Measurement clicked');
     //TODO: Implement
   };
@@ -56,7 +64,7 @@ const MeasurementChart = (props) => {
     //TODO: Implement
   };
 
-  const onTimeframeChangeHandler = (value) => {
+  const onTimeframeChangeHandler = (value: string) => {
     setTimeframe(value);
   };
 
@@ -78,12 +86,16 @@ const MeasurementChart = (props) => {
             </CCol>
             <CCol sm={7} className="float-end">
               <CDropdown dark className="float-end">
-                <CDropdownToggle color="dark">
-                  <CIcon icon={cilOptions} />
-                </CDropdownToggle>
+                <CDropdownToggle color="dark">Actions</CDropdownToggle>
                 <CDropdownMenu>
-                  <CDropdownItem onClick={addMeasurementHandler}>Add Measurement</CDropdownItem>
-                  <CDropdownItem onClick={setTargetWeightHandler}>Set Target Weight</CDropdownItem>
+                  <div className={styles['dropdown-item']}>
+                    <CDropdownItem onClick={addMeasurementHandler}>Add Measurement</CDropdownItem>
+                  </div>
+                  <div className={styles['dropdown-item']}>
+                    <CDropdownItem onClick={setTargetWeightHandler}>
+                      Set Target Weight
+                    </CDropdownItem>
+                  </div>
                 </CDropdownMenu>
               </CDropdown>
 
@@ -122,6 +134,7 @@ const MeasurementChart = (props) => {
                   borderColor: getStyle('--cui-danger'),
                   pointBackgroundColor: getStyle('--cui-danger'),
                   pointHoverBackgroundColor: getStyle('--cui-danger'),
+                  pointRadius: 0,
                   borderWidth: 1,
                   borderDash: [8, 5],
                   data: targetArr,
@@ -143,10 +156,10 @@ const MeasurementChart = (props) => {
                 },
                 y: {
                   ticks: {
-                    beginAtZero: true,
+                    //beginAtZero: true,
                     maxTicksLimit: 5,
                     stepSize: Math.ceil(250 / 5),
-                    max: 250,
+                    //max: 250,
                   },
                 },
               },
@@ -191,20 +204,6 @@ const MeasurementChart = (props) => {
       </CCard>
     </>
   );
-};
-
-MeasurementChart.defaultProps = {
-  title: 'Title',
-  subtitle: 'Subtitle',
-  target: 0,
-  measurements: {},
-};
-
-MeasurementChart.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  target: PropTypes.number,
-  measurements: PropTypes.any,
 };
 
 export default MeasurementChart;

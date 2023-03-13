@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   CButton,
   CCol,
@@ -7,9 +7,9 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilMagnifyingGlass } from '@coreui/icons'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilMagnifyingGlass } from '@coreui/icons';
 
 const Page404 = () => {
   return (
@@ -18,7 +18,7 @@ const Page404 = () => {
         <CRow className="justify-content-center">
           <CCol md={6}>
             <span className="clearfix">
-              <h1 className="float-start display-3 me-4">500</h1>
+              <h1 className="float-start display-3 me-4">404</h1>
               <h4 className="pt-3">Houston, we have a problem!</h4>
               <p className="text-medium-emphasis float-start">
                 The page you are looking for is temporarily unavailable.
@@ -35,7 +35,7 @@ const Page404 = () => {
         </CRow>
       </CContainer>
     </div>
-  )
-}
+  );
+};
 
-export default Page404
+export default Page404;
