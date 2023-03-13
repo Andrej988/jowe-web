@@ -4,10 +4,18 @@ import { getStyle } from '@coreui/utils';
 import { CChartLine } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons';
-import PropTypes from 'prop-types';
-import { toFormattedDateString } from '../../utils/date-utils.js';
+import { toFormattedDateString } from '../../utils/DateUtils';
+import { SimpleMeasurements } from 'src/model/Measurement';
 
-const MeasurementWidget = (props) => {
+interface Props {
+  title: string;
+  color: string;
+  unit?: string;
+  pointStyle: string;
+  measurements: SimpleMeasurements;
+}
+
+const MeasurementWidget: React.FC<Props> = (props) => {
   const measurementsSortedByDate = props.measurements.slice();
   const latestMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 1];
   const secondToLastMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 2];
@@ -84,12 +92,12 @@ const MeasurementWidget = (props) => {
   );
 };
 
-MeasurementWidget.defaultProps = {
+/*MeasurementWidget.defaultProps = {
   color: 'info',
   title: 'Title',
   unit: '',
   pointStyle: '--cui-info',
-  measurements: {},
+  measurements: [],
 };
 
 MeasurementWidget.propTypes = {
@@ -98,6 +106,6 @@ MeasurementWidget.propTypes = {
   unit: PropTypes.string,
   pointStyle: PropTypes.string,
   measurements: PropTypes.any,
-};
+};*/
 
 export default MeasurementWidget;

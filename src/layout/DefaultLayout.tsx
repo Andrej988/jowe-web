@@ -1,8 +1,8 @@
-import React from 'react'
-import AppSidebar from 'src/components/layout/AppSidebar'
-import AppHeader from 'src/components/layout/AppHeader'
-import AppContent from 'src/components/layout/AppContent'
-import AppFooter from 'src/components/layout/AppFooter'
+import React from 'react';
+import AppSidebar from 'src/components/layout/AppSidebar';
+import AppHeader from 'src/components/layout/AppHeader';
+import AppContent from 'src/components/layout/AppContent';
+import AppFooter from 'src/components/layout/AppFooter';
 
 const DefaultLayout = () => {
   return (
@@ -16,7 +16,7 @@ const DefaultLayout = () => {
         <AppFooter />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DefaultLayout
+export default DefaultLayout;

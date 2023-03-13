@@ -26,6 +26,11 @@
     "@coreui/react": "^4.6.0",
     "@coreui/react-chartjs": "^2.1.2",
     "@coreui/utils": "^2.0.1",
+    "@reduxjs/toolkit": "^1.9.3",
+    "@types/jest": "^29.4.0",
+    "@types/node": "^18.15.1",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "^3.29.0",
@@ -36,7 +41,8 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.2",
     "redux": "4.2.1",
-    "simplebar-react": "^2.4.3"
+    "simplebar-react": "^2.4.3",
+    "typescript": "^4.9.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

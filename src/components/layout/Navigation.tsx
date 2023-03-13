@@ -1,7 +1,7 @@
-import React from 'react'
-import CIcon from '@coreui/icons-react'
-import { cilPencil, cilSpreadsheet, cilChartLine } from '@coreui/icons'
-import { CNavItem, CNavTitle } from '@coreui/react'
+import React from 'react';
+import CIcon from '@coreui/icons-react';
+import { cilPencil, cilSpreadsheet, cilChartLine } from '@coreui/icons';
+import { CNavItem, CNavTitle } from '@coreui/react';
 
 const Navigation = [
   {
@@ -26,6 +26,15 @@ const Navigation = [
     to: '/setTarget',
     icon: <CIcon icon={cilChartLine} customClassName="nav-icon" />,
   },
-]
+];
 
-export default Navigation
+export default Navigation;
+
+export type NavigationType = INavigation[];
+
+export interface INavigation {
+  component: any;
+  name: string;
+  to?: string;
+  icon?: any;
+}
