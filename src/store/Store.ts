@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit/';
 
-//import authSlice, { actions as authActions } from "./AuthSlice";
+import authSlice, { actions as authActions } from './AuthSlice';
 import layoutSlice, { actions as layoutActions } from './LayoutSlice';
 
 const store = configureStore({
   reducer: {
-    //auth: authSlice,
+    auth: authSlice,
     layout: layoutSlice,
   },
   middleware: (getDefaultMiddleware) =>
@@ -15,7 +15,7 @@ const store = configureStore({
     }),
 });
 
-export { /*authActions,*/ layoutActions };
+export { authActions, layoutActions };
 export default store;
 
 export type RootState = ReturnType<typeof store.getState>;

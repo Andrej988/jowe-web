@@ -1,0 +1,28 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "weighttrackerweb327f4933",
+  "serviceType": "imported",
+  "region": "eu-south-1",
+  "aliasAttributes": [
+    "email",
+    "preferred_username"
+  ],
+  "requiredAttributes": [
+    "email",
+    "name"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OPTIONAL",
+  "autoVerifiedAttributes": [
+    "email"
+  ],
+  "mfaTypes": [
+    "TOTP"
+  ]
+}

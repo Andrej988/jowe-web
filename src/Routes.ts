@@ -1,10 +1,10 @@
 import React from 'react';
 
 const Dashboard = React.lazy(() => import('./views/dashboard/MainDashboard'));
-const Page404 = React.lazy(() => import('./views/pages/page404/Page404'));
+const Page404 = React.lazy(() => import('./views/pages/Page404'));
 
 const Routes = [
-  { path: '/', exact: true, name: 'Home' },
+  { path: '/', exact: true, name: 'Dashboard' },
   { path: '/dashboard', exact: false, name: 'Dashboard', element: Dashboard },
   { path: '*', exact: false, name: 'Dashboard', element: Page404 },
 ];

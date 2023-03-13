@@ -15,7 +15,7 @@ import CIcon from '@coreui/icons-react';
 import { cilMenu } from '@coreui/icons';
 
 import AppBreadcrumb from './AppBreadcrumb';
-import AppHeaderDropdown from './AppHeaderDropdown';
+import AppProfileDropdown from './AppProfileDropdown';
 import { logo } from 'src/assets/brand/logo';
 import { layoutActions } from 'src/store/Store';
 
@@ -42,7 +42,7 @@ const AppHeader: React.FC<{}> = () => {
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-3">
-          <AppHeaderDropdown />
+          <AppProfileDropdown />
         </CHeaderNav>
       </CContainer>
       <CHeaderDivider />
