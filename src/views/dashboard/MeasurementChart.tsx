@@ -134,6 +134,7 @@ const MeasurementChart: React.FC<Props> = (props) => {
                   borderColor: getStyle('--cui-danger'),
                   pointBackgroundColor: getStyle('--cui-danger'),
                   pointHoverBackgroundColor: getStyle('--cui-danger'),
+                  pointRadius: 0,
                   borderWidth: 1,
                   borderDash: [8, 5],
                   data: targetArr,
