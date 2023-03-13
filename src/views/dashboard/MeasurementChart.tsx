@@ -17,7 +17,7 @@ import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../utils/DateUtils';
 import { SimpleMeasurements } from 'src/model/Measurement';
-//import styles from './MeasurementChart.module.css';
+import styles from './MeasurementChart.module.css';
 
 const filterMeasurements = (measurements: SimpleMeasurements, timeframe: string) => {
   if (timeframe === 'All') {
@@ -88,10 +88,10 @@ const MeasurementChart: React.FC<Props> = (props) => {
               <CDropdown dark className="float-end">
                 <CDropdownToggle color="dark">Actions</CDropdownToggle>
                 <CDropdownMenu>
-                  <div>
+                  <div className={styles['dropdown-item']}>
                     <CDropdownItem onClick={addMeasurementHandler}>Add Measurement</CDropdownItem>
                   </div>
-                  <div>
+                  <div className={styles['dropdown-item']}>
                     <CDropdownItem onClick={setTargetWeightHandler}>
                       Set Target Weight
                     </CDropdownItem>
