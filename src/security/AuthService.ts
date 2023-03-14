@@ -20,7 +20,6 @@ const checkIfUserAlreadySignedIn = async () => {
       );
     })
     .catch((err) => {
-      console.error(err);
       store.dispatch(authActions.signOut());
     });
 };
