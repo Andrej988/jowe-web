@@ -18,6 +18,8 @@ import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../utils/DateUtils';
 import { SimpleMeasurements } from 'src/model/Measurement';
 import styles from './MeasurementChart.module.css';
+import AddMeasurementForm from '../addMeasurements/AddMeasurementForm';
+import SetTargetWeightForm from '../setTargetWeight/SetTargetWeightForm';
 
 const filterMeasurements = (measurements: SimpleMeasurements, timeframe: string) => {
   if (timeframe === 'All') {
@@ -44,6 +46,8 @@ interface Props {
 const MeasurementChart: React.FC<Props> = (props) => {
   const [timeframe, setTimeframe] = useState('All');
   const [measurements, setMeasurements] = useState(props.measurements);
+  const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
+  const [targetWeightModalVisible, setTargetWeightModalVisibility] = useState(false);
 
   const latestMeasurement = props.measurements[props.measurements.length - 1];
   const latestWeight = latestMeasurement.measurement;
@@ -52,14 +56,34 @@ const MeasurementChart: React.FC<Props> = (props) => {
   const targetDiff = Math.round((1 - latestWeight / targetWeight) * -100 * 100) / 100;
   const targetReach = Math.round((targetWeight - latestWeight) * 100) / 100;
 
-  const addMeasurementHandler = () => {
+  const openAddMeasurementModal = () => {
     console.log('Add Measurement clicked');
-    //TODO: Implement
+    setAddMeasurementsModalVisibility(true);
   };
 
-  const setTargetWeightHandler = () => {
-    console.log('Set Target Weight clicked');
+  const closeAddMeasurementForm = () => {
+    setAddMeasurementsModalVisibility(false);
+  };
+
+  const addMeasurement = () => {
+    console.log('adding measurement');
     //TODO: Implement
+    setAddMeasurementsModalVisibility(false);
+  };
+
+  const openSetTargetWeightModal = () => {
+    console.log('Set Target Weight clicked');
+    setTargetWeightModalVisibility(true);
+  };
+
+  const closeSetTargetWeightForm = () => {
+    setTargetWeightModalVisibility(false);
+  };
+
+  const setTargetWeight = () => {
+    console.log('setting target weight');
+    //TODO: Implement
+    setTargetWeightModalVisibility(false);
   };
 
   const onTimeframeChangeHandler = (value: string) => {
@@ -87,10 +111,10 @@ const MeasurementChart: React.FC<Props> = (props) => {
                 <CDropdownToggle color="dark">Actions</CDropdownToggle>
                 <CDropdownMenu>
                   <div className={styles['dropdown-item']}>
-                    <CDropdownItem onClick={addMeasurementHandler}>Add Measurement</CDropdownItem>
+                    <CDropdownItem onClick={openAddMeasurementModal}>Add Measurement</CDropdownItem>
                   </div>
                   <div className={styles['dropdown-item']}>
-                    <CDropdownItem onClick={setTargetWeightHandler}>
+                    <CDropdownItem onClick={openSetTargetWeightModal}>
                       Set Target Weight
                     </CDropdownItem>
                   </div>
@@ -200,6 +224,16 @@ const MeasurementChart: React.FC<Props> = (props) => {
           </CRow>
         </CCardFooter>
       </CCard>
+      <AddMeasurementForm
+        visible={addMeasurementsModalVisible}
+        onCloseHandler={closeAddMeasurementForm}
+        onOkHandler={addMeasurement}
+      />
+      <SetTargetWeightForm
+        visible={targetWeightModalVisible}
+        onCloseHandler={closeSetTargetWeightForm}
+        onOkHandler={setTargetWeight}
+      />
     </>
   );
 };
