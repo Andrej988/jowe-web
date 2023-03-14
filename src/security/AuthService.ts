@@ -1,4 +1,5 @@
 import store, { authActions } from '../store/Store';
+import { AuthenticationError } from './AuthenticationError';
 import AuthServiceCognito from './provider/AuthServiceCognito';
 
 const checkIfUserAlreadySignedIn = async () => {
@@ -42,8 +43,8 @@ const signIn = async (enteredUsername: string, enteredPassword: string) => {
       );
     })
     .catch((err: Error) => {
-      console.error(err);
-      throw new Error('Authentication exception: ' + err.message);
+      console.error(err.message);
+      throw new AuthenticationError(err.message, err.stack);
     });
 };
 
