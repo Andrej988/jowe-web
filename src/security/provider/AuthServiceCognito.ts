@@ -1,23 +1,20 @@
 import { Auth } from 'aws-amplify';
 import { CognitoUserSession } from 'amazon-cognito-identity-js';
 import { AccessToken, AuthTokens, RefreshToken } from './../AuthTokens';
+import { AuthenticationError } from '../AuthenticationError';
 
 const signIn = async (username: string, password: string): Promise<string> => {
-  try {
-    const user = await Auth.signIn(username, password);
-    return user.username;
-  } catch (error) {
-    console.log('error signing in', error);
-    throw new Error('Authentication error');
-  }
+  return await Auth.signIn(username, password)
+    .then((user) => user.username)
+    .catch((err) => {
+      throw new AuthenticationError(err.message, err.stack);
+    });
 };
 
 const signOut = async () => {
-  try {
-    await Auth.signOut();
-  } catch (error) {
-    console.log('error signing out: ', error);
-  }
+  await Auth.signOut().catch((err) => {
+    console.error('Error signing in: ' + err.message);
+  });
 };
 
 const getAuthenticatedUser = async (): Promise<string> => {
@@ -32,8 +29,7 @@ const getAuthTokens = async (): Promise<AuthTokens> => {
       return mapCognitoUserSessionDataToAuthTokens(userSession);
     })
     .catch((err) => {
-      console.error(err);
-      throw new Error('Error retrieving user info!');
+      throw new AuthenticationError(err.message, err.stack);
     });
 };
 
