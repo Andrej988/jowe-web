@@ -1,7 +1,5 @@
 import React, { Fragment } from 'react';
-import MeasurementChart from 'src/components/measurements/WeightMeasurementsDetailedChart';
 import MeasurementHistory from 'src/components/measurements/MeasurementHistory';
-import MeasurementWidgets from 'src/components/measurements/MeasurementWidgets';
 
 import { getTestMeasurements } from 'src/model/TestMeasurements';
 /*import AuthService from 'src/security/AuthService';
@@ -33,25 +31,10 @@ const MainDashboard: React.FC<{}> = () => {
 
   return (
     <Fragment>
-      <MeasurementWidgets measurements={measurementsSortedByLatestDate.slice(0, 10)} />
-      <MeasurementChart
-        title="Weight"
-        targetWeight={100}
-        measurements={measurementsSortedByLatestDate
-          .slice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.weight,
-            };
-          })}
-      />
       <MeasurementHistory
-        title="Latest Measurements (5)"
-        measurements={measurementsSortedByLatestDate.slice(0, 5)}
-        showDeleteButton={false}
+        title="History of Measurements"
+        measurements={measurementsSortedByLatestDate.slice()}
+        showDeleteButton={true}
       />
     </Fragment>
   );

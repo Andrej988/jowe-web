@@ -17,9 +17,9 @@ import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../utils/DateUtils';
 import { SimpleMeasurements } from 'src/model/Measurement';
-import styles from './MeasurementChart.module.css';
-import AddMeasurementForm from '../addMeasurements/AddMeasurementForm';
-import SetTargetWeightForm from '../setTargetWeight/SetTargetWeightForm';
+import styles from './WeightMeasurementsDetailedChart.module.css';
+import AddMeasurementForm from 'src/views/addMeasurements/AddMeasurementForm';
+import SetTargetWeightForm from 'src/views/setTargetWeight/SetTargetWeightForm';
 
 const filterMeasurements = (measurements: SimpleMeasurements, timeframe: string) => {
   if (timeframe === 'All') {
@@ -38,12 +38,12 @@ const filterMeasurements = (measurements: SimpleMeasurements, timeframe: string)
 
 interface Props {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   measurements: SimpleMeasurements;
   targetWeight: number;
 }
 
-const MeasurementChart: React.FC<Props> = (props) => {
+const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   const [timeframe, setTimeframe] = useState('All');
   const [measurements, setMeasurements] = useState(props.measurements);
   const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
@@ -104,7 +104,9 @@ const MeasurementChart: React.FC<Props> = (props) => {
               <h4 id="traffic" className="card-title mb-0">
                 {props.title}
               </h4>
-              <div className="small text-medium-emphasis">{props.subtitle}</div>
+              <div className="small text-medium-emphasis">
+                {props.subtitle !== null ? props.subtitle : ''}
+              </div>
             </CCol>
             <CCol sm={7} className="float-end">
               <CDropdown dark className="float-end">
@@ -238,4 +240,4 @@ const MeasurementChart: React.FC<Props> = (props) => {
   );
 };
 
-export default MeasurementChart;
+export default WeightMeasurementsDetailedChart;

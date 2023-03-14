@@ -16,14 +16,14 @@ const Navigation = [
   },
   {
     component: CNavItem,
-    name: 'Add Measurement',
-    to: '/addMeasurement',
+    name: 'Measurements',
+    to: '/measurements',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
-    name: 'Set Target',
-    to: '/setTarget',
+    name: 'Charts',
+    to: '/charts',
     icon: <CIcon icon={cilChartLine} customClassName="nav-icon" />,
   },
 ];

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 
 import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardFooter,
   CCol,
   CRow,
   CTable,
@@ -15,16 +16,22 @@ import {
   CButton,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
+import { cilPencil } from '@coreui/icons';
 import { cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
 import { getLocalDateString } from '../../utils/DateUtils';
 import { Measurement } from 'src/model/Measurement';
+import AddMeasurementForm from 'src/views/addMeasurements/AddMeasurementForm';
 
 interface Props {
+  title: string;
   measurements: Measurement[];
+  showDeleteButton: boolean;
 }
 
 const MeasurementHistory: React.FC<Props> = (props) => {
+  const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
+
   const onInfoHandler = (id: string) => {
     console.log('info clicked for id', id);
     //TODO: Implement
@@ -35,12 +42,28 @@ const MeasurementHistory: React.FC<Props> = (props) => {
     //TODO: Implement
   };
 
+  const openAddMeasurementModal = () => {
+    console.log('Add Measurement clicked');
+    setAddMeasurementsModalVisibility(true);
+  };
+
+  const closeAddMeasurementForm = () => {
+    setAddMeasurementsModalVisibility(false);
+  };
+
+  const addMeasurement = () => {
+    console.log('adding measurement');
+    //TODO: Implement
+    setAddMeasurementsModalVisibility(false);
+  };
+
   return (
-    <>
+    <Fragment>
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>History of Measurements</CCardHeader>
+            <CCardHeader>{props.title} </CCardHeader>
+
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
@@ -88,28 +111,45 @@ const MeasurementHistory: React.FC<Props> = (props) => {
                       <CTableDataCell className="text-center">
                         <CButton
                           color="dark"
+                          variant="outline"
                           key={'info_' + index}
                           onClick={onInfoHandler.bind(null, item.measurementId)}
                         >
                           <CIcon icon={cilInfo} />
                         </CButton>{' '}
-                        <CButton
-                          color="danger"
-                          key={'delete_' + index}
-                          onClick={onDeleteHandler.bind(null, item.measurementId)}
-                        >
-                          <CIcon icon={cilTrash} />
-                        </CButton>
+                        {props.showDeleteButton ? (
+                          <CButton
+                            color="danger"
+                            variant="outline"
+                            key={'delete_' + index}
+                            onClick={onDeleteHandler.bind(null, item.measurementId)}
+                          >
+                            <CIcon icon={cilTrash} />
+                          </CButton>
+                        ) : (
+                          ''
+                        )}
                       </CTableDataCell>
                     </CTableRow>
                   ))}
                 </CTableBody>
               </CTable>
             </CCardBody>
+            <CCardFooter>
+              <CButton color="dark" className="float-end" onClick={openAddMeasurementModal}>
+                <CIcon icon={cilPencil} /> Add Measurement
+              </CButton>
+            </CCardFooter>
           </CCard>
         </CCol>
       </CRow>
-    </>
+
+      <AddMeasurementForm
+        visible={addMeasurementsModalVisible}
+        onCloseHandler={closeAddMeasurementForm}
+        onOkHandler={addMeasurement}
+      />
+    </Fragment>
   );
 };
 
