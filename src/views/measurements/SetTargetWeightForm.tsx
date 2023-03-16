@@ -5,7 +5,7 @@ import Modal from 'src/components/modal/Modal';
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
-  onOkHandler: () => void;
+  onSaveHandler: () => void;
 }
 
 const MIN_TARGET_VALUE = 40;
@@ -56,11 +56,13 @@ const SetTargetWeightForm: React.FC<Props> = (props) => {
     <Modal
       title="Set Target Weight"
       visible={props.visible}
-      showButtonOk={true}
-      buttonOkText="Save"
-      buttonCloseText="Close"
-      onCloseHandler={onCloseFormHandler}
-      onOkHandler={props.onOkHandler}
+      primaryButtonText="Save"
+      primaryButtonHandler={props.onSaveHandler}
+      showSecondaryButton={true}
+      secondaryButtonText="Cancel"
+      secondaryButtonColor="danger"
+      secondaryButtonHandler={onCloseFormHandler}
+      onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm>
         <CFormInput

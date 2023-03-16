@@ -4,7 +4,7 @@ import Modal from 'src/components/modal/Modal';
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
-  onOkHandler: () => void;
+  onSaveHandler: () => void;
 }
 
 const AddMeasurementForm: React.FC<Props> = (props) => {
@@ -12,11 +12,14 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
     <Modal
       title="Add Measurement"
       visible={props.visible}
-      showButtonOk={true}
-      buttonOkText="Save"
-      buttonCloseText="Close"
-      onCloseHandler={props.onCloseHandler}
-      onOkHandler={props.onOkHandler}
+      primaryButtonText="Save"
+      primaryButtonColor="dark"
+      primaryButtonHandler={props.onSaveHandler}
+      showSecondaryButton={true}
+      secondaryButtonColor="danger"
+      secondaryButtonText="Close"
+      secondaryButtonHandler={props.onCloseHandler}
+      onCloseButtonHandler={props.onCloseHandler}
     >
       <p>
         Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
