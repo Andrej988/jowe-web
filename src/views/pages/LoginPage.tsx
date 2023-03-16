@@ -1,4 +1,4 @@
-import React, { Fragment, ReactElement, useRef, useState } from 'react';
+import React, { Fragment, ReactElement, RefObject, useRef, useState } from 'react';
 import {
   CButton,
   CCard,
@@ -24,19 +24,11 @@ import AuthService from 'src/security/AuthService';
 import styles from './LoginPage.module.css';
 
 const LoginPage: React.FC<{}> = () => {
-  const [enteredUsername, setEnteredUsername] = useState('');
-  const [enteredPassword, setEnteredPassword] = useState('');
+  const usernameRef: RefObject<HTMLInputElement> = useRef(null);
+  const passwordRef: RefObject<HTMLInputElement> = useRef(null);
   const [toast, addToast] = useState<ReactElement | undefined>();
   const toaster = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
-
-  const usernameChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEnteredUsername(event.target.value);
-  };
-
-  const passwordChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEnteredPassword(event.target.value);
-  };
 
   const buildToast = (errorMsg: string): ReactElement => {
     return (
@@ -52,10 +44,8 @@ const LoginPage: React.FC<{}> = () => {
 
   const loginHandler = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    AuthService.signIn(enteredUsername, enteredPassword)
+    AuthService.signIn(usernameRef.current!.value, passwordRef.current!.value)
       .then(() => {
-        setEnteredUsername('');
-        setEnteredPassword('');
         navigate('/', { replace: true });
       })
       .catch((err: Error) => {
@@ -69,7 +59,7 @@ const LoginPage: React.FC<{}> = () => {
         <CContainer>
           <CToaster ref={toaster} push={toast} placement="top-end" />
           <CRow className="justify-content-center">
-            <CCol md={4}>
+            <CCol sm={10} md={8} lg={6} xl={5}>
               <CCardGroup>
                 <CCard className="p-4">
                   <CCardBody>
@@ -85,10 +75,9 @@ const LoginPage: React.FC<{}> = () => {
                           id="username"
                           autoFocus
                           placeholder="Username"
-                          //autoComplete="username"
+                          autoComplete="username"
                           required
-                          value={enteredUsername}
-                          onChange={usernameChangeHandler}
+                          ref={usernameRef}
                         />
                         <CFormFeedback invalid>You must agree before submitting.</CFormFeedback>
                       </CInputGroup>
@@ -100,10 +89,9 @@ const LoginPage: React.FC<{}> = () => {
                           id="password"
                           type="password"
                           placeholder="Password"
-                          //autoComplete="current-password"
+                          autoComplete="current-password"
                           required
-                          value={enteredPassword}
-                          onChange={passwordChangeHandler}
+                          ref={passwordRef}
                         />
                       </CInputGroup>
                       <CRow className="justify-content-end">
