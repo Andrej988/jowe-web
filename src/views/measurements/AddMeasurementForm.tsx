@@ -13,7 +13,6 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
       title="Add Measurement"
       visible={props.visible}
       primaryButtonText="Save"
-      primaryButtonColor="dark"
       primaryButtonHandler={props.onSaveHandler}
       showSecondaryButton={true}
       secondaryButtonColor="danger"
