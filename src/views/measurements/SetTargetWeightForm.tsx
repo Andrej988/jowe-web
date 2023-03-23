@@ -10,7 +10,7 @@ interface Props extends PropsWithChildren {
 
 const MIN_TARGET_VALUE = 40;
 const MAX_TARGET_VALUE = 200;
-const INPUT_MESSAGE = `Value must be between ${MIN_TARGET_VALUE} and ${MAX_TARGET_VALUE} kg.`;
+const INPUT_MESSAGE = `Target weight represents a reference point (line) on a weight graph. It serves as an indicator of how close you are to your target. Value must be between ${MIN_TARGET_VALUE} and ${MAX_TARGET_VALUE} kg.`;
 const DEFAULT_VALUE_IS_TOUCHED = false;
 const DEFAULT_VALUE_IS_VALID = false;
 const DEFAULT_VALUE_TARGET_WEIGHT = '';
