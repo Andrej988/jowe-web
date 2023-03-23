@@ -18,7 +18,11 @@ export const getLocalDateTimeString = (date: Date, withSeconds: boolean = true):
   return dateString;
 };
 
-export const toFormattedDateString = (date: Date): string => {
+export const toFormattedDateString = (date: Date | undefined): string => {
+  if (date === undefined) {
+    return '';
+  }
+
   const year = date.getFullYear().toString();
   const month = date.toLocaleString('default', { month: 'long' });
   const day = date.getDate().toString();
@@ -26,7 +30,14 @@ export const toFormattedDateString = (date: Date): string => {
   return month + ' ' + day + ', ' + year;
 };
 
-export const toFormattedDateTimeString = (date: Date, withSeconds: boolean = true): string => {
+export const toFormattedDateTimeString = (
+  date: Date | undefined,
+  withSeconds: boolean = true,
+): string => {
+  if (date === undefined) {
+    return '';
+  }
+
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
   const seconds = date.getSeconds();
