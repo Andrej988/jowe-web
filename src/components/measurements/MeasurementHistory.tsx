@@ -63,6 +63,7 @@ const MeasurementHistory: React.FC<Props> = (props) => {
 
   const deleteMeasurementHandler = () => {
     console.log('deleting a measurement');
+    console.log('current measurement id', currentMeasurement?.measurementId);
     setDeleteMeasurementModalVisibility(false);
   };
 
@@ -96,7 +97,7 @@ const MeasurementHistory: React.FC<Props> = (props) => {
                     <CTableHeaderCell className="text-center">Muscle Mass</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Bone</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Energy Expenditure</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Notes</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Actions</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>

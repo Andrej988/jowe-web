@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import Modal from 'src/components/modal/Modal';
 import { Measurement } from 'src/model/Measurement';
+import { toFormattedDateTimeString } from 'src/utils/DateUtils';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -11,14 +12,31 @@ interface Props extends PropsWithChildren {
 const MeasurementDetailsForm: React.FC<Props> = (props) => {
   return (
     <Modal
-      title="Details"
+      title="Measurement Details"
       visible={props.visible}
       primaryButtonText="Close"
       primaryButtonHandler={props.onCloseHandler}
       showSecondaryButton={false}
       onCloseButtonHandler={props.onCloseHandler}
     >
-      <p>{props.measurement?.measurementId}</p>
+      <div>
+        <p>
+          Measurement ID: {props.measurement?.measurementId}
+          <br />
+          Date: {toFormattedDateTimeString(props.measurement?.date)}
+          <br />
+          Note: {props.measurement?.comment}
+        </p>
+        Measurements:
+        <ul>
+          <li>Weight: {props.measurement?.measurements.weight} kg</li>
+          <li>Body Fat: {props.measurement?.measurements.bodyFatPercentage} %</li>
+          <li>Water: {props.measurement?.measurements.waterPercentage} %</li>
+          <li>Muscle Mass: {props.measurement?.measurements.muscleMassPercentage} %</li>
+          <li>Bone: {props.measurement?.measurements.bonePercentage} %</li>
+          <li>Energy Expenditure: {props.measurement?.measurements.energyExpenditure} kcal</li>
+        </ul>
+      </div>
     </Modal>
   );
 };
