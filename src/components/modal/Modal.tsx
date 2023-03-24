@@ -11,6 +11,7 @@ import {
 interface Props extends PropsWithChildren {
   title: string;
   visible: boolean;
+  size?: 'sm' | 'lg' | 'xl' | undefined;
   primaryButtonText: string;
   primaryButtonColor?: string;
   primaryButtonHandler: () => void;
@@ -29,6 +30,7 @@ const Modal: React.FC<Props> = (props) => {
       scrollable
       visible={props.visible}
       onClose={props.onCloseButtonHandler}
+      size={props.size}
     >
       <CModalHeader>
         <CModalTitle>{props.title}</CModalTitle>
