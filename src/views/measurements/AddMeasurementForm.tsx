@@ -1,3 +1,4 @@
+import { CCol, CForm, CFormInput, CRow } from '@coreui/react';
 import React, { PropsWithChildren } from 'react';
 import Modal from 'src/components/modal/Modal';
 
@@ -12,6 +13,7 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
     <Modal
       title="Add Measurement"
       visible={props.visible}
+      size="lg"
       primaryButtonText="Save"
       primaryButtonHandler={props.onSaveHandler}
       showSecondaryButton={true}
@@ -20,40 +22,138 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
       secondaryButtonHandler={props.onCloseHandler}
       onCloseButtonHandler={props.onCloseHandler}
     >
-      <p>
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-      </p>
-      <p>
-        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-        vel augue laoreet rutrum faucibus dolor auctor.
-      </p>
-      <p>
-        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-        auctor fringilla.
-      </p>
-      <p>
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-      </p>
-      <p>
-        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-        vel augue laoreet rutrum faucibus dolor auctor.
-      </p>
-      <p>
-        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-        auctor fringilla.
-      </p>
-      <p>
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-      </p>
-      <p>
-        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-        vel augue laoreet rutrum faucibus dolor auctor.
-      </p>
+      <CForm>
+        <CRow>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="text"
+              id="dateInput"
+              label="Date"
+              //pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              //maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="text"
+              id="commentInput"
+              label="Notes (optional)"
+              //pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              //maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="number"
+              id="weightInput"
+              label="Weight (in kg)"
+              pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="number"
+              id="bodyFatInput"
+              label="Body Fat % (optional)"
+              pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="number"
+              id="waterInput"
+              label="Water % (optional)"
+              pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="number"
+              id="muscleMassInput"
+              label="Muscle Mass % (optional)"
+              pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="number"
+              id="boneInput"
+              label="Bone % (optional)"
+              pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+          <CCol>
+            <CFormInput
+              //invalid={!isValid && isTouched}
+              type="number"
+              id="energyInput"
+              label="Energy Expenditure (optional)"
+              pattern="[0-9]*"
+              //value={weight}
+              //min={MIN_TARGET_VALUE}
+              //max={MAX_TARGET_VALUE}
+              maxLength={3}
+              //text={INPUT_MESSAGE}
+              //onChange={onTargetWeightInputChangeHandler}
+            />
+          </CCol>
+        </CRow>
+      </CForm>
     </Modal>
   );
 };
