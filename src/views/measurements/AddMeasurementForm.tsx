@@ -24,7 +24,7 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
     >
       <CForm>
         <CRow>
-          <CCol>
+          <CCol sm={12}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="text"
@@ -41,7 +41,7 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
           </CCol>
         </CRow>
         <CRow>
-          <CCol>
+          <CCol sm={12}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="text"
@@ -58,7 +58,7 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
           </CCol>
         </CRow>
         <CRow>
-          <CCol>
+          <CCol sm={12} lg={6}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="number"
@@ -73,7 +73,7 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
               //onChange={onTargetWeightInputChangeHandler}
             />
           </CCol>
-          <CCol>
+          <CCol sm={12} lg={6}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="number"
@@ -90,12 +90,12 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
           </CCol>
         </CRow>
         <CRow>
-          <CCol>
+          <CCol sm={12} lg={6}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="number"
               id="waterInput"
-              label="Water % (optional)"
+              label="Body Water % (optional)"
               pattern="[0-9]*"
               //value={weight}
               //min={MIN_TARGET_VALUE}
@@ -105,7 +105,7 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
               //onChange={onTargetWeightInputChangeHandler}
             />
           </CCol>
-          <CCol>
+          <CCol sm={12} lg={6}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="number"
@@ -122,12 +122,12 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
           </CCol>
         </CRow>
         <CRow>
-          <CCol>
+          <CCol sm={12} lg={6}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="number"
               id="boneInput"
-              label="Bone % (optional)"
+              label="Bone Mass % (optional)"
               pattern="[0-9]*"
               //value={weight}
               //min={MIN_TARGET_VALUE}
@@ -137,7 +137,7 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
               //onChange={onTargetWeightInputChangeHandler}
             />
           </CCol>
-          <CCol>
+          <CCol sm={12} lg={6}>
             <CFormInput
               //invalid={!isValid && isTouched}
               type="number"
