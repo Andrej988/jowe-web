@@ -36,9 +36,9 @@ const DeleteMeasurementForm: React.FC<Props> = (props) => {
         <ul>
           <li>Weight: {props.measurement?.measurements.weight} kg</li>
           <li>Body Fat: {props.measurement?.measurements.bodyFatPercentage} %</li>
-          <li>Water: {props.measurement?.measurements.waterPercentage} %</li>
+          <li>Body Water: {props.measurement?.measurements.waterPercentage} %</li>
           <li>Muscle Mass: {props.measurement?.measurements.muscleMassPercentage} %</li>
-          <li>Bone: {props.measurement?.measurements.bonePercentage} %</li>
+          <li>Bone Mass: {props.measurement?.measurements.bonePercentage} %</li>
           <li>Energy Expenditure: {props.measurement?.measurements.energyExpenditure} kcal</li>
         </ul>
       </div>

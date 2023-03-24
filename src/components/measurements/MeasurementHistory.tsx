@@ -93,9 +93,9 @@ const MeasurementHistory: React.FC<Props> = (props) => {
                     <CTableHeaderCell>Time</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Weight</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Body Fat</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Water</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Body Water</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Muscle Mass</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Bone</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Bone Mass</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Energy Expenditure</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Actions</CTableHeaderCell>
                   </CTableRow>

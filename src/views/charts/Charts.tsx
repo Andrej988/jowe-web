@@ -47,7 +47,7 @@ const MainDashboard: React.FC<{}> = () => {
           })}
       />
       <MeasurementChart
-        title="Body Fat Percentage"
+        title="Body Fat"
         label="Body Fat %"
         measurements={measurementsSortedByLatestDate
           .slice()
@@ -61,8 +61,8 @@ const MainDashboard: React.FC<{}> = () => {
           })}
       />
       <MeasurementChart
-        title="Water Percentage"
-        label="Water %"
+        title="Body Water"
+        label="Body Water %"
         measurements={measurementsSortedByLatestDate
           .slice()
           .reverse()
@@ -75,7 +75,7 @@ const MainDashboard: React.FC<{}> = () => {
           })}
       />
       <MeasurementChart
-        title="Muscle Mass Percentage"
+        title="Muscle Mass"
         label="Muscle Mass %"
         measurements={measurementsSortedByLatestDate
           .slice()
@@ -89,8 +89,8 @@ const MainDashboard: React.FC<{}> = () => {
           })}
       />
       <MeasurementChart
-        title="Bone Percentage"
-        label="Bone %"
+        title="Bone Mass"
+        label="Bone Mass %"
         measurements={measurementsSortedByLatestDate
           .slice()
           .reverse()
