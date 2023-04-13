@@ -17,12 +17,12 @@ import {
   CToastBody,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
+import { cilEnvelopeClosed, cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { useNavigate } from 'react-router-dom';
 import AuthService from 'src/security/AuthService';
 import styles from './LoginPage.module.css';
 
-const LoginPage: React.FC<{}> = () => {
+const RegisterPage: React.FC<{}> = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
   const passwordRef: RefObject<HTMLInputElement> = useRef(null);
   const [toast, addToast] = useState<ReactElement | undefined>();
@@ -63,8 +63,8 @@ const LoginPage: React.FC<{}> = () => {
                 <CCard className="p-4">
                   <CCardBody>
                     <CForm className={'needs-validation'} onSubmit={loginHandler}>
-                      <h1>Login</h1>
-                      <p className="text-medium-emphasis">Sign In to your account.</p>
+                      <h1>Sign Up</h1>
+                      <p className="text-medium-emphasis">Sign up for account.</p>
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
                           <CIcon icon={cilUser} />
@@ -79,7 +79,20 @@ const LoginPage: React.FC<{}> = () => {
                           ref={usernameRef}
                         />
                       </CInputGroup>
-                      <CInputGroup className="mb-4">
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilEnvelopeClosed} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="email"
+                          id="email"
+                          placeholder="Email"
+                          autoComplete="email"
+                          required
+                          ref={usernameRef}
+                        />
+                      </CInputGroup>
+                      <CInputGroup className="mb-3">
                         <CInputGroupText>
                           <CIcon icon={cilLockLocked} />
                         </CInputGroupText>
@@ -92,13 +105,26 @@ const LoginPage: React.FC<{}> = () => {
                           ref={passwordRef}
                         />
                       </CInputGroup>
+                      <CInputGroup className="mb-4">
+                        <CInputGroupText>
+                          <CIcon icon={cilLockLocked} />
+                        </CInputGroupText>
+                        <CFormInput
+                          id="password-confirmation"
+                          type="password-confirmation"
+                          placeholder="Confirm Your Password"
+                          autoComplete="current-password-confirmation"
+                          required
+                          ref={passwordRef}
+                        />
+                      </CInputGroup>
                       <p className="text-medium-emphasis">
-                        Create your Account <a href="/register">Here</a>.
+                        Already a member? <a href="/login">Log In</a>.
                       </p>
                       <CRow className="justify-content-end">
                         <CCol xs={6}>
                           <CButton color="primary" className="px-4 float-end" type="submit">
-                            Login
+                            Sign Up
                           </CButton>
                         </CCol>
                       </CRow>
@@ -114,4 +140,4 @@ const LoginPage: React.FC<{}> = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
