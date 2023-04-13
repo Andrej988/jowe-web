@@ -5,12 +5,12 @@ import Modal from 'src/components/modal/Modal';
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
-  onOkHandler: () => void;
+  onSaveHandler: () => void;
 }
 
 const MIN_TARGET_VALUE = 40;
 const MAX_TARGET_VALUE = 200;
-const INPUT_MESSAGE = `Value must be between ${MIN_TARGET_VALUE} and ${MAX_TARGET_VALUE} kg.`;
+const INPUT_MESSAGE = `Target weight represents a reference point (line) on a weight graph. It serves as an indicator of how close you are to your target. Value must be between ${MIN_TARGET_VALUE} and ${MAX_TARGET_VALUE} kg.`;
 const DEFAULT_VALUE_IS_TOUCHED = false;
 const DEFAULT_VALUE_IS_VALID = false;
 const DEFAULT_VALUE_TARGET_WEIGHT = '';
@@ -56,11 +56,13 @@ const SetTargetWeightForm: React.FC<Props> = (props) => {
     <Modal
       title="Set Target Weight"
       visible={props.visible}
-      showButtonOk={true}
-      buttonOkText="Save"
-      buttonCloseText="Close"
-      onCloseHandler={onCloseFormHandler}
-      onOkHandler={props.onOkHandler}
+      primaryButtonText="Save"
+      primaryButtonHandler={props.onSaveHandler}
+      showSecondaryButton={true}
+      secondaryButtonText="Cancel"
+      secondaryButtonColor="danger"
+      secondaryButtonHandler={onCloseFormHandler}
+      onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm>
         <CFormInput

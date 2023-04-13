@@ -11,11 +11,15 @@ import {
 interface Props extends PropsWithChildren {
   title: string;
   visible: boolean;
-  buttonOkText: string;
-  buttonCloseText: string;
-  showButtonOk: boolean;
-  onCloseHandler: () => void;
-  onOkHandler?: () => void;
+  size?: 'sm' | 'lg' | 'xl' | undefined;
+  primaryButtonText: string;
+  primaryButtonColor?: string;
+  primaryButtonHandler: () => void;
+  showSecondaryButton: boolean;
+  secondaryButtonText?: string;
+  secondaryButtonColor?: string;
+  secondaryButtonHandler?: () => void;
+  onCloseButtonHandler: () => void;
 }
 
 const Modal: React.FC<Props> = (props) => {
@@ -25,19 +29,28 @@ const Modal: React.FC<Props> = (props) => {
       backdrop="static"
       scrollable
       visible={props.visible}
-      onClose={props.onCloseHandler}
+      onClose={props.onCloseButtonHandler}
+      size={props.size}
     >
       <CModalHeader>
         <CModalTitle>{props.title}</CModalTitle>
       </CModalHeader>
       <CModalBody>{props.children}</CModalBody>
       <CModalFooter>
-        <CButton color="danger" variant="outline" onClick={props.onCloseHandler}>
-          {props.buttonCloseText}
+        <CButton
+          color={props.primaryButtonColor === undefined ? 'dark' : props.primaryButtonColor}
+          variant="outline"
+          onClick={props.primaryButtonHandler}
+        >
+          {props.primaryButtonText}
         </CButton>
-        {props.showButtonOk ? (
-          <CButton color="dark" variant="outline" onClick={props.onOkHandler}>
-            {props.buttonOkText}
+        {props.showSecondaryButton ? (
+          <CButton
+            color={props.secondaryButtonColor === undefined ? 'dark' : props.secondaryButtonColor}
+            variant="outline"
+            onClick={props.secondaryButtonHandler}
+          >
+            {props.secondaryButtonText}
           </CButton>
         ) : (
           <Fragment></Fragment>

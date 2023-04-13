@@ -18,8 +18,8 @@ import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../utils/DateUtils';
 import { SimpleMeasurements } from 'src/model/Measurement';
 import styles from './WeightMeasurementsDetailedChart.module.css';
-import AddMeasurementForm from 'src/views/addMeasurements/AddMeasurementForm';
-import SetTargetWeightForm from 'src/views/setTargetWeight/SetTargetWeightForm';
+import AddMeasurementForm from 'src/views/measurements/AddMeasurementForm';
+import SetTargetWeightForm from 'src/views/measurements/SetTargetWeightForm';
 
 const filterMeasurements = (measurements: SimpleMeasurements, timeframe: string) => {
   if (timeframe === 'All') {
@@ -229,12 +229,12 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
       <AddMeasurementForm
         visible={addMeasurementsModalVisible}
         onCloseHandler={closeAddMeasurementForm}
-        onOkHandler={addMeasurement}
+        onSaveHandler={addMeasurement}
       />
       <SetTargetWeightForm
         visible={targetWeightModalVisible}
         onCloseHandler={closeSetTargetWeightForm}
-        onOkHandler={setTargetWeight}
+        onSaveHandler={setTargetWeight}
       />
     </>
   );

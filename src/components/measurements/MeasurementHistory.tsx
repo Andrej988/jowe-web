@@ -21,7 +21,9 @@ import { cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
 import { getLocalDateString } from '../../utils/DateUtils';
 import { Measurement } from 'src/model/Measurement';
-import AddMeasurementForm from 'src/views/addMeasurements/AddMeasurementForm';
+import AddMeasurementForm from 'src/views/measurements/AddMeasurementForm';
+import MeasurementDetailsForm from 'src/views/measurements/MeasurementDetailsForm';
+import DeleteMeasurementForm from 'src/views/measurements/DeleteMeasurementForm';
 
 interface Props {
   title: string;
@@ -31,30 +33,46 @@ interface Props {
 
 const MeasurementHistory: React.FC<Props> = (props) => {
   const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
+  const [measurementDetailsModalVisible, setMeasurmentDetailsModalVisibility] = useState(false);
+  const [deleteMeasurementModalVisible, setDeleteMeasurementModalVisibility] = useState(false);
+  const [currentMeasurement, setCurrentMeasurement] = useState<Measurement>();
 
   const onInfoHandler = (id: string) => {
-    console.log('info clicked for id', id);
-    //TODO: Implement
+    setCurrentMeasurement(props.measurements.filter((x) => x.measurementId === id)[0]);
+    setMeasurmentDetailsModalVisibility(true);
   };
 
   const onDeleteHandler = (id: string) => {
-    console.log('delete clicked for id', id);
-    //TODO: Implement
+    setCurrentMeasurement(props.measurements.filter((x) => x.measurementId === id)[0]);
+    setDeleteMeasurementModalVisibility(true);
   };
 
-  const openAddMeasurementModal = () => {
-    console.log('Add Measurement clicked');
+  const openAddMeasurementModalHandler = () => {
     setAddMeasurementsModalVisibility(true);
   };
 
-  const closeAddMeasurementForm = () => {
+  const closeAddMeasurementFormHandler = () => {
     setAddMeasurementsModalVisibility(false);
   };
 
-  const addMeasurement = () => {
+  const addMeasurementHandler = () => {
     console.log('adding measurement');
     //TODO: Implement
     setAddMeasurementsModalVisibility(false);
+  };
+
+  const deleteMeasurementHandler = () => {
+    console.log('deleting a measurement');
+    console.log('current measurement id', currentMeasurement?.measurementId);
+    setDeleteMeasurementModalVisibility(false);
+  };
+
+  const closeMeasurementDetailsModalHandler = () => {
+    setMeasurmentDetailsModalVisibility(false);
+  };
+
+  const closeDeleteMeasurementModalHandler = () => {
+    setDeleteMeasurementModalVisibility(false);
   };
 
   return (
@@ -75,11 +93,11 @@ const MeasurementHistory: React.FC<Props> = (props) => {
                     <CTableHeaderCell>Time</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Weight</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Body Fat</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Water</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Body Water</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Muscle Mass</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Bone</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Bone Mass</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Energy Expenditure</CTableHeaderCell>
-                    <CTableHeaderCell className="text-center">Notes</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Actions</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -136,7 +154,7 @@ const MeasurementHistory: React.FC<Props> = (props) => {
               </CTable>
             </CCardBody>
             <CCardFooter>
-              <CButton color="dark" className="float-end" onClick={openAddMeasurementModal}>
+              <CButton color="dark" className="float-end" onClick={openAddMeasurementModalHandler}>
                 <CIcon icon={cilPencil} /> Add Measurement
               </CButton>
             </CCardFooter>
@@ -146,8 +164,19 @@ const MeasurementHistory: React.FC<Props> = (props) => {
 
       <AddMeasurementForm
         visible={addMeasurementsModalVisible}
-        onCloseHandler={closeAddMeasurementForm}
-        onOkHandler={addMeasurement}
+        onCloseHandler={closeAddMeasurementFormHandler}
+        onSaveHandler={addMeasurementHandler}
+      />
+      <MeasurementDetailsForm
+        measurement={currentMeasurement}
+        visible={measurementDetailsModalVisible}
+        onCloseHandler={closeMeasurementDetailsModalHandler}
+      />
+      <DeleteMeasurementForm
+        measurement={currentMeasurement}
+        visible={deleteMeasurementModalVisible}
+        onCloseHandler={closeDeleteMeasurementModalHandler}
+        onDeleteHandler={deleteMeasurementHandler}
       />
     </Fragment>
   );
