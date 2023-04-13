@@ -2,7 +2,7 @@ import { Amplify } from 'aws-amplify';
 // @ts-ignore
 import awsExports from './aws-exports';
 import React, { Suspense, useState } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import './scss/style.scss';
 import ProtectedRoute from './components/security/ProtectedRoute';
 import { useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'));
 
 // Pages
 const LoginPage = React.lazy(() => import('./views/pages/LoginPage'));
+const RegisterPage = React.lazy(() => import('./views/pages/RegisterPage'));
 const Page404 = React.lazy(() => import('./views/pages/Page404'));
 
 const App: React.FC<{}> = () => {
@@ -34,10 +35,11 @@ const App: React.FC<{}> = () => {
   );
 
   const content = (
-    <HashRouter>
+    <BrowserRouter>
       <Suspense fallback={loading}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/404" element={<Page404 />} />
           <Route
             path="*"
@@ -49,7 +51,7 @@ const App: React.FC<{}> = () => {
           />
         </Routes>
       </Suspense>
-    </HashRouter>
+    </BrowserRouter>
   );
 
   return !isLoading ? content : loading;
