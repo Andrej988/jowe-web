@@ -1,13 +1,14 @@
 {
   "authSelections": "userPoolOnly",
-  "resourceName": "weighttrackerweb327f4933",
+  "resourceName": "weighttrackerwebf86da099",
   "serviceType": "imported",
   "region": "eu-south-1",
   "aliasAttributes": [
-    "email",
-    "preferred_username"
+    "preferred_username",
+    "email"
   ],
   "requiredAttributes": [
+    "gender",
     "email",
     "name"
   ],
