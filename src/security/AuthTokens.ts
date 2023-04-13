@@ -1,9 +1,9 @@
 export class AuthTokens {
-  accessToken: AccessToken | undefined;
-  refreshToken: RefreshToken | undefined;
-  idToken: IdToken | undefined;
-
-  constructor(accessToken?: AccessToken, refreshToken?: RefreshToken, idToken?: IdToken) {
+  constructor(
+    public accessToken?: AccessToken,
+    public refreshToken?: RefreshToken,
+    public idToken?: IdToken,
+  ) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.idToken = idToken;
@@ -11,18 +11,13 @@ export class AuthTokens {
 }
 
 export class SimpleToken {
-  token: string;
-
-  constructor(token: string) {
+  constructor(public token: string) {
     this.token = token;
   }
 }
 
 export class ComplexToken extends SimpleToken {
-  expiration: number;
-  issuedAt: number;
-
-  constructor(token: string, expiration: number, issuedAt: number) {
+  constructor(token: string, public expiration: number, public issuedAt: number) {
     super(token);
     this.expiration = expiration;
     this.issuedAt = issuedAt;
