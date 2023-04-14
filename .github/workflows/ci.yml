@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16, 18]
+        node-version: [16.x, 18.x, latest]
 
     steps:
       - name: Checkout repository
@@ -42,7 +42,6 @@ jobs:
         run: npm test
         continue-on-error: true
 
-      # Update pull request
       - name: Update Pull Request
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
@@ -52,8 +51,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Code Lint 🖌\`${{ steps.fmt.outcome }}\`
-            #### Test ⚙️\`${{ steps.init.outcome }}\`
+            const output = `#### Code Lint 🖌\`${{ steps.lint.outcome }}\`
+            #### Test ⚙️\`${{ steps.test.outcome }}\`
 
             <details><summary>Code Lint Output</summary>
 
