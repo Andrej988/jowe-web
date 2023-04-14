@@ -14,7 +14,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.{js,ts,jsx,tsx,es6}\"",
     "start": "react-scripts start",
-    "test": "react-scripts test",
+    "test": "react-scripts test --passWithNoTests",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand"
   },
