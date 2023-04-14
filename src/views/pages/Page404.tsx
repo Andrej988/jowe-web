@@ -6,7 +6,7 @@ import {
   CFormInput,
   CInputGroup,
   CInputGroupText,
-  CRow,
+  CRow
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilMagnifyingGlass } from '@coreui/icons';

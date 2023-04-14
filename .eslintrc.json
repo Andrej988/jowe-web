@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "standard-with-typescript",
+    "plugin:prettier/recommended"
+  ],
+  "overrides": [],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "semi": [2, "always"],
+    "@typescript-eslint/semi": [2, "always"]
+  }
+}

@@ -1,5 +1,6 @@
 import { CForm, CFormInput } from '@coreui/react';
-import React, { ChangeEvent, PropsWithChildren, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import type { ChangeEvent, PropsWithChildren } from 'react';
 import Modal from 'src/components/modal/Modal';
 
 interface Props extends PropsWithChildren {
@@ -41,7 +42,7 @@ const SetTargetWeightForm: React.FC<Props> = (props) => {
     };
   }, [targetWeight]);
 
-  const clearForm = () => {
+  const clearForm = (): void => {
     setIsTouched(DEFAULT_VALUE_IS_TOUCHED);
     setIsValid(DEFAULT_VALUE_IS_VALID);
     setTargetWeight(DEFAULT_VALUE_TARGET_WEIGHT);
