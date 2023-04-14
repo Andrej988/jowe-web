@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         id: install
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Code Linting
         id: lint
