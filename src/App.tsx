@@ -8,6 +8,7 @@ import './scss/style.scss';
 import ProtectedRoute from './components/security/ProtectedRoute';
 import { useSelector } from 'react-redux';
 import AuthService from './security/AuthService';
+
 Amplify.configure(awsExports);
 
 // Containers

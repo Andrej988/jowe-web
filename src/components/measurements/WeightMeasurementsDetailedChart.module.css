@@ -1,3 +1,8 @@
 .dropdown-item a:hover {
   cursor: pointer;
 }
+
+.dropdown-item a:active {
+  cursor: pointer;
+  background-color: var(--bs-dropdown-link-hover-bg);
+}

@@ -127,7 +127,7 @@ const MeasurementHistory: React.FC<Props> = (props) => {
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CButton
-                          color="dark"
+                          color="secondary"
                           variant="outline"
                           key={`info_ ${index}`}
                           onClick={onInfoHandler.bind(null, item.measurementId)}
@@ -153,7 +153,11 @@ const MeasurementHistory: React.FC<Props> = (props) => {
               </CTable>
             </CCardBody>
             <CCardFooter>
-              <CButton color="dark" className="float-end" onClick={openAddMeasurementModalHandler}>
+              <CButton
+                color="secondary"
+                className="float-end"
+                onClick={openAddMeasurementModalHandler}
+              >
                 <CIcon icon={cilPencil} /> Add Measurement
               </CButton>
             </CCardFooter>

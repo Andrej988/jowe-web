@@ -6,15 +6,19 @@ import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../utils/DateUtils';
 import type { SimpleMeasurements } from 'src/model/Measurement';
 
+const TIMEFRAME_ALL = 'All';
+const TIMEFRAME_YEAR = 'Year';
+const TIMEFRAME_YTD = 'YTD';
+
 const filterMeasurements = (
   measurements: SimpleMeasurements,
   timeframe: string,
 ): SimpleMeasurements => {
-  if (timeframe === 'All') {
+  if (timeframe === TIMEFRAME_ALL) {
     return measurements.slice();
   } else {
     const filterFromDate =
-      timeframe === 'YTD'
+      timeframe === TIMEFRAME_YTD
         ? new Date(new Date().getFullYear(), 0, 1)
         : new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 
@@ -32,7 +36,7 @@ interface Props {
 }
 
 const MeasurementChart: React.FC<Props> = (props) => {
-  const [timeframe, setTimeframe] = useState('All');
+  const [timeframe, setTimeframe] = useState(TIMEFRAME_ALL);
   const [measurements, setMeasurements] = useState(props.measurements);
 
   const onTimeframeChangeHandler = (value: string): void => {
@@ -59,9 +63,9 @@ const MeasurementChart: React.FC<Props> = (props) => {
             </CCol>
             <CCol sm={7} className="float-end">
               <CButtonGroup className="float-end me-3">
-                {['YTD', 'Year', 'All'].map((value) => (
+                {[TIMEFRAME_YTD, TIMEFRAME_YEAR, TIMEFRAME_ALL].map((value) => (
                   <CButton
-                    color="dark"
+                    color="secondary"
                     key={value}
                     className="mx-0"
                     active={value === timeframe}

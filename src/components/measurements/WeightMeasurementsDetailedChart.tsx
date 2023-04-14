@@ -112,8 +112,8 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
               </div>
             </CCol>
             <CCol sm={7} className="float-end">
-              <CDropdown dark className="float-end">
-                <CDropdownToggle color="dark">Actions</CDropdownToggle>
+              <CDropdown dark className="float-end" popper={false}>
+                <CDropdownToggle color="secondary">Actions</CDropdownToggle>
                 <CDropdownMenu>
                   <div className={styles['dropdown-item']}>
                     <CDropdownItem onClick={openAddMeasurementModal}>Add Measurement</CDropdownItem>
@@ -129,7 +129,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
               <CButtonGroup className="float-end me-3">
                 {['YTD', 'Year', 'All'].map((value) => (
                   <CButton
-                    color="dark"
+                    color="secondary"
                     key={value}
                     className="mx-0"
                     active={value === timeframe}
