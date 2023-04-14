@@ -1,7 +1,7 @@
 import React from 'react';
 import { CRow } from '@coreui/react';
 import MeasurementWidget from './MeasurementWidget';
-import { Measurement } from 'src/model/Measurement';
+import type { Measurement } from 'src/model/Measurement';
 
 interface Props {
   measurements: Measurement[];

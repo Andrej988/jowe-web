@@ -1,7 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import Routes, { RouteType } from '../../Routes';
+import Routes from '../../Routes';
+import type { RouteType } from '../../Routes';
 
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react';
 
@@ -13,7 +14,7 @@ interface Breadcrumb {
 
 const getRouteName = (pathname: string, Routes: RouteType[]): string => {
   const currentRoute = Routes.find((route) => route.path === pathname);
-  return currentRoute && currentRoute.name !== undefined ? currentRoute.name : '';
+  return currentRoute?.name !== undefined ? currentRoute.name : '';
 };
 
 const getBreadcrumbs = (location: string): Breadcrumb[] => {
@@ -21,18 +22,18 @@ const getBreadcrumbs = (location: string): Breadcrumb[] => {
   location.split('/').reduce((prev, curr, index, array) => {
     const currentPathname = `${prev}/${curr}`;
     const routeName = getRouteName(currentPathname, Routes);
-    routeName &&
+    routeName.length > 0 &&
       breadcrumbs.push({
         pathname: currentPathname,
         name: routeName,
-        active: index + 1 === array.length ? true : false,
+        active: index + 1 === array.length,
       });
     return currentPathname;
   });
   return breadcrumbs;
 };
 
-const AppBreadcrumb: React.FC<{}> = () => {
+const AppBreadcrumb: React.FC = () => {
   const currentLocation: string = useLocation().pathname;
   const breadcrumbs = getBreadcrumbs(currentLocation);
 

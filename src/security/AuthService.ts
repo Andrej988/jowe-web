@@ -2,42 +2,43 @@ import store, { authActions } from '../store/Store';
 import { AuthenticationError } from './AuthenticationError';
 import AuthServiceCognito from './provider/AuthServiceCognito';
 
-const checkIfUserAlreadySignedIn = async () => {
+const checkIfUserAlreadySignedIn = async (): Promise<void> => {
   let username: string = '';
 
   await AuthServiceCognito.getAuthenticatedUser()
-    .then((user) => {
+    .then(async (user) => {
       username = user;
-      return AuthServiceCognito.getAuthTokens();
+      return await AuthServiceCognito.getAuthTokens();
     })
     .then((tokens) => {
       store.dispatch(
         authActions.signIn({
           isAuthenticated: true,
-          username: username,
-          tokens: tokens,
+          username,
+          tokens,
         }),
       );
     })
     .catch((err) => {
+      console.error(err);
       store.dispatch(authActions.signOut());
     });
 };
 
-const signIn = async (enteredUsername: string, enteredPassword: string) => {
+const signIn = async (enteredUsername: string, enteredPassword: string): Promise<void> => {
   let username: string = '';
 
   await AuthServiceCognito.signIn(enteredUsername, enteredPassword)
-    .then((user) => {
+    .then(async (user) => {
       username = user;
-      return AuthServiceCognito.getAuthTokens();
+      return await AuthServiceCognito.getAuthTokens();
     })
     .then((tokens) => {
       store.dispatch(
         authActions.signIn({
           isAuthenticated: true,
-          username: username,
-          tokens: tokens,
+          username,
+          tokens,
         }),
       );
     })
@@ -47,7 +48,7 @@ const signIn = async (enteredUsername: string, enteredPassword: string) => {
     });
 };
 
-const signOut = async () => {
+const signOut = async (): Promise<void> => {
   await AuthServiceCognito.signOut().then(() => {
     store.dispatch(authActions.signOut());
   });
@@ -56,9 +57,7 @@ const signOut = async () => {
 const getAccessToken = (): string => {
   const tokens = store.getState().auth.tokens;
 
-  return tokens.idToken !== undefined && tokens.idToken.token !== undefined
-    ? tokens.idToken.token
-    : '';
+  return tokens.idToken?.token !== undefined ? tokens.idToken.token : '';
 };
 
 const AuthService = {

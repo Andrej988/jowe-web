@@ -11,7 +11,7 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilMagnifyingGlass } from '@coreui/icons';
 
-const Page404 = () => {
+const Page404: React.FC = () => {
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>

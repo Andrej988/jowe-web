@@ -19,7 +19,7 @@ import AppProfileDropdown from './AppProfileDropdown';
 import { logo } from 'src/assets/brand/logo';
 import { layoutActions } from 'src/store/Store';
 
-const AppHeader: React.FC<{}> = () => {
+const AppHeader: React.FC = () => {
   const dispatch = useDispatch();
 
   return (

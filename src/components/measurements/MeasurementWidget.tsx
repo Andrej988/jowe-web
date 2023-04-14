@@ -5,7 +5,7 @@ import { CChartLine } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons';
 import { toFormattedDateString } from '../../utils/DateUtils';
-import { SimpleMeasurements } from 'src/model/Measurement';
+import type { SimpleMeasurements } from 'src/model/Measurement';
 
 interface Props {
   title: string;

@@ -12,7 +12,7 @@ const setAuthState = (
   isAuthenticated: boolean,
   username: string,
   tokens: AuthTokens | null,
-) => {
+): void => {
   state.isAuthenticated = isAuthenticated;
   if (isAuthenticated) {
     state.username = username;
@@ -25,7 +25,7 @@ const setAuthState = (
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: initialState,
+  initialState,
   reducers: {
     signIn(state, action) {
       setAuthState(

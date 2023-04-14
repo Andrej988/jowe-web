@@ -14,9 +14,9 @@ import 'simplebar/dist/simplebar.min.css';
 
 // sidebar nav config
 import Navigation from './Navigation';
-import { RootState } from 'src/store/Store';
+import type { RootState } from 'src/store/Store';
 
-const AppSidebar: React.FC<{}> = () => {
+const AppSidebar: React.FC = () => {
   const dispatch = useDispatch();
   const sidebarShow = useSelector((state: RootState) => state.layout.showSidebar);
 
@@ -29,7 +29,7 @@ const AppSidebar: React.FC<{}> = () => {
         dispatch({ type: 'set', sidebarShow: visible });
       }}
     >
-      <CSidebarBrand className="d-none d-md-flex" /*to="/" */>
+      <CSidebarBrand className="d-none d-md-flex">
         <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
         <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
       </CSidebarBrand>

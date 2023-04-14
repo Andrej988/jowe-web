@@ -1,5 +1,6 @@
 import { Amplify } from 'aws-amplify';
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import awsExports from './aws-exports';
 import React, { Suspense, useState } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
@@ -10,13 +11,13 @@ import AuthService from './security/AuthService';
 Amplify.configure(awsExports);
 
 // Containers
-const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'));
+const DefaultLayout = React.lazy(async () => await import('./layout/DefaultLayout'));
 
 // Pages
-const LoginPage = React.lazy(() => import('./views/pages/LoginPage'));
-const Page404 = React.lazy(() => import('./views/pages/Page404'));
+const LoginPage = React.lazy(async () => await import('./views/pages/LoginPage'));
+const Page404 = React.lazy(async () => await import('./views/pages/Page404'));
 
-const App: React.FC<{}> = () => {
+const App: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
 

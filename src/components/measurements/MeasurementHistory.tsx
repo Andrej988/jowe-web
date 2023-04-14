@@ -16,11 +16,10 @@ import {
   CButton,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilPencil } from '@coreui/icons';
-import { cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
+import { cilPencil, cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
 import { getLocalDateString } from '../../utils/DateUtils';
-import { Measurement } from 'src/model/Measurement';
+import type { Measurement } from 'src/model/Measurement';
 import AddMeasurementForm from 'src/views/measurements/AddMeasurementForm';
 import MeasurementDetailsForm from 'src/views/measurements/MeasurementDetailsForm';
 import DeleteMeasurementForm from 'src/views/measurements/DeleteMeasurementForm';
@@ -37,41 +36,41 @@ const MeasurementHistory: React.FC<Props> = (props) => {
   const [deleteMeasurementModalVisible, setDeleteMeasurementModalVisibility] = useState(false);
   const [currentMeasurement, setCurrentMeasurement] = useState<Measurement>();
 
-  const onInfoHandler = (id: string) => {
+  const onInfoHandler = (id: string): void => {
     setCurrentMeasurement(props.measurements.filter((x) => x.measurementId === id)[0]);
     setMeasurmentDetailsModalVisibility(true);
   };
 
-  const onDeleteHandler = (id: string) => {
+  const onDeleteHandler = (id: string): void => {
     setCurrentMeasurement(props.measurements.filter((x) => x.measurementId === id)[0]);
     setDeleteMeasurementModalVisibility(true);
   };
 
-  const openAddMeasurementModalHandler = () => {
+  const openAddMeasurementModalHandler = (): void => {
     setAddMeasurementsModalVisibility(true);
   };
 
-  const closeAddMeasurementFormHandler = () => {
+  const closeAddMeasurementFormHandler = (): void => {
     setAddMeasurementsModalVisibility(false);
   };
 
-  const addMeasurementHandler = () => {
+  const addMeasurementHandler = (): void => {
     console.log('adding measurement');
-    //TODO: Implement
+    // TODO: Implement
     setAddMeasurementsModalVisibility(false);
   };
 
-  const deleteMeasurementHandler = () => {
+  const deleteMeasurementHandler = (): void => {
     console.log('deleting a measurement');
     console.log('current measurement id', currentMeasurement?.measurementId);
     setDeleteMeasurementModalVisibility(false);
   };
 
-  const closeMeasurementDetailsModalHandler = () => {
+  const closeMeasurementDetailsModalHandler = (): void => {
     setMeasurmentDetailsModalVisibility(false);
   };
 
-  const closeDeleteMeasurementModalHandler = () => {
+  const closeDeleteMeasurementModalHandler = (): void => {
     setDeleteMeasurementModalVisibility(false);
   };
 
@@ -130,7 +129,7 @@ const MeasurementHistory: React.FC<Props> = (props) => {
                         <CButton
                           color="dark"
                           variant="outline"
-                          key={'info_' + index}
+                          key={`info_ ${index}`}
                           onClick={onInfoHandler.bind(null, item.measurementId)}
                         >
                           <CIcon icon={cilInfo} />
@@ -139,7 +138,7 @@ const MeasurementHistory: React.FC<Props> = (props) => {
                           <CButton
                             color="danger"
                             variant="outline"
-                            key={'delete_' + index}
+                            key={`delete_ ${index}`}
                             onClick={onDeleteHandler.bind(null, item.measurementId)}
                           >
                             <CIcon icon={cilTrash} />

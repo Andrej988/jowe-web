@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React from 'react';
+import type { ReactElement } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { CBadge } from '@coreui/react';
-import { INavigation } from './Navigation';
+import type { INavigation } from './Navigation';
 
 interface IExtendedNavigation extends INavigation {
   badge?: any;
@@ -14,12 +16,12 @@ type ExtendedNavigationType = IExtendedNavigation[];
 
 const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) => {
   const location = useLocation();
-  const navLink = (name: string, icon: any, badge: any) => {
+  const navLink = (name: string, icon: any, badge: any): ReactElement => {
     return (
       <>
-        {icon && icon}
-        {name && name}
-        {badge && (
+        {Boolean(icon) && icon}
+        {name.length > 0 && name}
+        {Boolean(badge) && (
           <CBadge color={badge.color} className="ms-auto">
             {badge.text}
           </CBadge>
@@ -28,12 +30,12 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
     );
   };
 
-  const navItem = (item: IExtendedNavigation, index: number) => {
+  const navItem = (item: IExtendedNavigation, index: number): ReactElement => {
     const { component, name, badge, icon, ...rest } = item;
     const Component = component;
     return (
       <Component
-        {...(rest.to &&
+        {...(Boolean(rest.to) &&
           !rest.items && {
             component: NavLink,
           })}
@@ -44,7 +46,7 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
       </Component>
     );
   };
-  const navGroup = (item: IExtendedNavigation, index: number) => {
+  const navGroup = (item: IExtendedNavigation, index: number): ReactElement => {
     const { component, name, icon, to, ...rest } = item;
     const Component = component;
     return (
@@ -64,8 +66,7 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
 
   return (
     <React.Fragment>
-      {items &&
-        items.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
+      {items?.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
     </React.Fragment>
   );
 };

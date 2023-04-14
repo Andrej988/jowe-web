@@ -1,5 +1,5 @@
 import { Auth } from 'aws-amplify';
-import { CognitoUserSession } from 'amazon-cognito-identity-js';
+import type { CognitoUserSession } from 'amazon-cognito-identity-js';
 import { AccessToken, AuthTokens, RefreshToken } from './../AuthTokens';
 import { AuthenticationError } from '../AuthenticationError';
 
@@ -11,9 +11,10 @@ const signIn = async (username: string, password: string): Promise<string> => {
     });
 };
 
-const signOut = async () => {
+const signOut = async (): Promise<void> => {
   await Auth.signOut().catch((err) => {
-    console.error('Error signing in: ' + err.message);
+    const errMsg: string = err.message;
+    console.error('Error signing in: ' + errMsg);
   });
 };
 
