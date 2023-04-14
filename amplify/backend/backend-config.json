@@ -1,6 +1,6 @@
 {
   "auth": {
-    "weighttrackerweb327f4933": {
+    "weighttrackerwebf86da099": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -9,35 +9,35 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_weighttrackerweb327f4933_nativeClientId": {
+    "AMPLIFY_auth_weighttrackerwebf86da099_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "weighttrackerweb327f4933"
+          "resourceName": "weighttrackerwebf86da099"
         }
       ]
     },
-    "AMPLIFY_auth_weighttrackerweb327f4933_userPoolId": {
+    "AMPLIFY_auth_weighttrackerwebf86da099_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "weighttrackerweb327f4933"
+          "resourceName": "weighttrackerwebf86da099"
         }
       ]
     },
-    "AMPLIFY_auth_weighttrackerweb327f4933_userPoolName": {
+    "AMPLIFY_auth_weighttrackerwebf86da099_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "weighttrackerweb327f4933"
+          "resourceName": "weighttrackerwebf86da099"
         }
       ]
     },
-    "AMPLIFY_auth_weighttrackerweb327f4933_webClientId": {
+    "AMPLIFY_auth_weighttrackerwebf86da099_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "weighttrackerweb327f4933"
+          "resourceName": "weighttrackerwebf86da099"
         }
       ]
     }

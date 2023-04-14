@@ -39,7 +39,7 @@ const Modal: React.FC<Props> = (props) => {
       <CModalBody>{props.children}</CModalBody>
       <CModalFooter>
         <CButton
-          color={props.primaryButtonColor === undefined ? 'dark' : props.primaryButtonColor}
+          color={props.primaryButtonColor === undefined ? 'secondary' : props.primaryButtonColor}
           variant="outline"
           onClick={props.primaryButtonHandler}
         >
@@ -47,7 +47,9 @@ const Modal: React.FC<Props> = (props) => {
         </CButton>
         {props.showSecondaryButton ? (
           <CButton
-            color={props.secondaryButtonColor === undefined ? 'dark' : props.secondaryButtonColor}
+            color={
+              props.secondaryButtonColor === undefined ? 'secondary' : props.secondaryButtonColor
+            }
             variant="outline"
             onClick={props.secondaryButtonHandler}
           >

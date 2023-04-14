@@ -1,0 +1,25 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-weighttrackerweb-prod-04613-authRole",
+      "UnauthRoleArn": "arn:aws:iam::834514932971:role/amplify-weighttrackerweb-prod-04613-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::834514932971:role/amplify-weighttrackerweb-prod-04613-authRole",
+      "Region": "eu-south-1",
+      "DeploymentBucketName": "amplify-weighttrackerweb-prod-04613-deployment",
+      "UnauthRoleName": "amplify-weighttrackerweb-prod-04613-unauthRole",
+      "StackName": "amplify-weighttrackerweb-prod-04613",
+      "StackId": "arn:aws:cloudformation:eu-south-1:834514932971:stack/amplify-weighttrackerweb-prod-04613/feeb8150-da4c-11ed-ba50-0693e6ce3d54",
+      "AmplifyAppId": "d1lzm1oams3pmj"
+    },
+    "categories": {
+      "auth": {
+        "weighttrackerwebf86da099": {
+          "userPoolId": "eu-south-1_RhfvcogHe",
+          "userPoolName": "weight-tracker-auth",
+          "webClientId": "51ac19v8ca97i7ssd1uh1poc9d",
+          "nativeClientId": "51ac19v8ca97i7ssd1uh1poc9d"
+        }
+      }
+    }
+  }
+}

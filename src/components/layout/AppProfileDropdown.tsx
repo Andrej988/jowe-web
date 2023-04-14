@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
   CAvatar,
   CDropdown,
@@ -30,21 +30,24 @@ const AppProfileDropdown: React.FC = () => {
   };
 
   return (
-    <CDropdown variant="nav-item">
-      <CDropdownToggle className="py-0" caret={false}>
-        {username}
-        <CAvatar src={avatar} size="md" />
-      </CDropdownToggle>
-      <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-light fw-semibold py-2">{username}</CDropdownHeader>
-        <div className={styles['dropdown-item']}>
-          <CDropdownItem onClick={signOutHandler}>
-            <CIcon icon={cilLockLocked} className="me-2" />
-            Sign Out
-          </CDropdownItem>
-        </div>
-      </CDropdownMenu>
-    </CDropdown>
+    <Fragment>
+      <CDropdown variant="nav-item" popper={false}>
+        <CDropdownToggle className="py-0" caret={false}>
+          {username}
+          <span> </span>
+          <CAvatar src={avatar} size="md" />
+        </CDropdownToggle>
+        <CDropdownMenu className="pt-0" placement="bottom-end">
+          <CDropdownHeader className="bg-light fw-semibold py-2">{username}</CDropdownHeader>
+          <div className={styles['dropdown-item']}>
+            <CDropdownItem onClick={signOutHandler}>
+              <CIcon icon={cilLockLocked} className="me-2" />
+              Sign Out
+            </CDropdownItem>
+          </div>
+        </CDropdownMenu>
+      </CDropdown>
+    </Fragment>
   );
 };
 
