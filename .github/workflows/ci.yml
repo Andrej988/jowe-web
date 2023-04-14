@@ -40,7 +40,7 @@ jobs:
       - name: Run the tests
         id: test
         if: steps.lint.outcome != 'failure'
-        run: npm test --passWithNoTests
+        run: npm test
         continue-on-error: true
 
       - name: Update Pull Request
