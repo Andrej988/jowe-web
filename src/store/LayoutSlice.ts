@@ -6,7 +6,7 @@ const initialState = {
 
 const layoutSlice = createSlice({
   name: 'layout',
-  initialState: initialState,
+  initialState,
   reducers: {
     toggleSidebarVisibility(state) {
       state.showSidebar = !state.showSidebar;

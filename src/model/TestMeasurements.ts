@@ -1,4 +1,4 @@
-import { Measurements } from './Measurement';
+import type { Measurements } from './Measurement';
 
 export const getTestMeasurements = (): Measurements => {
   return {

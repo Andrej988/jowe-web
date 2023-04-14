@@ -1,4 +1,5 @@
-import React, { Fragment, ReactElement, RefObject, useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
+import type { ReactElement, RefObject } from 'react';
 import {
   CButton,
   CCard,
@@ -23,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthService from 'src/security/AuthService';
 import styles from './LoginPage.module.css';
 
-const LoginPage: React.FC<{}> = () => {
+const LoginPage: React.FC = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
   const passwordRef: RefObject<HTMLInputElement> = useRef(null);
   const [toast, addToast] = useState<ReactElement | undefined>();
@@ -44,7 +45,13 @@ const LoginPage: React.FC<{}> = () => {
 
   const loginHandler = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    AuthService.signIn(usernameRef.current!.value, passwordRef.current!.value)
+
+    if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
+      // TODO: Show Error
+      return;
+    }
+
+    AuthService.signIn(usernameRef.current.value, passwordRef.current.value)
       .then(() => {
         navigate('/', { replace: true });
       })

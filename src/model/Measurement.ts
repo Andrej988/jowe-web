@@ -1,29 +1,29 @@
-export type MeasurementDetails = {
+export interface MeasurementDetails {
   weight: number;
   bodyFatPercentage: number;
   waterPercentage: number;
   muscleMassPercentage: number;
   bonePercentage: number;
   energyExpenditure: number;
-};
+}
 
-export type Measurement = {
+export interface Measurement {
   userId: string;
   measurementId: string;
   timestamp: number;
   date: Date;
   comment: string;
   measurements: MeasurementDetails;
-};
+}
 
-export type Measurements = {
+export interface Measurements {
   measurements: Measurement[];
-};
+}
 
-export type SimpleMeasurement = {
+export interface SimpleMeasurement {
   id: string;
   date: Date;
   measurement: number;
-};
+}
 
 export type SimpleMeasurements = SimpleMeasurement[];

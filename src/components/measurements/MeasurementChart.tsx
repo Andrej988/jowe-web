@@ -4,9 +4,12 @@ import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/rea
 import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../utils/DateUtils';
-import { SimpleMeasurements } from 'src/model/Measurement';
+import type { SimpleMeasurements } from 'src/model/Measurement';
 
-const filterMeasurements = (measurements: SimpleMeasurements, timeframe: string) => {
+const filterMeasurements = (
+  measurements: SimpleMeasurements,
+  timeframe: string,
+): SimpleMeasurements => {
   if (timeframe === 'All') {
     return measurements.slice();
   } else {
@@ -32,7 +35,7 @@ const MeasurementChart: React.FC<Props> = (props) => {
   const [timeframe, setTimeframe] = useState('All');
   const [measurements, setMeasurements] = useState(props.measurements);
 
-  const onTimeframeChangeHandler = (value: string) => {
+  const onTimeframeChangeHandler = (value: string): void => {
     setTimeframe(value);
   };
 
@@ -101,10 +104,10 @@ const MeasurementChart: React.FC<Props> = (props) => {
                 },
                 y: {
                   ticks: {
-                    //beginAtZero: true,
+                    // beginAtZero: true,
                     maxTicksLimit: 5,
                     stepSize: Math.ceil(250 / 5),
-                    //max: 250,
+                    // max: 250,
                   },
                 },
               },

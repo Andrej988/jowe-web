@@ -4,7 +4,7 @@ import AppHeader from 'src/components/layout/AppHeader';
 import AppContent from 'src/components/layout/AppContent';
 import AppFooter from 'src/components/layout/AppFooter';
 
-const DefaultLayout = () => {
+const DefaultLayout: React.FC = () => {
   return (
     <div>
       <AppSidebar />

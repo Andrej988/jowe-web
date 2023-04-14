@@ -5,21 +5,15 @@ import { CContainer, CSpinner } from '@coreui/react';
 // routes config
 import routes from '../../Routes';
 
-const AppContent: React.FC<{}> = () => {
+const AppContent: React.FC = () => {
   return (
     <CContainer lg>
       <Suspense fallback={<CSpinner color="primary" />}>
         <Routes>
           {routes.map((route, idx) => {
             return (
-              route.element && (
-                <Route
-                  key={idx}
-                  path={route.path}
-                  /*exact={route.exact}
-                  name={route.name}*/
-                  element={<route.element />}
-                />
+              route.element != null && (
+                <Route key={idx} path={route.path} element={<route.element />} />
               )
             );
           })}

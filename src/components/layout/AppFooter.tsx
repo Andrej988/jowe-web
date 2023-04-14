@@ -1,7 +1,7 @@
 import React from 'react';
 import { CFooter } from '@coreui/react';
 
-const AppFooter: React.FC<{}> = () => {
+const AppFooter: React.FC = () => {
   return <CFooter></CFooter>;
 };
 

@@ -1,4 +1,5 @@
-import React, { Fragment, PropsWithChildren } from 'react';
+import React, { Fragment } from 'react';
+import type { PropsWithChildren } from 'react';
 import { Navigate } from 'react-router-dom';
 
 interface Props extends PropsWithChildren {

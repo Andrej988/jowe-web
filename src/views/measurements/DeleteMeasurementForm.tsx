@@ -1,6 +1,7 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
+import type { PropsWithChildren } from 'react';
 import Modal from 'src/components/modal/Modal';
-import { Measurement } from 'src/model/Measurement';
+import type { Measurement } from 'src/model/Measurement';
 import { toFormattedDateTimeString } from 'src/utils/DateUtils';
 
 interface Props extends PropsWithChildren {
