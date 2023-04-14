@@ -46,15 +46,16 @@ jobs:
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          LINT: '${{ steps.lint.outputs.stdout }}'
-          TEST: '${{ steps.test.outputs.stdout }}'
+          LINT: '${{ steps.lint.outputs }}'
+          TEST: '${{ steps.test.outputs }}'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Code Lint 🖌\`${{ steps.lint.outcome }}\`
+            const output = `## CI Run on \`${{ matrix.node-version }}\`
+            #### Code Lint 🖌\`${{ steps.lint.outcome }}\`
             #### Test ⚙️\`${{ steps.test.outcome }}\`
 
-            <details><summary>Code Lint Output</summary>
+            <details><summary>Code Lint Summary</summary>
 
             \`\`\`Code Lint\n
             ${process.env.LINT}
@@ -62,7 +63,7 @@ jobs:
 
             </details>
 
-            <details><summary>Test Output</summary>
+            <details><summary>Test Summary</summary>
 
             \`\`\`Test\n
             ${process.env.TEST}
