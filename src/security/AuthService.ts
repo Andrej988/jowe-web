@@ -25,6 +25,11 @@ const checkIfUserAlreadySignedIn = async (): Promise<void> => {
     });
 };
 
+const signUp = async (enteredUsername: string, enteredPassword: string): Promise<void> => {
+  console.log(enteredUsername);
+  console.log(enteredPassword);
+};
+
 const signIn = async (enteredUsername: string, enteredPassword: string): Promise<void> => {
   let username: string = '';
 
@@ -62,6 +67,7 @@ const getAccessToken = (): string => {
 
 const AuthService = {
   checkIfUserAlreadySignedIn,
+  signUp,
   signIn,
   signOut,
   getAccessToken,
