@@ -36,7 +36,6 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
     return (
       <Component
         {...(Boolean(rest.to) &&
-          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           !rest.items && {
             component: NavLink,
           })}
@@ -59,7 +58,6 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
         {...rest}
       >
         {item.items?.map((item: IExtendedNavigation, index: number) =>
-          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           item.items ? navGroup(item, index) : navItem(item, index),
         )}
       </Component>
@@ -68,7 +66,6 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
 
   return (
     <React.Fragment>
-      (// eslint-disable-next-line prettier/prettier, @typescript-eslint/strict-boolean-expressions)
       {items?.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
     </React.Fragment>
   );
