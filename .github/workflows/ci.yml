@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        id: install
+        run: npm ci
+
+      - name: Code Linting
+        id: lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run the tests
+        id: test
+        if: steps.lint.outcome != 'failure'
+        run: npm test
+        continue-on-error: true
+
+      # Update pull request
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          LINT: '${{ steps.lint.outputs.stdout }}'
+          TEST: '${{ steps.test.outputs.stdout }}'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Code Lint 🖌\`${{ steps.fmt.outcome }}\`
+            #### Test ⚙️\`${{ steps.init.outcome }}\`
+
+            <details><summary>Code Lint Output</summary>
+
+            \`\`\`Code Lint\n
+            ${process.env.LINT}
+            \`\`\`
+
+            </details>
+
+            <details><summary>Test Output</summary>
+
+            \`\`\`Test\n
+            ${process.env.TEST}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      # Stops the workflow if lint of test fails
+      - name: NPM Lint & Test Status
+        if: steps.lint.outcome == 'failure' || steps.test.outcome == 'failure'
+        run: exit 1
+
+      #- name: Build
+      #  run: npm run build
