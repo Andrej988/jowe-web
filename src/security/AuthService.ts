@@ -57,6 +57,10 @@ export default class AuthService {
     }
   };
 
+  private readonly storeAuthDataInLocalStorage = (authenticationData: AuthenticationData): void => {
+    localStorage.setItem(AuthService.USER_DATA_STORAGE_KEY, JSON.stringify(authenticationData));
+  };
+
   private readonly setRefreshTokenTimer = (
     refreshToken: string,
     tokenExpirationTimestamp: number,
@@ -70,6 +74,7 @@ export default class AuthService {
         .then((authData: AuthenticationData) => {
           console.log('Tokens refreshed....');
           this.handleLogin(authData);
+          this.storeAuthDataInLocalStorage(authData);
         })
         .catch((err) => {
           throw new AuthenticationError(err.msg);
@@ -82,10 +87,7 @@ export default class AuthService {
       AuthServiceCognito.signIn(enteredUsername, enteredPassword)
         .then((authenticationData) => {
           this.handleLogin(authenticationData);
-          localStorage.setItem(
-            AuthService.USER_DATA_STORAGE_KEY,
-            JSON.stringify(authenticationData),
-          );
+          this.storeAuthDataInLocalStorage(authenticationData);
           resolve(authenticationData);
         })
         .catch((err: Error) => {
@@ -119,7 +121,6 @@ export default class AuthService {
         }
       } else {
         store.dispatch(authActions.signOut());
-        reject(new AuthenticationError('user is not logged in automatically'));
       }
     });
   };
