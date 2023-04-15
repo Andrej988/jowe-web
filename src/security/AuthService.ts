@@ -1,7 +1,7 @@
 import store, { authActions } from '../store/Store';
 import type { AuthenticationData } from './AuthenticationData';
 import { AuthenticationError } from './AuthenticationError';
-import type { UserRegistrationReqData } from './User';
+import type { AuthenticatedUser, UserRegistrationReqData } from './User';
 import AuthServiceCognito from './provider/AuthServiceCognito';
 
 export default class AuthService {
@@ -137,5 +137,9 @@ export default class AuthService {
   getAccessToken = (): string => {
     const tokens = store.getState().auth.tokens;
     return tokens.idToken?.token !== undefined ? tokens.idToken.token : '';
+  };
+
+  getUserData = (): AuthenticatedUser => {
+    return store.getState().auth.user;
   };
 }
