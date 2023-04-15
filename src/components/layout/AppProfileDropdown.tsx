@@ -18,7 +18,9 @@ import styles from './AppProfileDropdown.module.css';
 import avatar from '../../assets/images/avatars/anonymous-male.jpg';
 
 const AppProfileDropdown: React.FC = () => {
-  const username: string = useSelector((state: RootState) => state.auth.username);
+  const username: string = useSelector((state: RootState) =>
+    state.auth.user.username != null ? state.auth.user.username : '',
+  );
   const navigate = useNavigate();
 
   const signOutHandler = (): void => {

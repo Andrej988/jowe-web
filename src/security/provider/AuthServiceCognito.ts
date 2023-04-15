@@ -1,9 +1,8 @@
-import { Auth } from 'aws-amplify';
-import type { CognitoUserSession } from 'amazon-cognito-identity-js';
-import { AccessToken, AuthTokens, RefreshToken } from './../AuthTokens';
-import { AuthenticationError } from '../AuthenticationError';
+// import type { CognitoUserSession } from 'amazon-cognito-identity-js';
+// import { AccessToken, AuthTokens, RefreshToken } from './../AuthTokens';
+// import { AuthenticationError } from '../AuthenticationError';
 
-const signIn = async (username: string, password: string): Promise<string> => {
+/* const signIn = async (username: string, password: string): Promise<string> => {
   return await Auth.signIn(username, password)
     .then((user) => user.username)
     .catch((err) => {
@@ -54,6 +53,6 @@ const AuthServiceCognito = {
   signOut,
   getAuthenticatedUser,
   getAuthTokens,
-};
+}; */
 
-export default AuthServiceCognito;
+// export default AuthServiceCognito;

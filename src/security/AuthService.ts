@@ -1,9 +1,12 @@
 import store, { authActions } from '../store/Store';
+import type { AuthenticationData } from './AuthenticationData';
 import { AuthenticationError } from './AuthenticationError';
-import AuthServiceCognito from './provider/AuthServiceCognito';
+// import { AuthenticationError } from './AuthenticationError';
+import AuthServiceCognito from './provider/AuthServiceCognito2';
 
 const checkIfUserAlreadySignedIn = async (): Promise<void> => {
-  let username: string = '';
+  store.dispatch(authActions.signOut());
+  /* let username: string = '';
 
   await AuthServiceCognito.getAuthenticatedUser()
     .then(async (user) => {
@@ -22,7 +25,7 @@ const checkIfUserAlreadySignedIn = async (): Promise<void> => {
     .catch((err) => {
       console.error(err);
       store.dispatch(authActions.signOut());
-    });
+    }); */
 };
 
 const signUp = async (enteredUsername: string, enteredPassword: string): Promise<void> => {
@@ -30,10 +33,28 @@ const signUp = async (enteredUsername: string, enteredPassword: string): Promise
   console.log(enteredPassword);
 };
 
-const signIn = async (enteredUsername: string, enteredPassword: string): Promise<void> => {
-  let username: string = '';
+const signIn = async (
+  enteredUsername: string,
+  enteredPassword: string,
+): Promise<AuthenticationData> => {
+  return await new Promise<AuthenticationData>((resolve, reject) => {
+    AuthServiceCognito.signIn(enteredUsername, enteredPassword)
+      .then((authenticationData) => {
+        store.dispatch(
+          authActions.signIn({
+            isAuthenticated: true,
+            user: authenticationData.user,
+            tokens: authenticationData.tokens,
+          }),
+        );
+        resolve(authenticationData);
+      })
+      .catch((err: Error) => {
+        reject(new AuthenticationError(err.message, err.stack));
+      });
+  });
 
-  await AuthServiceCognito.signIn(enteredUsername, enteredPassword)
+  /* await AuthServiceCognito.signIn(enteredUsername, enteredPassword)
     .then(async (user) => {
       username = user;
       return await AuthServiceCognito.getAuthTokens();
@@ -50,7 +71,7 @@ const signIn = async (enteredUsername: string, enteredPassword: string): Promise
     .catch((err: Error) => {
       console.error(err.message);
       throw new AuthenticationError(err.message, err.stack);
-    });
+    }); */
 };
 
 const signOut = async (): Promise<void> => {

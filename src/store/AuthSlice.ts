@@ -1,24 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AuthTokens } from '../security/AuthTokens';
+import { User } from 'src/security/User';
 
 const initialState = {
   isAuthenticated: null,
-  username: '',
+  user: new User(),
   tokens: new AuthTokens(),
 };
 
 const setAuthState = (
   state: any,
   isAuthenticated: boolean,
-  username: string,
+  user: User | null,
   tokens: AuthTokens | null,
 ): void => {
   state.isAuthenticated = isAuthenticated;
   if (isAuthenticated) {
-    state.username = username;
+    state.user = user;
     state.tokens = tokens;
   } else {
-    state.username = null;
+    state.user = null;
     state.tokens = new AuthTokens();
   }
 };
@@ -31,12 +32,12 @@ const authSlice = createSlice({
       setAuthState(
         state,
         action.payload.isAuthenticated,
-        action.payload.username,
+        action.payload.user,
         action.payload.tokens,
       );
     },
     signOut(state) {
-      setAuthState(state, false, '', null);
+      setAuthState(state, false, null, null);
     },
   },
 });
