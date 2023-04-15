@@ -19,16 +19,42 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/security/AuthService';
 import styles from './LoginPage.module.css';
+import { UserNotConfirmedError } from 'src/security/UserNotConfirmedError';
+import AccountConfirmationPage from './AccountConfirmationPage';
 
 const LoginPage: React.FC = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
   const passwordRef: RefObject<HTMLInputElement> = useRef(null);
   const [toast, addToast] = useState<ReactElement | undefined>();
   const toaster = useRef<HTMLDivElement | null>(null);
+  const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  const openAccountConfirmationModal = (): void => {
+    setAccountConfirmationModalVisible(true);
+  };
+
+  const closeAccountConfirmationFormHandler = (): void => {
+    setAccountConfirmationModalVisible(false);
+  };
+
+  const confirmAccountHandler = (): void => {
+    AuthService.getInstance()
+      .login(username, password)
+      .then(() => {
+        setAccountConfirmationModalVisible(false);
+        navigate('/', { replace: true });
+      })
+      .catch((err: Error) => {
+        setAccountConfirmationModalVisible(false);
+        addToast(buildToast(err.message));
+      });
+  };
 
   const buildToast = (errorMsg: string): ReactElement => {
     return (
@@ -46,16 +72,26 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
 
     if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
-      // TODO: Show Error
+      addToast(buildToast('Missing credentials!'));
       return;
     }
 
-    AuthService.signIn(usernameRef.current.value, passwordRef.current.value)
+    const user = usernameRef.current.value;
+    const pass = passwordRef.current.value;
+
+    AuthService.getInstance()
+      .login(user, pass)
       .then(() => {
         navigate('/', { replace: true });
       })
       .catch((err: Error) => {
-        addToast(buildToast(err.message));
+        if (err instanceof UserNotConfirmedError) {
+          setUsername(user);
+          setPassword(pass);
+          openAccountConfirmationModal();
+        } else {
+          addToast(buildToast(err.message));
+        }
       });
   };
 
@@ -100,11 +136,11 @@ const LoginPage: React.FC = () => {
                         />
                       </CInputGroup>
                       <p className="text-medium-emphasis">
-                        Create your Account <a href="/register">Here</a>.
+                        Create your Account <Link to={'/register'}>here</Link>.
                       </p>
                       <CRow className="justify-content-end">
                         <CCol xs={6}>
-                          <CButton color="primary" className="px-4 float-end" type="submit">
+                          <CButton color="secondary" className="px-4 float-end" type="submit">
                             Login
                           </CButton>
                         </CCol>
@@ -117,6 +153,12 @@ const LoginPage: React.FC = () => {
           </CRow>
         </CContainer>
       </div>
+      <AccountConfirmationPage
+        visible={accountConfirmationModalVisible}
+        username={username}
+        onCloseHandler={closeAccountConfirmationFormHandler}
+        onSaveHandler={confirmAccountHandler}
+      />
     </Fragment>
   );
 };

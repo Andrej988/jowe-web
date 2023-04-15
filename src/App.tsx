@@ -1,15 +1,9 @@
-import { Amplify } from 'aws-amplify';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import awsExports from './aws-exports';
 import React, { Suspense, useState } from 'react';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import './scss/style.scss';
 import ProtectedRoute from './components/security/ProtectedRoute';
 import { useSelector } from 'react-redux';
 import AuthService from './security/AuthService';
-
-Amplify.configure(awsExports);
 
 // Containers
 const DefaultLayout = React.lazy(async () => await import('./layout/DefaultLayout'));
@@ -25,9 +19,11 @@ const App: React.FC = () => {
 
   if (!isLoading && isAuthenticated === null) {
     setLoading(true);
-    AuthService.checkIfUserAlreadySignedIn().finally(() => {
-      setLoading(false);
-    });
+    AuthService.getInstance()
+      .autoLogin()
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   const loading = (

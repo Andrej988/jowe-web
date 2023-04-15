@@ -15,14 +15,27 @@ import { useSelector } from 'react-redux';
 import type { RootState } from 'src/store/Store';
 import styles from './AppProfileDropdown.module.css';
 
-import avatar from '../../assets/images/avatars/anonymous-male.jpg';
+import avatar_male from '../../assets/images/avatars/anonymous-male.jpg';
+import avatar_female from '../../assets/images/avatars/anonymous-female.jpg';
+
+const getAvatar = (): string => {
+  const gender = AuthService.getInstance().getUserData().gender;
+  if (gender != null && gender.toLocaleLowerCase() === 'female') {
+    return avatar_female;
+  } else {
+    return avatar_male;
+  }
+};
 
 const AppProfileDropdown: React.FC = () => {
-  const username: string = useSelector((state: RootState) => state.auth.username);
+  const username: string = useSelector((state: RootState) =>
+    state.auth.user.username != null ? state.auth.user.username : '',
+  );
   const navigate = useNavigate();
 
   const signOutHandler = (): void => {
-    AuthService.signOut()
+    AuthService.getInstance()
+      .logout()
       .then(() => {
         navigate('/', { replace: true });
       })
@@ -35,7 +48,7 @@ const AppProfileDropdown: React.FC = () => {
         <CDropdownToggle className="py-0" caret={false}>
           {username}
           <span> </span>
-          <CAvatar src={avatar} size="md" />
+          <CAvatar src={getAvatar()} size="md" />
         </CDropdownToggle>
         <CDropdownMenu className="pt-0" placement="bottom-end">
           <CDropdownHeader className="bg-light fw-semibold py-2">{username}</CDropdownHeader>
