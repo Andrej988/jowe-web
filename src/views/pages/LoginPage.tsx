@@ -45,7 +45,7 @@ const LoginPage: React.FC = () => {
 
   const confirmAccountHandler = (): void => {
     AuthService.getInstance()
-      .signIn(username, password)
+      .login(username, password)
       .then(() => {
         setAccountConfirmationModalVisible(false);
         navigate('/', { replace: true });
@@ -80,7 +80,7 @@ const LoginPage: React.FC = () => {
     const pass = passwordRef.current.value;
 
     AuthService.getInstance()
-      .signIn(user, pass)
+      .login(user, pass)
       .then(() => {
         navigate('/', { replace: true });
       })

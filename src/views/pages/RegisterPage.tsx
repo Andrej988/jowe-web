@@ -54,7 +54,7 @@ const RegisterPage: React.FC = () => {
 
   const confirmAccountHandler = (): void => {
     AuthService.getInstance()
-      .signIn(username, password)
+      .login(username, password)
       .then(() => {
         setAccountConfirmationModalVisible(false);
         navigate('/', { replace: true });

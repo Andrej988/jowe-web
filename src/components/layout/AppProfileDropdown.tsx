@@ -25,7 +25,7 @@ const AppProfileDropdown: React.FC = () => {
 
   const signOutHandler = (): void => {
     AuthService.getInstance()
-      .signOut()
+      .logout()
       .then(() => {
         navigate('/', { replace: true });
       })

@@ -20,7 +20,7 @@ const App: React.FC = () => {
   if (!isLoading && isAuthenticated === null) {
     setLoading(true);
     AuthService.getInstance()
-      .checkIfUserAlreadySignedIn()
+      .autoLogin()
       .finally(() => {
         setLoading(false);
       });

@@ -2,11 +2,12 @@ import store, { authActions } from '../store/Store';
 import type { AuthenticationData } from './AuthenticationData';
 import { AuthenticationError } from './AuthenticationError';
 import type { UserRegistrationReqData } from './User';
-import AuthServiceCognito from './provider/AuthServiceCognito2';
+import AuthServiceCognito from './provider/AuthServiceCognito';
 
 export default class AuthService {
   private static readonly instance: AuthService = new AuthService();
-  private readonly USER_DATA_STORAGE_KEY = 'WeightTrackerUserData';
+  private static readonly USER_DATA_STORAGE_KEY = 'WeightTrackerUserData';
+  private refreshTokenTimer: NodeJS.Timeout | undefined;
 
   public static getInstance(): AuthService {
     return this.instance;
@@ -24,30 +25,6 @@ export default class AuthService {
     });
   };
 
-  checkIfUserAlreadySignedIn = async (): Promise<void> => {
-    store.dispatch(authActions.signOut());
-    /* let username: string = '';
-
-    await AuthServiceCognito.getAuthenticatedUser()
-      .then(async (user) => {
-        username = user;
-        return await AuthServiceCognito.getAuthTokens();
-      })
-      .then((tokens) => {
-        store.dispatch(
-          authActions.signIn({
-            isAuthenticated: true,
-            username,
-            tokens,
-          }),
-        );
-      })
-      .catch((err) => {
-        console.error(err);
-        store.dispatch(authActions.signOut());
-      }); */
-  };
-
   confirmAccount = async (username: string, confirmationCode: string): Promise<boolean> => {
     return await new Promise<any>((resolve, reject) => {
       AuthServiceCognito.confirmAccount(username, confirmationCode)
@@ -60,21 +37,55 @@ export default class AuthService {
     });
   };
 
-  signIn = async (
-    enteredUsername: string,
-    enteredPassword: string,
-  ): Promise<AuthenticationData> => {
+  private readonly handleLogin = (authenticationData: AuthenticationData): void => {
+    console.log('handling login');
+    store.dispatch(
+      authActions.signIn({
+        isAuthenticated: true,
+        user: authenticationData.user,
+        tokens: authenticationData.tokens,
+      }),
+    );
+    if (
+      authenticationData.tokens.refreshToken?.token != null &&
+      authenticationData.tokens.accessToken?.expiration != null
+    ) {
+      this.setRefreshTokenTimer(
+        authenticationData.tokens.refreshToken?.token,
+        authenticationData.tokens.accessToken?.expiration,
+      );
+    }
+  };
+
+  private readonly setRefreshTokenTimer = (
+    refreshToken: string,
+    tokenExpirationTimestamp: number,
+  ): void => {
+    const tokenExpirationDate = new Date((tokenExpirationTimestamp - 90) * 1000);
+    const expirationDuration = new Date(tokenExpirationDate).getTime() - new Date().getTime();
+    console.log('new refresh will be at:', new Date(new Date().getTime() + expirationDuration));
+    this.refreshTokenTimer = setTimeout(() => {
+      console.log('refreshing access token');
+      AuthServiceCognito.refreshAccessToken(refreshToken)
+        .then((authData: AuthenticationData) => {
+          console.log('Tokens refreshed....');
+          this.handleLogin(authData);
+        })
+        .catch((err) => {
+          throw new AuthenticationError(err.msg);
+        });
+    }, expirationDuration);
+  };
+
+  login = async (enteredUsername: string, enteredPassword: string): Promise<AuthenticationData> => {
     return await new Promise<AuthenticationData>((resolve, reject) => {
       AuthServiceCognito.signIn(enteredUsername, enteredPassword)
         .then((authenticationData) => {
-          store.dispatch(
-            authActions.signIn({
-              isAuthenticated: true,
-              user: authenticationData.user,
-              tokens: authenticationData.tokens,
-            }),
+          this.handleLogin(authenticationData);
+          localStorage.setItem(
+            AuthService.USER_DATA_STORAGE_KEY,
+            JSON.stringify(authenticationData),
           );
-          localStorage.setItem(this.USER_DATA_STORAGE_KEY, JSON.stringify(authenticationData));
           resolve(authenticationData);
         })
         .catch((err: Error) => {
@@ -83,10 +94,43 @@ export default class AuthService {
     });
   };
 
-  signOut = async (): Promise<void> => {
+  autoLogin = async (): Promise<AuthenticationData> => {
+    return await new Promise<AuthenticationData>((resolve, reject) => {
+      const userSessionObj = localStorage.getItem(AuthService.USER_DATA_STORAGE_KEY);
+      if (userSessionObj != null) {
+        const authenticatedUserSession: AuthenticationData = JSON.parse(userSessionObj);
+
+        if (authenticatedUserSession.tokens.accessToken?.expiration != null) {
+          const expirationDate = new Date(
+            authenticatedUserSession.tokens.accessToken?.expiration * 1000,
+          );
+          console.log('auth token expires: ', expirationDate);
+
+          if (Date.now() < authenticatedUserSession.tokens.accessToken?.expiration * 1000) {
+            this.handleLogin(authenticatedUserSession);
+            resolve(authenticatedUserSession);
+          } else {
+            this.logout()
+              .then(() => {})
+              .catch((err) => {
+                reject(new AuthenticationError(err.message));
+              });
+          }
+        }
+      } else {
+        store.dispatch(authActions.signOut());
+        reject(new AuthenticationError('user is not logged in automatically'));
+      }
+    });
+  };
+
+  logout = async (): Promise<void> => {
     await AuthServiceCognito.signOut().then(() => {
       store.dispatch(authActions.signOut());
-      localStorage.removeItem(this.USER_DATA_STORAGE_KEY);
+      localStorage.removeItem(AuthService.USER_DATA_STORAGE_KEY);
+      if (this.refreshTokenTimer != null) {
+        clearTimeout(this.refreshTokenTimer);
+      }
     });
   };
 
