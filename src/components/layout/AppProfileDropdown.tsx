@@ -24,7 +24,8 @@ const AppProfileDropdown: React.FC = () => {
   const navigate = useNavigate();
 
   const signOutHandler = (): void => {
-    AuthService.signOut()
+    AuthService.getInstance()
+      .signOut()
       .then(() => {
         navigate('/', { replace: true });
       })

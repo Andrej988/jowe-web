@@ -63,7 +63,8 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
 
   const onAccountConfirmation = (): void => {
     if (isConfirmationCodeValid()) {
-      AuthService.confirmAccount(props.username, confirmationCode)
+      AuthService.getInstance()
+        .confirmAccount(props.username, confirmationCode)
         .then((a) => {
           props.onSaveHandler();
         })

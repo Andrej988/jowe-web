@@ -19,9 +19,11 @@ const App: React.FC = () => {
 
   if (!isLoading && isAuthenticated === null) {
     setLoading(true);
-    AuthService.checkIfUserAlreadySignedIn().finally(() => {
-      setLoading(false);
-    });
+    AuthService.getInstance()
+      .checkIfUserAlreadySignedIn()
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   const loading = (

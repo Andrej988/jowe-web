@@ -53,7 +53,8 @@ const RegisterPage: React.FC = () => {
   };
 
   const confirmAccountHandler = (): void => {
-    AuthService.signIn(username, password)
+    AuthService.getInstance()
+      .signIn(username, password)
       .then(() => {
         setAccountConfirmationModalVisible(false);
         navigate('/', { replace: true });
@@ -99,8 +100,9 @@ const RegisterPage: React.FC = () => {
       genderRef.current.value,
     );
 
-    AuthService.signUp(registrationReq)
-      .then((username) => {
+    AuthService.getInstance()
+      .signUp(registrationReq)
+      .then((username: string) => {
         setUsername(username);
         setPassword(registrationReq.password);
         openAccountConfirmationModal();
