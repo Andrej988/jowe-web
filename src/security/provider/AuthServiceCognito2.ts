@@ -6,7 +6,6 @@ import {
 } from 'amazon-cognito-identity-js';
 import type { CognitoUserSession, CognitoIdToken } from 'amazon-cognito-identity-js';
 import { COGNITO_CONFIG } from 'src/config/ServiceConfig';
-import * as AWS from 'aws-sdk/global';
 import { User } from '../User';
 import { AccessToken, AuthTokens, IdToken, RefreshToken } from '../AuthTokens';
 import { AuthenticationData } from '../AuthenticationData';
@@ -120,57 +119,8 @@ const refreshAccessToken = (refreshTokenJwt: string): void => {
   }
 };
 
-const signIn2 = (email: string, password: string): void => {
-  console.log('login');
-
-  const authenticationData = { Username: email, Password: password };
-  const authenticationDetails = new AuthenticationDetails(authenticationData);
-
-  const userData = {
-    Username: email,
-    Pool: userPool,
-  };
-  const cognitoUser = new CognitoUser(userData);
-  cognitoUser.authenticateUser(authenticationDetails, {
-    onSuccess: function (result) {
-      var accessToken = result.getAccessToken().getJwtToken();
-      console.log(result);
-      console.log(accessToken);
-
-      // POTENTIAL: Region needs to be set if not already set previously elsewhere.
-      AWS.config.region = 'eu-south-1';
-
-      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: '1d2pj21dk6npgqprvfosc8sp1p', // your identity pool id here
-        Logins: {
-          // Change the key below according to the specific region your user pool is in.
-          'cognito-idp.eu-south-1.amazonaws.com/eu-south-1_Lo2z8sRgl': result
-            .getIdToken()
-            .getJwtToken(),
-        },
-      });
-
-      // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
-      (AWS.config.credentials as AWS.Credentials).refresh((error) => {
-        if (error != null) {
-          console.error(error);
-        } else {
-          // Instantiate aws sdk service objects now that the credentials have been updated.
-          // example: var s3 = new AWS.S3();
-          console.log('Successfully logged!');
-        }
-      });
-    },
-
-    onFailure: function (err) {
-      alert(Boolean(err.message) || JSON.stringify(err));
-    },
-  });
-};
-
 const AuthServiceCognito = {
   signIn,
-  signIn2,
   signOut,
   refreshAccessToken,
 };
