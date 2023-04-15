@@ -19,7 +19,7 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilEnvelopeClosed, cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/security/AuthService';
 import styles from './RegisterPage.module.css';
 
@@ -126,11 +126,11 @@ const RegisterPage: React.FC = () => {
                         />
                       </CInputGroup>
                       <p className="text-medium-emphasis">
-                        Already a member? <a href="/login">Log In</a>.
+                        Already a member? <Link to={'/login'}>Log In</Link>.
                       </p>
                       <CRow className="justify-content-end">
                         <CCol xs={6}>
-                          <CButton color="primary" className="px-4 float-end" type="submit">
+                          <CButton color="secondary" className="px-4 float-end" type="submit">
                             Sign Up
                           </CButton>
                         </CCol>

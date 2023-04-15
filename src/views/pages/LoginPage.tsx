@@ -19,7 +19,7 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/security/AuthService';
 import styles from './LoginPage.module.css';
 
@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
 
     if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
-      // TODO: Show Error
+      addToast(buildToast('Missing credentials!'));
       return;
     }
 
@@ -100,11 +100,11 @@ const LoginPage: React.FC = () => {
                         />
                       </CInputGroup>
                       <p className="text-medium-emphasis">
-                        Create your Account <a href="/register">Here</a>.
+                        Create your Account <Link to={'/register'}>here</Link>
                       </p>
                       <CRow className="justify-content-end">
                         <CCol xs={6}>
-                          <CButton color="primary" className="px-4 float-end" type="submit">
+                          <CButton color="secondary" className="px-4 float-end" type="submit">
                             Login
                           </CButton>
                         </CCol>
