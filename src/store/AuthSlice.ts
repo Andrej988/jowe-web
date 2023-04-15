@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AuthTokens } from '../security/AuthTokens';
-import { User } from 'src/security/User';
+import { AuthenticatedUser } from 'src/security/User';
 
 const initialState = {
   isAuthenticated: null,
-  user: new User(),
+  user: new AuthenticatedUser(),
   tokens: new AuthTokens(),
 };
 
 const setAuthState = (
   state: any,
   isAuthenticated: boolean,
-  user: User | null,
+  user: AuthenticatedUser | null,
   tokens: AuthTokens | null,
 ): void => {
   state.isAuthenticated = isAuthenticated;

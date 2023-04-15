@@ -3,21 +3,38 @@ import {
   AuthenticationDetails,
   CognitoUser,
   CognitoRefreshToken,
+  CognitoUserAttribute,
 } from 'amazon-cognito-identity-js';
 import type { CognitoUserSession, CognitoIdToken } from 'amazon-cognito-identity-js';
 import { COGNITO_CONFIG } from 'src/config/ServiceConfig';
-import { User } from '../User';
+import { AuthenticatedUser } from '../User';
+import type { UserRegistrationReqData } from '../User';
 import { AccessToken, AuthTokens, IdToken, RefreshToken } from '../AuthTokens';
 import { AuthenticationData } from '../AuthenticationData';
 import { AuthenticationError } from '../AuthenticationError';
+import { UserNotConfirmedError } from '../UserNotConfirmedError';
 
 const userPool = new CognitoUserPool({
   UserPoolId: COGNITO_CONFIG.userPool,
   ClientId: COGNITO_CONFIG.clientId,
 });
 
+const buildCognitoUser = (username: string): CognitoUser => {
+  return new CognitoUser({ Username: username, Pool: userPool });
+};
+
 const getCurrentUser = (): CognitoUser | null => {
   return userPool.getCurrentUser();
+};
+
+const getErrorMsg = (err: any): string => {
+  let errMsg: string;
+  if (err instanceof Error) {
+    errMsg = err.message;
+  } else {
+    errMsg = String(err);
+  }
+  return errMsg;
 };
 
 const parseTokens = (authSession: CognitoUserSession): AuthTokens => {
@@ -38,19 +55,75 @@ const parseTokens = (authSession: CognitoUserSession): AuthTokens => {
   return new AuthTokens(accessToken, refreshToken, idToken);
 };
 
-const parseUser = (idToken: CognitoIdToken): User => {
+const parseUser = (idToken: CognitoIdToken): AuthenticatedUser => {
   const username: string = idToken.payload['cognito:username'];
   const name: string = idToken.payload.name;
   const email: string = idToken.payload.email;
   const emailVerified: boolean = idToken.payload.email_verified;
   const gender: string = idToken.payload.gender;
 
-  return new User(username, name, email, emailVerified, gender);
+  return new AuthenticatedUser(username, name, email, gender, emailVerified);
 };
 
-const signIn = async (email: string, password: string): Promise<AuthenticationData> => {
-  const user = new CognitoUser({ Username: email, Pool: userPool });
-  const authenticationData = { Username: email, Password: password };
+const buildSignUpUserAttributeList = (
+  UserRegistrationReqData: UserRegistrationReqData,
+): CognitoUserAttribute[] => {
+  const attributeList: CognitoUserAttribute[] = [];
+
+  attributeList.push(
+    new CognitoUserAttribute({ Name: 'name', Value: UserRegistrationReqData.name }),
+  );
+  attributeList.push(
+    new CognitoUserAttribute({ Name: 'email', Value: UserRegistrationReqData.email }),
+  );
+  attributeList.push(
+    new CognitoUserAttribute({ Name: 'gender', Value: UserRegistrationReqData.gender }),
+  );
+
+  return attributeList;
+};
+
+const signUp = async (userRegistrationReq: UserRegistrationReqData): Promise<string> => {
+  const attributeList = buildSignUpUserAttributeList(userRegistrationReq);
+
+  return await new Promise((resolve, reject) => {
+    userPool.signUp(
+      userRegistrationReq.username,
+      userRegistrationReq.password,
+      attributeList,
+      [],
+      (err, result) => {
+        if (err != null) {
+          reject(new AuthenticationError(getErrorMsg(err)));
+        }
+
+        const username = result?.user.getUsername();
+        if (username != null) {
+          resolve(username);
+        } else {
+          reject(new AuthenticationError('Error retrieving username!'));
+        }
+      },
+    );
+  });
+};
+
+const confirmAccount = async (username: string, confirmationCode: string): Promise<boolean> => {
+  const user = buildCognitoUser(username);
+
+  return await new Promise<boolean>((resolve, reject) => {
+    user.confirmRegistration(confirmationCode, true, (err, result) => {
+      if (err != null) {
+        reject(new AuthenticationError(getErrorMsg(err)));
+      }
+      resolve(true);
+    });
+  });
+};
+
+const signIn = async (username: string, password: string): Promise<AuthenticationData> => {
+  const user = buildCognitoUser(username);
+  const authenticationData = { Username: username, Password: password };
   const authenticationDetails = new AuthenticationDetails(authenticationData);
 
   return await new Promise((resolve, reject) => {
@@ -63,13 +136,12 @@ const signIn = async (email: string, password: string): Promise<AuthenticationDa
         resolve(authData);
       },
       onFailure: (err) => {
-        let errMsg: string;
-        if (err instanceof Error) {
-          errMsg = err.message;
+        const errMsg = getErrorMsg(err);
+        if (err.name === 'UserNotConfirmedException') {
+          reject(new UserNotConfirmedError(errMsg));
         } else {
-          errMsg = String(err);
+          reject(new AuthenticationError(errMsg));
         }
-        reject(new AuthenticationError(errMsg));
       },
     });
   });
@@ -84,13 +156,7 @@ const signOut = async (): Promise<void> => {
         user.signOut();
         resolve();
       } catch (err) {
-        let errMsg: string;
-        if (err instanceof Error) {
-          errMsg = err.message;
-        } else {
-          errMsg = String(err);
-        }
-        reject(new AuthenticationError(errMsg));
+        reject(new AuthenticationError(getErrorMsg(err)));
       }
     }
   });
@@ -120,6 +186,8 @@ const refreshAccessToken = (refreshTokenJwt: string): void => {
 };
 
 const AuthServiceCognito = {
+  signUp,
+  confirmAccount,
   signIn,
   signOut,
   refreshAccessToken,
