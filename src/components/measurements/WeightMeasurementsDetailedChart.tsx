@@ -112,9 +112,9 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
               </div>
             </CCol>
             <CCol sm={7} className="float-end">
-              <CDropdown dark className="float-end" popper={false}>
+              <CDropdown dark className="float-end" popper={false} alignment="end">
                 <CDropdownToggle color="secondary">Actions</CDropdownToggle>
-                <CDropdownMenu>
+                <CDropdownMenu style={{ right: '0', left: 'auto' }}>
                   <div className={styles['dropdown-item']}>
                     <CDropdownItem onClick={openAddMeasurementModal}>Add Measurement</CDropdownItem>
                   </div>
