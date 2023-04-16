@@ -1,7 +1,7 @@
 import { CForm, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
-import Modal from 'src/components/modal/Modal';
+import Modal from 'src/components/utils/Modal';
 
 interface Props extends PropsWithChildren {
   visible: boolean;

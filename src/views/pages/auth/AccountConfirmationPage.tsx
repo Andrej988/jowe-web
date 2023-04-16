@@ -1,7 +1,7 @@
 import { CForm, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
-import Modal from 'src/components/modal/Modal';
+import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/auth/AuthService';
 
 interface Props extends PropsWithChildren {
@@ -43,7 +43,7 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsValid(isConfirmationCodeValid());
-    }, 250);
+    }, 50);
 
     return () => {
       clearTimeout(timer);
@@ -97,6 +97,7 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
           maxLength={MAX_LENGTH}
           text={INPUT_MESSAGE}
           onChange={onConfirmationCodeInputChangeHandler}
+          autoFocus
           required
         />
       </CForm>

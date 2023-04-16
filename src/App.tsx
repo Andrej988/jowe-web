@@ -9,8 +9,8 @@ import AuthService from './auth/AuthService';
 const DefaultLayout = React.lazy(async () => await import('./layout/DefaultLayout'));
 
 // Pages
-const LoginPage = React.lazy(async () => await import('./views/pages/LoginPage'));
-const RegisterPage = React.lazy(async () => await import('./views/pages/RegisterPage'));
+const LoginPage = React.lazy(async () => await import('./views/pages/auth/LoginPage'));
+const RegisterPage = React.lazy(async () => await import('./views/pages/auth/RegisterPage'));
 const Page404 = React.lazy(async () => await import('./views/pages/Page404'));
 
 const App: React.FC = () => {
@@ -21,6 +21,7 @@ const App: React.FC = () => {
     setLoading(true);
     AuthService.getInstance()
       .autoLogin()
+      .catch(() => {})
       .finally(() => {
         setLoading(false);
       });

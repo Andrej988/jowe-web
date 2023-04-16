@@ -13,19 +13,16 @@ import {
   CInputGroupText,
   CRow,
   CToaster,
-  CToast,
-  CToastHeader,
-  CToastBody,
   CFormSelect,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilEnvelopeClosed, cilLockLocked, cilPeople, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/auth/AuthService';
-import styles from './RegisterPage.module.css';
 import { ALLOW_SIGN_UP } from 'src/config/ServiceConfig';
-import { UserRegistrationReqData } from 'src/auth/model/UserData';
 import AccountConfirmationPage from './AccountConfirmationPage';
+import { UserRegistrationRequest } from 'src/auth/model/UserRegistrationRequest';
+import buildToast from 'src/components/utils/Toast';
 
 const allowSignUp = ALLOW_SIGN_UP;
 
@@ -61,20 +58,8 @@ const RegisterPage: React.FC = () => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        addToast(buildToast(err.message, 'Authentication Error'));
+        addToast(buildToast(cilWarning, 'Authentication Error', err.message));
       });
-  };
-
-  const buildToast = (errorMsg: string, title: string = 'Registration Error'): ReactElement => {
-    return (
-      <CToast>
-        <CToastHeader closeButton>
-          <CIcon icon={cilWarning} className={styles['extra-space']} />
-          <div className="fw-bold me-auto">title</div>
-        </CToastHeader>
-        <CToastBody>{errorMsg}</CToastBody>
-      </CToast>
-    );
   };
 
   const signupHandler = (event: React.ChangeEvent<HTMLFormElement>): void => {
@@ -88,11 +73,11 @@ const RegisterPage: React.FC = () => {
       confirmPasswordRef.current?.value == null ||
       genderRef.current?.value == null
     ) {
-      addToast(buildToast('Missing user data...'));
+      addToast(buildToast(cilWarning, 'Sign Up Error', 'Missing user data!'));
       return;
     }
 
-    const registrationReq = new UserRegistrationReqData(
+    const registrationReq = new UserRegistrationRequest(
       usernameRef.current.value,
       nameRef.current.value,
       emailRef.current.value,
@@ -108,7 +93,7 @@ const RegisterPage: React.FC = () => {
         openAccountConfirmationModal();
       })
       .catch((err: Error) => {
-        addToast(buildToast(err.message));
+        addToast(buildToast(cilWarning, 'Sign Up Error', err.message));
       });
   };
 
