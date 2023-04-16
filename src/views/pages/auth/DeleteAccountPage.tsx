@@ -8,7 +8,7 @@ interface Props extends PropsWithChildren {
   onConfirmHandler: () => void;
 }
 
-const AccountConfirmationPage: React.FC<Props> = (props) => {
+const DeleteAccountPage: React.FC<Props> = (props) => {
   return (
     <Modal
       title="Delete Account"
@@ -30,4 +30,4 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
   );
 };
 
-export default AccountConfirmationPage;
+export default DeleteAccountPage;

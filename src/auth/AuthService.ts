@@ -5,6 +5,7 @@ import CognitoAuthService from './provider/CognitoAuthService';
 import type { UserRegistrationRequest } from './model/UserRegistrationRequest';
 import {
   AuthenticationError,
+  ForgotPasswordFlowException,
   UserNotAuthenticatedError,
   UserSessionExpiredError,
 } from './errors/AuthenticationErrors';
@@ -168,5 +169,35 @@ export default class AuthService {
 
   getUserData(): AuthenticatedUser {
     return store.getState().auth.user;
+  }
+
+  async initForgotPasswordFlos(username: string): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
+      CognitoAuthService.getInstance()
+        .initForgotPasswordFlow(username)
+        .then((res) => {
+          resolve();
+        })
+        .catch((err) => {
+          reject(new ForgotPasswordFlowException(err.message));
+        });
+    });
+  }
+
+  async completeForgotPasswordFlow(
+    username: string,
+    verificationCode: string,
+    newPassword: string,
+  ): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
+      CognitoAuthService.getInstance()
+        .completeForgotPasswordFlow(username, verificationCode, newPassword)
+        .then((res) => {
+          resolve();
+        })
+        .catch((err) => {
+          reject(new ForgotPasswordFlowException(err.message));
+        });
+    });
   }
 }

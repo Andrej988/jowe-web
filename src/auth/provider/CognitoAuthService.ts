@@ -34,15 +34,13 @@ export default class CognitoAuthService {
     return this.instance;
   }
 
-  private readonly parseCognitoUserSession = (
-    userSession: CognitoUserSession,
-  ): AuthenticatedUserSession => {
+  private parseCognitoUserSession(userSession: CognitoUserSession): AuthenticatedUserSession {
     const authenticatedUser = this.parseUser(userSession.getIdToken());
     const tokens = this.parseTokens(userSession);
     return new AuthenticatedUserSession(authenticatedUser, tokens);
-  };
+  }
 
-  private readonly parseTokens = (userSession: CognitoUserSession): AuthTokens => {
+  private parseTokens(userSession: CognitoUserSession): AuthTokens {
     const accessToken = new AccessToken(
       userSession.getAccessToken().getJwtToken(),
       userSession.getAccessToken().getExpiration(),
@@ -58,9 +56,9 @@ export default class CognitoAuthService {
     const refreshToken = new RefreshToken(userSession.getRefreshToken().getToken());
 
     return new AuthTokens(accessToken, refreshToken, idToken);
-  };
+  }
 
-  private readonly parseUser = (idToken: CognitoIdToken): AuthenticatedUser => {
+  private parseUser(idToken: CognitoIdToken): AuthenticatedUser {
     const username: string = idToken.payload['cognito:username'];
     const name: string = idToken.payload.name;
     const email: string = idToken.payload.email;
@@ -68,7 +66,7 @@ export default class CognitoAuthService {
     const gender: string = idToken.payload.gender;
 
     return new AuthenticatedUser(username, name, email, gender, emailVerified);
-  };
+  }
 
   private readonly parseErrorMsg = (err: any): string => {
     let errMsg: string;
@@ -80,9 +78,9 @@ export default class CognitoAuthService {
     return errMsg;
   };
 
-  private readonly buildSignUpUserAttributeList = (
+  private buildSignUpUserAttributeList(
     UserRegistrationReqData: UserRegistrationRequest,
-  ): CognitoUserAttribute[] => {
+  ): CognitoUserAttribute[] {
     const attributeList: CognitoUserAttribute[] = [];
 
     attributeList.push(
@@ -96,9 +94,9 @@ export default class CognitoAuthService {
     );
 
     return attributeList;
-  };
+  }
 
-  signUp = async (userRegistrationReq: UserRegistrationRequest): Promise<string> => {
+  async signUp(userRegistrationReq: UserRegistrationRequest): Promise<string> {
     const attributeList = this.buildSignUpUserAttributeList(userRegistrationReq);
 
     return await new Promise((resolve, reject) => {
@@ -121,9 +119,9 @@ export default class CognitoAuthService {
         },
       );
     });
-  };
+  }
 
-  confirmAccount = async (username: string, confirmationCode: string): Promise<boolean> => {
+  async confirmAccount(username: string, confirmationCode: string): Promise<boolean> {
     const user = this.buildCognitoUser(username);
 
     return await new Promise<boolean>((resolve, reject) => {
@@ -134,13 +132,13 @@ export default class CognitoAuthService {
         resolve(true);
       });
     });
-  };
+  }
 
-  private readonly buildCognitoUser = (username: string): CognitoUser => {
+  private buildCognitoUser(username: string): CognitoUser {
     return new CognitoUser({ Username: username, Pool: this.userPool });
-  };
+  }
 
-  login = async (username: string, password: string): Promise<AuthenticatedUserSession> => {
+  async login(username: string, password: string): Promise<AuthenticatedUserSession> {
     const user = this.buildCognitoUser(username);
     const authenticationData = { Username: username, Password: password };
     const authenticationDetails = new AuthenticationDetails(authenticationData);
@@ -161,9 +159,9 @@ export default class CognitoAuthService {
         },
       });
     });
-  };
+  }
 
-  autoLogin = async (): Promise<AuthenticatedUserSession> => {
+  async autoLogin(): Promise<AuthenticatedUserSession> {
     const user = this.userPool.getCurrentUser();
 
     return await new Promise<AuthenticatedUserSession>((resolve, reject) => {
@@ -185,9 +183,9 @@ export default class CognitoAuthService {
         reject(new UserNotAuthenticatedError('User is not signed in!'));
       }
     });
-  };
+  }
 
-  signOut = async (): Promise<void> => {
+  async signOut(): Promise<void> {
     const user = this.userPool.getCurrentUser();
 
     await new Promise<void>((resolve, reject) => {
@@ -224,9 +222,9 @@ export default class CognitoAuthService {
         });
       }
     });
-  };
+  }
 
-  deleteUser = async (): Promise<string> => {
+  async deleteUser(): Promise<string> {
     const user = this.userPool.getCurrentUser();
 
     return await new Promise<string>((resolve, reject) => {
@@ -247,9 +245,9 @@ export default class CognitoAuthService {
         reject(new UserNotAuthenticatedError('User is not signed in!'));
       }
     });
-  };
+  }
 
-  refreshAccessToken = async (refreshTokenJwt: string): Promise<AuthenticatedUserSession> => {
+  async refreshAccessToken(refreshTokenJwt: string): Promise<AuthenticatedUserSession> {
     const user = this.userPool.getCurrentUser();
 
     return await new Promise<AuthenticatedUserSession>((resolve, reject) => {
@@ -272,5 +270,41 @@ export default class CognitoAuthService {
         resolve(autenticatedUserSession);
       });
     });
-  };
+  }
+
+  async initForgotPasswordFlow(username: string): Promise<boolean> {
+    const user: CognitoUser = this.buildCognitoUser(username);
+    return await new Promise<boolean>((resolve, reject) => {
+      user.forgotPassword({
+        onSuccess(data) {
+          console.log('data', data);
+          resolve(true);
+        },
+        onFailure(err) {
+          console.log(err);
+          reject(err);
+        },
+      });
+    });
+  }
+
+  async completeForgotPasswordFlow(
+    username: string,
+    verificationCode: string,
+    newPassword: string,
+  ): Promise<boolean> {
+    const user: CognitoUser = this.buildCognitoUser(username);
+    return await new Promise<boolean>((resolve, reject) => {
+      user.confirmPassword(verificationCode, newPassword, {
+        onSuccess(data) {
+          console.log('data', data);
+          resolve(true);
+        },
+        onFailure(err) {
+          console.log(err);
+          reject(err);
+        },
+      });
+    });
+  }
 }

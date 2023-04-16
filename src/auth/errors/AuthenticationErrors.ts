@@ -69,3 +69,11 @@ export class UserSessionExpiredError extends Error {
     this.stack = stack;
   }
 }
+
+export class ForgotPasswordFlowException extends Error {
+  constructor(message: string, stack: string | undefined = undefined) {
+    super(message);
+    this.name = 'ForgotPasswordFlowException';
+    this.stack = stack;
+  }
+}
