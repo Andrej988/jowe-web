@@ -21,10 +21,10 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilEnvelopeClosed, cilLockLocked, cilPeople, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthService from 'src/security/AuthService';
+import AuthService from 'src/auth/AuthService';
 import styles from './RegisterPage.module.css';
 import { ALLOW_SIGN_UP } from 'src/config/ServiceConfig';
-import { UserRegistrationReqData } from 'src/security/User';
+import { UserRegistrationReqData } from 'src/auth/model/UserData';
 import AccountConfirmationPage from './AccountConfirmationPage';
 
 const allowSignUp = ALLOW_SIGN_UP;

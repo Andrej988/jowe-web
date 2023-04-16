@@ -1,7 +1,7 @@
 import store, { authActions } from '../store/Store';
-import type { AuthenticationData } from './AuthenticationData';
-import { AuthenticationError } from './AuthenticationError';
-import type { AuthenticatedUser, UserRegistrationReqData } from './User';
+import type { AuthenticationData } from './model/AuthenticationData';
+import { AuthenticationError } from './errors/AuthenticationError';
+import type { AuthenticatedUser, UserRegistrationReqData } from './model/UserData';
 import AuthServiceCognito from './provider/AuthServiceCognito';
 
 export default class AuthService {

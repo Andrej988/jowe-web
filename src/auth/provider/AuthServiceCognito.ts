@@ -7,12 +7,12 @@ import {
 } from 'amazon-cognito-identity-js';
 import type { CognitoUserSession, CognitoIdToken } from 'amazon-cognito-identity-js';
 import { COGNITO_CONFIG } from 'src/config/ServiceConfig';
-import { AuthenticatedUser } from '../User';
-import type { UserRegistrationReqData } from '../User';
-import { AccessToken, AuthTokens, IdToken, RefreshToken } from '../AuthTokens';
-import { AuthenticationData } from '../AuthenticationData';
-import { AuthenticationError } from '../AuthenticationError';
-import { UserNotConfirmedError } from '../UserNotConfirmedError';
+import { AuthenticatedUser } from '../model/UserData';
+import type { UserRegistrationReqData } from '../model/UserData';
+import { AccessToken, AuthTokens, IdToken, RefreshToken } from '../model/AuthTokens';
+import { AuthenticationData } from '../model/AuthenticationData';
+import { AuthenticationError } from '../errors/AuthenticationError';
+import { UserNotConfirmedError } from '../errors/UserNotConfirmedError';
 
 const userPool = new CognitoUserPool({
   UserPoolId: COGNITO_CONFIG.userPool,

@@ -3,7 +3,7 @@ import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import './scss/style.scss';
 import ProtectedRoute from './components/security/ProtectedRoute';
 import { useSelector } from 'react-redux';
-import AuthService from './security/AuthService';
+import AuthService from './auth/AuthService';
 
 // Containers
 const DefaultLayout = React.lazy(async () => await import('./layout/DefaultLayout'));
