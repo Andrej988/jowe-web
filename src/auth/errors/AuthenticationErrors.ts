@@ -77,3 +77,11 @@ export class ForgotPasswordFlowException extends Error {
     this.stack = stack;
   }
 }
+
+export class ChangePasswordError extends Error {
+  constructor(message: string, stack: string | undefined = undefined) {
+    super(message);
+    this.name = 'ChangePasswordError';
+    this.stack = stack;
+  }
+}

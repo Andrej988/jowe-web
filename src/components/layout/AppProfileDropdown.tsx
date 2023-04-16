@@ -59,17 +59,12 @@ const AppProfileDropdown: React.FC = () => {
   };
 
   const confirmDeleteAccountHandler = (): void => {
-    AuthService.getInstance()
-      .deleteUser()
-      .then(() => {
-        setDeleteAccountModalVisible(false);
-        navigate('/', { replace: true });
-      })
-      .catch(() => {});
+    setDeleteAccountModalVisible(false);
+    navigate('/', { replace: true });
   };
 
   const confirmPasswordChangeHandler = (): void => {
-    console.log('clicked');
+    setChangePasswordModalVisible(false);
   };
 
   const signOutHandler = (): void => {

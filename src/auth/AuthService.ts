@@ -19,7 +19,7 @@ export default class AuthService {
   }
 
   async signUp(userRegistrationReq: UserRegistrationRequest): Promise<string> {
-    return await new Promise<any>((resolve, reject) => {
+    return await new Promise<string>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .signUp(userRegistrationReq)
         .then((username: string) => {
@@ -33,7 +33,7 @@ export default class AuthService {
   }
 
   async confirmAccount(username: string, confirmationCode: string): Promise<boolean> {
-    return await new Promise<any>((resolve, reject) => {
+    return await new Promise<boolean>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .confirmAccount(username, confirmationCode)
         .then(() => {
@@ -197,6 +197,19 @@ export default class AuthService {
         })
         .catch((err) => {
           reject(new ForgotPasswordFlowException(err.message));
+        });
+    });
+  }
+
+  async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
+      CognitoAuthService.getInstance()
+        .changePassword(oldPassword, newPassword)
+        .then(() => {
+          resolve();
+        })
+        .catch((err) => {
+          reject(err);
         });
     });
   }

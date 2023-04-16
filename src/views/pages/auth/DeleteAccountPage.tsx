@@ -1,5 +1,6 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
+import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/modal/Modal';
 
 interface Props extends PropsWithChildren {
@@ -9,12 +10,21 @@ interface Props extends PropsWithChildren {
 }
 
 const DeleteAccountPage: React.FC<Props> = (props) => {
+  const onDeleteConfirmationHandler = (): void => {
+    AuthService.getInstance()
+      .deleteUser()
+      .then(() => {
+        props.onConfirmHandler();
+      })
+      .catch(() => {});
+  };
+
   return (
     <Modal
       title="Delete Account"
       visible={props.visible}
       primaryButtonText="Delete"
-      primaryButtonHandler={props.onConfirmHandler}
+      primaryButtonHandler={onDeleteConfirmationHandler}
       primaryButtonColor="danger"
       showSecondaryButton={true}
       secondaryButtonText="Cancel"

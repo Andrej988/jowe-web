@@ -14,6 +14,7 @@ import type { UserRegistrationRequest } from '../model/UserRegistrationRequest';
 import {
   AccountConfirmationError,
   AuthenticationError,
+  ChangePasswordError,
   LogoutError,
   RegistrationError,
   TokenRefreshError,
@@ -125,7 +126,7 @@ export default class CognitoAuthService {
     const user = this.buildCognitoUser(username);
 
     return await new Promise<boolean>((resolve, reject) => {
-      user.confirmRegistration(confirmationCode, true, (err: any, result: any) => {
+      user.confirmRegistration(confirmationCode, true, (err) => {
         if (err != null) {
           reject(new AccountConfirmationError(this.parseErrorMsg(err)));
         }
@@ -230,13 +231,13 @@ export default class CognitoAuthService {
     return await new Promise<string>((resolve, reject) => {
       if (user != null) {
         user.getSignInUserSession();
-        user.getSession((err: any) => {
+        user.getSession((err: Error | null) => {
           if (err != null) {
             reject(new UserNotAuthenticatedError(err.message));
           }
-          user.deleteUser((err2: any, result: any) => {
-            if (err2 != null) {
-              reject(new UserDeletionError(err.message));
+          user.deleteUser((error: Error | undefined, result: string | undefined) => {
+            if (error != null) {
+              reject(new UserDeletionError(error.message));
             }
             resolve(result != null ? result : 'SUCCESS');
           });
@@ -305,6 +306,29 @@ export default class CognitoAuthService {
           reject(err);
         },
       });
+    });
+  }
+
+  async changePassword(oldPassword: string, newPassword: string): Promise<boolean> {
+    const user = this.userPool.getCurrentUser();
+
+    return await new Promise<boolean>((resolve, reject) => {
+      if (user != null) {
+        user.getSignInUserSession();
+        user.getSession((err: Error | null) => {
+          if (err != null) {
+            reject(new UserNotAuthenticatedError(err.message));
+          }
+          user.changePassword(oldPassword, newPassword, (err: Error | undefined) => {
+            if (err != null) {
+              reject(new ChangePasswordError(err.message));
+            }
+            resolve(true);
+          });
+        });
+      } else {
+        reject(new UserNotAuthenticatedError('User is not signed in!'));
+      }
     });
   }
 }

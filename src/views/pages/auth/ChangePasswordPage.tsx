@@ -1,6 +1,7 @@
 import { CForm, CFormInput } from '@coreui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
+import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/modal/Modal';
 
 interface Props extends PropsWithChildren {
@@ -9,21 +10,29 @@ interface Props extends PropsWithChildren {
   onConfirmHandler: () => void;
 }
 
-const MAX_LENGTH = 10;
-const DEFAULT_VALUE_IS_TOUCHED = false;
-const DEFAULT_VALUE_IS_VALID = false;
-const DEFAULT_VALUE = '';
+const DEFAULT_IS_TOUCHED = false;
+const DEFAULT_IS_VALID = false;
 
 const AccountConfirmationPage: React.FC<Props> = (props) => {
-  const [isTouched, setIsTouched] = useState(DEFAULT_VALUE_IS_TOUCHED);
-  const [isValid, setIsValid] = useState(DEFAULT_VALUE_IS_VALID);
-  const [confirmationCode, setConfirmatioCode] = useState<string>(DEFAULT_VALUE);
+  const [isTouched, setIsTouched] = useState(DEFAULT_IS_TOUCHED);
+  const [isValid, setIsValid] = useState(DEFAULT_IS_VALID);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const onConfirmationCodeInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-    validateForm(event.target.value);
+  const onCurrentPasswordInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+    setCurrentPassword(event.target.value);
   };
 
-  const validateForm = (value: string): void => {
+  const onNewPasswordInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+    setNewPassword(event.target.value);
+  };
+
+  const onConfirmaPasswordInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+    setConfirmPassword(event.target.value);
+  };
+
+  /* const validateForm = (value: string): void => {
     if (!isTouched) {
       setIsTouched(true);
     }
@@ -31,13 +40,13 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     if (value.length <= MAX_LENGTH) {
       setConfirmatioCode(value);
     }
-  };
+  }; */
 
-  const isConfirmationCodeValid = (): boolean => {
+  /* const isConfirmationCodeValid = (): boolean => {
     return confirmationCode.length >= 6 && confirmationCode.length <= MAX_LENGTH;
-  };
+  }; */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const timer = setTimeout(() => {
       setIsValid(isConfirmationCodeValid());
     }, 250);
@@ -45,23 +54,34 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [confirmationCode]);
+  }, [confirmationCode]); */
 
   const clearForm = (): void => {
-    setIsTouched(DEFAULT_VALUE_IS_TOUCHED);
-    setIsValid(DEFAULT_VALUE_IS_VALID);
-    setConfirmatioCode(DEFAULT_VALUE);
+    setIsTouched(DEFAULT_IS_TOUCHED);
+    setIsValid(DEFAULT_IS_VALID);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
   };
 
   const onCloseFormHandler = (): void => {
-    clearForm();
     props.onCloseHandler();
+    clearForm();
   };
 
   const onChangePasswordConfirmationHandler = (): void => {
-    if (isConfirmationCodeValid()) {
-      console.log('clicked');
-      /* AuthService.getInstance()
+    AuthService.getInstance()
+      .changePassword(currentPassword, newPassword)
+      .then(() => {
+        props.onConfirmHandler();
+        clearForm();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    // if (isConfirmationCodeValid()) {
+    // console.log('clicked');
+    /* AuthService.getInstance()
         .confirmAccount(props.username, confirmationCode)
         .then((a) => {
           props.onConfirmHandler();
@@ -70,9 +90,9 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
           console.error(err);
           alert(err);
         }); */
-    } else {
-      validateForm('');
-    }
+    // } else {
+    // validateForm('');
+    // }
   };
 
   return (
@@ -92,10 +112,10 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
           invalid={!isValid && isTouched}
           type="password"
           id="currentPassword"
+          autoComplete="current-password"
           label="Current Password"
-          value={confirmationCode}
-          maxLength={MAX_LENGTH}
-          onChange={onConfirmationCodeInputChangeHandler}
+          value={currentPassword}
+          onChange={onCurrentPasswordInputChangeHandler}
           required
           autoFocus
         />
@@ -103,20 +123,20 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
           invalid={!isValid && isTouched}
           type="password"
           id="newPassword"
+          autoComplete="new-password"
           label="New Password"
-          value={confirmationCode}
-          maxLength={MAX_LENGTH}
-          onChange={onConfirmationCodeInputChangeHandler}
+          value={newPassword}
+          onChange={onNewPasswordInputChangeHandler}
           required
         />
         <CFormInput
           invalid={!isValid && isTouched}
           type="password"
           id="confirmNewPassword"
+          autoComplete="confirm-password"
           label="Confirm Password"
-          value={confirmationCode}
-          maxLength={MAX_LENGTH}
-          onChange={onConfirmationCodeInputChangeHandler}
+          value={confirmPassword}
+          onChange={onConfirmaPasswordInputChangeHandler}
           required
         />
       </CForm>
