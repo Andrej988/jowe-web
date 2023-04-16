@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { AuthTokens } from '../security/AuthTokens';
-import { AuthenticatedUser } from 'src/security/User';
+import { AuthTokens } from '../auth/model/AuthTokens';
+import { AuthenticatedUser } from 'src/auth/model/UserData';
 
 const initialState = {
   isAuthenticated: null,

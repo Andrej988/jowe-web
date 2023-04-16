@@ -20,9 +20,9 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthService from 'src/security/AuthService';
+import AuthService from 'src/auth/AuthService';
 import styles from './LoginPage.module.css';
-import { UserNotConfirmedError } from 'src/security/UserNotConfirmedError';
+import { UserNotConfirmedError } from 'src/auth/errors/UserNotConfirmedError';
 import AccountConfirmationPage from './AccountConfirmationPage';
 
 const LoginPage: React.FC = () => {
