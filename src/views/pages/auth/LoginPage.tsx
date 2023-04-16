@@ -118,6 +118,7 @@ const LoginPage: React.FC = () => {
                         <CFormInput
                           type="text"
                           id="username"
+                          floatingLabel="Username or Email Address"
                           autoFocus
                           placeholder="Username"
                           autoComplete="username"
@@ -132,6 +133,7 @@ const LoginPage: React.FC = () => {
                         <CFormInput
                           id="password"
                           type="password"
+                          floatingLabel="Password"
                           placeholder="Password"
                           autoComplete="current-password"
                           required

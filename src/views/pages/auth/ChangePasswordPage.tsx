@@ -1,8 +1,9 @@
-import { CForm, CFormInput } from '@coreui/react';
-import React, { useState } from 'react';
+import { CForm, CFormFeedback, CFormInput } from '@coreui/react';
+import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
+import { PASSWORD_RULES_STRING } from 'src/config/ServiceConfig';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -11,12 +12,34 @@ interface Props extends PropsWithChildren {
   onChangePasswordErrorHandler: (toastTitle: string, toastMsg: string) => void;
 }
 
-const DEFAULT_IS_TOUCHED = false;
-const DEFAULT_IS_VALID = false;
+const isFilled = (value: string): boolean => {
+  return value.trim() !== '';
+};
+
+const isAtLeastXCharsLong = (value: string, numOfChars: number): boolean => {
+  return value.trim().length >= numOfChars;
+};
+
+interface FormValidtyDetails {
+  currentPasswordValid: boolean;
+  newPasswordValid: boolean;
+  confirmPasswordMatch: boolean;
+}
+
+const PASSWORD_MATCH_STRING = 'Please check if password is according to the password rules below';
+const DEFAULT_IS_VALIDATED = false;
+const DEFAULT_FORM_VALIDITY_STATE: FormValidtyDetails = {
+  currentPasswordValid: false,
+  newPasswordValid: false,
+  confirmPasswordMatch: false,
+};
 
 const AccountConfirmationPage: React.FC<Props> = (props) => {
-  const [isTouched, setIsTouched] = useState(DEFAULT_IS_TOUCHED);
-  const [isValid, setIsValid] = useState(DEFAULT_IS_VALID);
+  const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
+  const [formValidtyDetails, setFormValidityDetails] = useState<FormValidtyDetails>(
+    DEFAULT_FORM_VALIDITY_STATE,
+  );
+
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -33,36 +56,49 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     setConfirmPassword(event.target.value);
   };
 
-  /* const validateForm = (value: string): void => {
-    if (!isTouched) {
-      setIsTouched(true);
+  const validateForm = (): void => {
+    setIsValidated(true);
+
+    const currentPasswordValid =
+      isFilled(currentPassword) && isAtLeastXCharsLong(currentPassword, 8);
+    const newPasswordValid = isFilled(newPassword) && isAtLeastXCharsLong(newPassword, 8);
+    const confirmPasswordValid = isFilled(confirmPassword) && newPassword === confirmPassword;
+
+    setFormValidityDetails({
+      currentPasswordValid,
+      newPasswordValid,
+      confirmPasswordMatch: confirmPasswordValid,
+    });
+  };
+
+  useEffect(() => {
+    console.log(isValidated);
+    if (isValidated) {
+      const timerId = setTimeout(() => {
+        validateForm();
+      }, 250);
+
+      // Cleanup
+      return () => {
+        clearTimeout(timerId);
+      };
     }
+  }, [currentPassword, newPassword, confirmPassword, isValidated]);
 
-    if (value.length <= MAX_LENGTH) {
-      setConfirmatioCode(value);
-    }
-  }; */
-
-  /* const isConfirmationCodeValid = (): boolean => {
-    return confirmationCode.length >= 6 && confirmationCode.length <= MAX_LENGTH;
-  }; */
-
-  /* useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsValid(isConfirmationCodeValid());
-    }, 250);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [confirmationCode]); */
+  const isFormValid = (): boolean => {
+    return (
+      formValidtyDetails.currentPasswordValid &&
+      formValidtyDetails.newPasswordValid &&
+      formValidtyDetails.confirmPasswordMatch
+    );
+  };
 
   const clearForm = (): void => {
-    setIsTouched(DEFAULT_IS_TOUCHED);
-    setIsValid(DEFAULT_IS_VALID);
+    setIsValidated(DEFAULT_IS_VALIDATED);
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
+    setFormValidityDetails(DEFAULT_FORM_VALIDITY_STATE);
   };
 
   const onCloseFormHandler = (): void => {
@@ -71,30 +107,19 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
   };
 
   const onChangePasswordConfirmationHandler = (): void => {
-    AuthService.getInstance()
-      .changePassword(currentPassword, newPassword)
-      .then(() => {
-        props.onConfirmHandler();
-        clearForm();
-      })
-      .catch((err) => {
-        console.error(err);
-        props.onChangePasswordErrorHandler('Change Password Error', err.message);
-      });
-    // if (isConfirmationCodeValid()) {
-    // console.log('clicked');
-    /* AuthService.getInstance()
-        .confirmAccount(props.username, confirmationCode)
-        .then((a) => {
+    validateForm();
+    if (isFormValid()) {
+      AuthService.getInstance()
+        .changePassword(currentPassword, newPassword)
+        .then(() => {
           props.onConfirmHandler();
+          clearForm();
         })
-        .catch((err: Error) => {
+        .catch((err) => {
           console.error(err);
-          alert(err);
-        }); */
-    // } else {
-    // validateForm('');
-    // }
+          props.onChangePasswordErrorHandler('Change Password Error', err.message);
+        });
+    }
   };
 
   return (
@@ -111,36 +136,49 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     >
       <CForm>
         <CFormInput
-          invalid={!isValid && isTouched}
+          invalid={isValidated && !formValidtyDetails.currentPasswordValid}
+          floatingLabel
           type="password"
           id="currentPassword"
           autoComplete="current-password"
           label="Current Password"
           value={currentPassword}
           onChange={onCurrentPasswordInputChangeHandler}
+          feedback={PASSWORD_MATCH_STRING}
           required
           autoFocus
         />
+
         <CFormInput
-          invalid={!isValid && isTouched}
+          className="mt-3"
+          invalid={
+            isValidated &&
+            (!formValidtyDetails.newPasswordValid || !formValidtyDetails.confirmPasswordMatch)
+          }
+          floatingLabel
           type="password"
           id="newPassword"
           autoComplete="new-password"
           label="New Password"
           value={newPassword}
           onChange={onNewPasswordInputChangeHandler}
+          feedback={PASSWORD_MATCH_STRING}
           required
         />
         <CFormInput
-          invalid={!isValid && isTouched}
+          className="mt-3"
+          floatingLabel
+          invalid={isValidated && !formValidtyDetails.confirmPasswordMatch}
           type="password"
           id="confirmNewPassword"
           autoComplete="confirm-password"
           label="Confirm Password"
           value={confirmPassword}
           onChange={onConfirmaPasswordInputChangeHandler}
+          feedback="New password must be according to rules and confirmation must match new password."
           required
         />
+        <CFormFeedback className="mt-4">{PASSWORD_RULES_STRING}</CFormFeedback>
       </CForm>
     </Modal>
   );

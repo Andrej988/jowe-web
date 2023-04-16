@@ -120,8 +120,9 @@ const RegisterPage: React.FC = () => {
                         <CFormInput
                           type="text"
                           id="username"
-                          autoFocus
+                          floatingLabel="Username"
                           placeholder="Username"
+                          autoFocus
                           autoComplete="username"
                           required
                           disabled={!allowSignUp}
@@ -135,6 +136,7 @@ const RegisterPage: React.FC = () => {
                         <CFormInput
                           type="text"
                           id="name"
+                          floatingLabel="Name"
                           placeholder="Name"
                           autoComplete="name"
                           required
@@ -149,7 +151,8 @@ const RegisterPage: React.FC = () => {
                         <CFormInput
                           type="email"
                           id="email"
-                          placeholder="Email"
+                          floatingLabel="Email Address"
+                          placeholder="Email Address"
                           autoComplete="email"
                           required
                           disabled={!allowSignUp}
@@ -163,6 +166,7 @@ const RegisterPage: React.FC = () => {
                         <CFormInput
                           id="password"
                           type="password"
+                          floatingLabel="Password"
                           placeholder="Password"
                           autoComplete="current-password"
                           required
@@ -177,7 +181,8 @@ const RegisterPage: React.FC = () => {
                         <CFormInput
                           id="password-confirmation"
                           type="password"
-                          placeholder="Confirm Your Password"
+                          floatingLabel="Confirm Password"
+                          placeholder="Confirm Password"
                           autoComplete="current-password-confirmation"
                           required
                           disabled={!allowSignUp}
@@ -189,7 +194,9 @@ const RegisterPage: React.FC = () => {
                           <CIcon icon={cilPeople} />
                         </CInputGroupText>
                         <CFormSelect
-                          aria-label="Default select example"
+                          floatingLabel=" "
+                          placeholder=""
+                          aria-label="Select Gender"
                           disabled={!allowSignUp}
                           ref={genderRef}
                         >
