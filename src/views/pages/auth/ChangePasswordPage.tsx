@@ -2,17 +2,14 @@ import { CForm, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import Modal from 'src/components/modal/Modal';
-import AuthService from 'src/auth/AuthService';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
-  username: string;
   onCloseHandler: () => void;
-  onSaveHandler: () => void;
+  onConfirmHandler: () => void;
 }
 
 const MAX_LENGTH = 10;
-const INPUT_MESSAGE = `Account confirmation code was sent to your e-mail address.`;
 const DEFAULT_VALUE_IS_TOUCHED = false;
 const DEFAULT_VALUE_IS_VALID = false;
 const DEFAULT_VALUE = '';
@@ -61,17 +58,18 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     props.onCloseHandler();
   };
 
-  const onAccountConfirmation = (): void => {
+  const onChangePasswordConfirmationHandler = (): void => {
     if (isConfirmationCodeValid()) {
-      AuthService.getInstance()
+      console.log('clicked');
+      /* AuthService.getInstance()
         .confirmAccount(props.username, confirmationCode)
         .then((a) => {
-          props.onSaveHandler();
+          props.onConfirmHandler();
         })
         .catch((err: Error) => {
           console.error(err);
           alert(err);
-        });
+        }); */
     } else {
       validateForm('');
     }
@@ -79,23 +77,45 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
 
   return (
     <Modal
-      title="Account Confirmation"
+      title="Change Password"
       visible={props.visible}
       primaryButtonText="Confirm"
-      primaryButtonHandler={onAccountConfirmation}
-      showSecondaryButton={false}
+      primaryButtonHandler={onChangePasswordConfirmationHandler}
+      showSecondaryButton={true}
+      secondaryButtonText="Cancel"
+      secondaryButtonColor="danger"
       secondaryButtonHandler={onCloseFormHandler}
       onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm>
         <CFormInput
           invalid={!isValid && isTouched}
-          type="text"
-          id="confirmationNumber"
-          label="Confirmation code"
+          type="password"
+          id="currentPassword"
+          label="Current Password"
           value={confirmationCode}
           maxLength={MAX_LENGTH}
-          text={INPUT_MESSAGE}
+          onChange={onConfirmationCodeInputChangeHandler}
+          required
+          autoFocus
+        />
+        <CFormInput
+          invalid={!isValid && isTouched}
+          type="password"
+          id="newPassword"
+          label="New Password"
+          value={confirmationCode}
+          maxLength={MAX_LENGTH}
+          onChange={onConfirmationCodeInputChangeHandler}
+          required
+        />
+        <CFormInput
+          invalid={!isValid && isTouched}
+          type="password"
+          id="confirmNewPassword"
+          label="Confirm Password"
+          value={confirmationCode}
+          maxLength={MAX_LENGTH}
           onChange={onConfirmationCodeInputChangeHandler}
           required
         />

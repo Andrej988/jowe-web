@@ -24,8 +24,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/auth/AuthService';
 import styles from './RegisterPage.module.css';
 import { ALLOW_SIGN_UP } from 'src/config/ServiceConfig';
-import { UserRegistrationReqData } from 'src/auth/model/UserData';
 import AccountConfirmationPage from './AccountConfirmationPage';
+import { UserRegistrationRequest } from 'src/auth/model/UserRegistrationRequest';
 
 const allowSignUp = ALLOW_SIGN_UP;
 
@@ -92,7 +92,7 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
-    const registrationReq = new UserRegistrationReqData(
+    const registrationReq = new UserRegistrationRequest(
       usernameRef.current.value,
       nameRef.current.value,
       emailRef.current.value,

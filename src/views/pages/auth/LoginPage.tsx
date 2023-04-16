@@ -22,8 +22,8 @@ import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/auth/AuthService';
 import styles from './LoginPage.module.css';
-import { UserNotConfirmedError } from 'src/auth/errors/UserNotConfirmedError';
 import AccountConfirmationPage from './AccountConfirmationPage';
+import { UserNotConfirmedError } from 'src/auth/errors/AuthenticationErrors';
 
 const LoginPage: React.FC = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
