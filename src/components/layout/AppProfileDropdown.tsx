@@ -44,18 +44,22 @@ const AppProfileDropdown: React.FC = () => {
 
   return (
     <Fragment>
-      <CDropdown variant="nav-item" popper={false}>
+      <CDropdown alignment="end" variant="nav-item" popper={false}>
         <CDropdownToggle className="py-0" caret={false}>
           {username}
           <span> </span>
           <CAvatar src={getAvatar()} size="md" />
         </CDropdownToggle>
-        <CDropdownMenu className="pt-0" placement="bottom-end">
+        <CDropdownMenu className="pt-0" placement="bottom-end" style={{ right: '0', left: 'auto' }}>
           <CDropdownHeader className="bg-light fw-semibold py-2">{username}</CDropdownHeader>
           <div className={styles['dropdown-item']}>
             <CDropdownItem onClick={signOutHandler}>
               <CIcon icon={cilLockLocked} className="me-2" />
               Sign Out
+            </CDropdownItem>
+            <CDropdownItem onClick={signOutHandler}>
+              <CIcon icon={cilLockLocked} className="me-2" />
+              Delete account
             </CDropdownItem>
           </div>
         </CDropdownMenu>
