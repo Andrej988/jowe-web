@@ -13,18 +13,15 @@ import {
   CInputGroupText,
   CRow,
   CToaster,
-  CToast,
-  CToastHeader,
-  CToastBody,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/auth/AuthService';
-import styles from './LoginPage.module.css';
 import AccountConfirmationPage from './AccountConfirmationPage';
 import { UserNotConfirmedError } from 'src/auth/errors/AuthenticationErrors';
 import ForgotPasswordPage from './ForgotPasswordPage';
+import buildToast from 'src/components/utils/Toast';
 
 const LoginPage: React.FC = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
@@ -65,7 +62,7 @@ const LoginPage: React.FC = () => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        addToast(buildToast(err.message));
+        addToast(buildToast(cilWarning, 'Authentication Error', err.message));
       });
   };
 
@@ -74,23 +71,11 @@ const LoginPage: React.FC = () => {
     setForgotPasswordModalVisible(false);
   };
 
-  const buildToast = (errorMsg: string): ReactElement => {
-    return (
-      <CToast>
-        <CToastHeader closeButton>
-          <CIcon icon={cilWarning} className={styles['extra-space']} />
-          <div className="fw-bold me-auto">Authentication Error</div>
-        </CToastHeader>
-        <CToastBody>{errorMsg}</CToastBody>
-      </CToast>
-    );
-  };
-
   const loginHandler = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
     if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
-      addToast(buildToast('Missing credentials!'));
+      addToast(buildToast(cilWarning, 'Authentication Error', 'Missing credentials!'));
       return;
     }
 
@@ -108,7 +93,7 @@ const LoginPage: React.FC = () => {
           setPassword(pass);
           openAccountConfirmationModal();
         } else {
-          addToast(buildToast(err.message));
+          addToast(buildToast(cilWarning, 'Authentication Error', err.message));
         }
       });
   };

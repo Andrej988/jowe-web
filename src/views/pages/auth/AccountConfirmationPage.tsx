@@ -1,7 +1,7 @@
 import { CForm, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
-import Modal from 'src/components/modal/Modal';
+import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/auth/AuthService';
 
 interface Props extends PropsWithChildren {

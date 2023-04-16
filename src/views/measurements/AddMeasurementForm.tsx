@@ -1,7 +1,7 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import { CCol, CForm, CFormInput, CRow } from '@coreui/react';
-import Modal from 'src/components/modal/Modal';
+import Modal from 'src/components/utils/Modal';
 
 interface Props extends PropsWithChildren {
   visible: boolean;

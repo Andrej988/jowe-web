@@ -2,12 +2,13 @@ import { CForm, CFormInput } from '@coreui/react';
 import React, { useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
-import Modal from 'src/components/modal/Modal';
+import Modal from 'src/components/utils/Modal';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
+  onChangePasswordErrorHandler: (toastTitle: string, toastMsg: string) => void;
 }
 
 const DEFAULT_IS_TOUCHED = false;
@@ -78,6 +79,7 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
       })
       .catch((err) => {
         console.error(err);
+        props.onChangePasswordErrorHandler('Change Password Error', err.message);
       });
     // if (isConfirmationCodeValid()) {
     // console.log('clicked');

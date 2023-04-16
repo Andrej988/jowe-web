@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, type ReactElement, useRef, useState } from 'react';
 import {
   CAvatar,
   CDropdown,
@@ -7,8 +7,9 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
+  CToaster,
 } from '@coreui/react';
-import { cilLockLocked, cilSettings, cilTrash } from '@coreui/icons';
+import { cilLockLocked, cilSettings, cilTrash, cilWarning } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import AuthService from 'src/auth/AuthService';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +21,7 @@ import avatar_male from '../../assets/images/avatars/anonymous-male.jpg';
 import avatar_female from '../../assets/images/avatars/anonymous-female.jpg';
 import DeleteAccountPage from 'src/views/pages/auth/DeleteAccountPage';
 import ChangePasswordPage from 'src/views/pages/auth/ChangePasswordPage';
+import buildToast from '../utils/Toast';
 
 const getAvatar = (): string => {
   const gender = AuthService.getInstance().getUserData().gender;
@@ -34,6 +36,9 @@ const AppProfileDropdown: React.FC = () => {
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
   const navigate = useNavigate();
+
+  const [toast, addToast] = useState<ReactElement | undefined>();
+  const toaster = useRef<HTMLDivElement | null>(null);
 
   const username: string = useSelector((state: RootState) =>
     state.auth.user.username != null ? state.auth.user.username : '',
@@ -65,6 +70,11 @@ const AppProfileDropdown: React.FC = () => {
 
   const confirmPasswordChangeHandler = (): void => {
     setChangePasswordModalVisible(false);
+    addToast(buildToast(cilSettings, 'Change Password', 'Your password was changed successfully.'));
+  };
+
+  const passwordChangeErrorHandler = (title: string, message: string): void => {
+    addToast(buildToast(cilWarning, title, message));
   };
 
   const signOutHandler = (): void => {
@@ -78,6 +88,7 @@ const AppProfileDropdown: React.FC = () => {
 
   return (
     <Fragment>
+      <CToaster ref={toaster} push={toast} placement="top-end" />
       <CDropdown alignment="end" variant="nav-item" popper={false}>
         <CDropdownToggle className="py-0" caret={false}>
           {username}
@@ -114,6 +125,7 @@ const AppProfileDropdown: React.FC = () => {
         visible={changePasswordModalVisible}
         onCloseHandler={closeChangePasswordModalHandler}
         onConfirmHandler={confirmPasswordChangeHandler}
+        onChangePasswordErrorHandler={passwordChangeErrorHandler}
       />
     </Fragment>
   );
