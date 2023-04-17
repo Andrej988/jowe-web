@@ -1,13 +1,10 @@
-import { CForm, CFormFeedback, CFormInput } from '@coreui/react';
+import { CForm, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
-import {
-  PASSWORD_CONFIRMATION_FEEDBACK,
-  PASSWORD_POLICY_FEEDBACK,
-  PASSWORD_POLICY_STRING,
-} from 'src/config/ServiceConfig';
+import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
+import { PASSWORD_CONFIRMATION_FEEDBACK, PASSWORD_POLICY_FEEDBACK } from 'src/config/CommonStrings';
 import { isAtLeastXCharsLong, isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
 
 interface Props extends PropsWithChildren {
@@ -52,19 +49,20 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
     setConfirmPassword(event.target.value);
   };
 
-  const validateForm = (): void => {
-    setIsValidated(true);
-
+  const validateForm = (): boolean => {
     const currentPasswordValid =
       isNotEmpty(currentPassword) && isAtLeastXCharsLong(currentPassword, 8);
     const newPasswordValid = isPasswordAccordingToPolicy(newPassword);
     const confirmPasswordValid = isNotEmpty(confirmPassword) && newPassword === confirmPassword;
 
+    setIsValidated(true);
     setFormValidityState({
       currentPasswordValid,
       newPasswordValid,
       confirmPasswordMatch: confirmPasswordValid,
     });
+
+    return currentPasswordValid && newPasswordValid && confirmPasswordValid;
   };
 
   useEffect(() => {
@@ -80,14 +78,6 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
     }
   }, [currentPassword, newPassword, confirmPassword, isValidated]);
 
-  const isFormValid = (): boolean => {
-    return (
-      formValidtyState.currentPasswordValid &&
-      formValidtyState.newPasswordValid &&
-      formValidtyState.confirmPasswordMatch
-    );
-  };
-
   const clearForm = (): void => {
     setIsValidated(DEFAULT_IS_VALIDATED);
     setCurrentPassword('');
@@ -102,8 +92,9 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   };
 
   const onChangePasswordConfirmationHandler = (): void => {
-    validateForm();
-    if (isFormValid()) {
+    const isFormValid = validateForm();
+
+    if (isFormValid) {
       AuthService.getInstance()
         .changePassword(currentPassword, newPassword)
         .then(() => {
@@ -170,7 +161,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           feedback={PASSWORD_CONFIRMATION_FEEDBACK}
           required
         />
-        <CFormFeedback className="mt-4">{PASSWORD_POLICY_STRING}</CFormFeedback>
+        <PasswordPolicyFeedback invalid={false} className="mt-4" />
       </CForm>
     </Modal>
   );

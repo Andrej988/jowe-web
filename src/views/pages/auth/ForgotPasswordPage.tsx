@@ -1,21 +1,22 @@
-import { CForm, CFormFeedback, CFormInput } from '@coreui/react';
+import { CForm, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
+import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
 import {
-  AWS_CONFIRMATION_CODE_MAX_LENGTH,
   CONFIRMATION_CODE_FEEDBACK,
+  EMAIL_FEEDBACK,
   PASSWORD_CONFIRMATION_FEEDBACK,
   PASSWORD_POLICY_FEEDBACK,
-  PASSWORD_POLICY_STRING,
-} from 'src/config/ServiceConfig';
+} from 'src/config/CommonStrings';
 import {
   isNotEmpty,
   isPasswordAccordingToPolicy,
   isValidConfirmationCodeLength,
   isValidEmail,
 } from 'src/utils/Validators';
+import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -105,8 +106,6 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
   }, [email, confirmationCode, password, passwordConfirmation, isValidated]);
 
   const validateForm = (): boolean => {
-    setIsValidated(true);
-
     const emailValid = isNotEmpty(email) && isValidEmail(email);
     let confirmationCodeValid = true;
     let newPasswordValid = true;
@@ -118,6 +117,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
       confirmPasswordValid = isNotEmpty(passwordConfirmation) && passwordConfirmation === password;
     }
 
+    setIsValidated(true);
     setFormValidityState({
       emailValid,
       confirmationCodeValid,
@@ -198,7 +198,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           value={email}
           onChange={onEmailChangeHandler}
           disabled={formState.emailDisabled}
-          feedback="Please enter a valid email address."
+          feedback={EMAIL_FEEDBACK}
           required
           autoFocus
         />
@@ -243,7 +243,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           feedback={PASSWORD_CONFIRMATION_FEEDBACK}
         />
         {formState === STATE_CODE_SENT && (
-          <CFormFeedback className="mt-4">{PASSWORD_POLICY_STRING}</CFormFeedback>
+          <PasswordPolicyFeedback invalid={false} className="mt-4" />
         )}
       </CForm>
     </Modal>

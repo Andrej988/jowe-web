@@ -24,11 +24,7 @@ export const PASSWORD_POLICY: PasswordPolicy[] = [
 export const AWS_CONFIRMATION_CODE_MIN_LENGTH = 6;
 export const AWS_CONFIRMATION_CODE_MAX_LENGTH = 10;
 
-export const CONFIRMATION_CODE_FEEDBACK =
-  'Please enter a valid confirmation code received via email.';
-export const PASSWORD_POLICY_STRING =
-  'Passwords must be at least 8 characters long and must contain at least one number, one special character, one uppercase letter and one lowercase letter.';
-export const PASSWORD_POLICY_FEEDBACK =
-  'Please check if password is according to the password policy below';
-export const PASSWORD_CONFIRMATION_FEEDBACK =
-  'New password must be according to rules and confirmation must match new password.';
+export const USERNAME_MIN_LENGTH = 4;
+export const USERNAME_MAX_LENGTH = 20;
+export const NAME_MIN_LENGTH = 1;
+export const NAME_MAX_LENGTH = 30;
