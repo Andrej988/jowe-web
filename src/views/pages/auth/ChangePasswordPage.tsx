@@ -72,7 +72,6 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    console.log(isValidated);
     if (isValidated) {
       const timerId = setTimeout(() => {
         validateForm();
