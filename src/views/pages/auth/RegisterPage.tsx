@@ -14,14 +14,9 @@ import {
   CCol,
   CContainer,
   CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
   CRow,
   CToaster,
-  CFormSelect,
 } from '@coreui/react';
-import CIcon from '@coreui/icons-react';
 import { cilEnvelopeClosed, cilLockLocked, cilPeople, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/auth/AuthService';
@@ -47,7 +42,8 @@ import {
   isPasswordAccordingToPolicy,
   isValidEmail,
 } from 'src/utils/Validators';
-import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
+import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
+import FormSelectGroupWithFeedback from 'src/components/utils/FormSelectGroupWithFeedback';
 
 interface FormValidityState {
   usernameValid: boolean;
@@ -166,7 +162,7 @@ const RegisterPage: React.FC = () => {
     if (isValidated) {
       const timerId = setTimeout(() => {
         validateForm();
-      }, 250);
+      }, 125);
 
       // Cleanup
       return () => {
@@ -222,140 +218,93 @@ const RegisterPage: React.FC = () => {
                       {!allowSignUp && (
                         <p style={{ color: 'red' }}>Sorry sign up is currently not allowed.</p>
                       )}
-                      <CInputGroup>
-                        <CInputGroupText>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          invalid={isValidated && !formValidityState.usernameValid}
-                          type="text"
-                          id="username"
-                          floatingLabel="Username"
-                          placeholder="Username"
-                          autoFocus
-                          autoComplete="username"
-                          required
-                          disabled={!allowSignUp}
-                          value={username}
-                          onChange={onUsernameInputChange}
-                        />
-                      </CInputGroup>
-                      {isValidated && !formValidityState.usernameValid && (
-                        <div className="invalid-feedback" style={{ display: 'block' }}>
-                          <p>{USERNAME_FEEDBACK}</p>
-                        </div>
-                      )}
-                      <CInputGroup className="mt-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          invalid={isValidated && !formValidityState.nameValid}
-                          type="text"
-                          id="name"
-                          floatingLabel="Name"
-                          placeholder="Name"
-                          autoComplete="name"
-                          required
-                          disabled={!allowSignUp}
-                          value={name}
-                          onChange={onNameInputChange}
-                        />
-                      </CInputGroup>
-                      {isValidated && !formValidityState.nameValid && (
-                        <div className="invalid-feedback" style={{ display: 'block' }}>
-                          <p>{NAME_FEEDBACK}</p>
-                        </div>
-                      )}
-                      <CInputGroup className="mt-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilEnvelopeClosed} />
-                        </CInputGroupText>
-                        <CFormInput
-                          invalid={isValidated && !formValidityState.emailValid}
-                          type="email"
-                          id="email"
-                          floatingLabel="Email Address"
-                          placeholder="Email Address"
-                          autoComplete="email"
-                          required
-                          disabled={!allowSignUp}
-                          value={email}
-                          onChange={onEmailInputChange}
-                        />
-                      </CInputGroup>
-                      {isValidated && !formValidityState.emailValid && (
-                        <div className="invalid-feedback" style={{ display: 'block' }}>
-                          <p>{EMAIL_FEEDBACK}</p>
-                        </div>
-                      )}
-                      <CInputGroup className="mt-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilLockLocked} />
-                        </CInputGroupText>
-                        <CFormInput
-                          invalid={isValidated && !formValidityState.passwordValid}
-                          id="password"
-                          type="password"
-                          floatingLabel="Password"
-                          placeholder="Password"
-                          autoComplete="current-password"
-                          required
-                          disabled={!allowSignUp}
-                          value={password}
-                          onChange={onPasswordInputChange}
-                        />
-                      </CInputGroup>
-                      {isValidated && !formValidityState.passwordValid && (
-                        <PasswordPolicyFeedback invalid={true} />
-                      )}
-                      <CInputGroup className="mt-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilLockLocked} />
-                        </CInputGroupText>
-                        <CFormInput
-                          invalid={isValidated && !formValidityState.confirmPasswordMatch}
-                          id="password-confirmation"
-                          type="password"
-                          floatingLabel="Confirm Password"
-                          placeholder="Confirm Password"
-                          autoComplete="current-password-confirmation"
-                          required
-                          disabled={!allowSignUp}
-                          value={confirmPassword}
-                          onChange={onPasswordConfirmationInputChange}
-                        />
-                      </CInputGroup>
-                      {isValidated && !formValidityState.confirmPasswordMatch && (
-                        <div className="invalid-feedback" style={{ display: 'block' }}>
-                          <p>{PASSWORD_CONFIRMATION_FEEDBACK}</p>
-                        </div>
-                      )}
-                      <CInputGroup className="mt-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilPeople} />
-                        </CInputGroupText>
-                        <CFormSelect
-                          invalid={isValidated && !formValidityState.genderValid}
-                          floatingLabel=" "
-                          placeholder=""
-                          aria-label="Select Gender"
-                          disabled={!allowSignUp}
-                          value={gender}
-                          onChange={onGenderSelectChange}
-                        >
-                          <option value={NOT_AVAILABLE} disabled>
-                            Gender
-                          </option>
-                          <option value="Female">Female</option>
-                          <option value="Male">Male</option>
-                        </CFormSelect>
-                      </CInputGroup>
-                      {isValidated && !formValidityState.genderValid && (
-                        <div className="invalid-feedback" style={{ display: 'block' }}>
-                          <p>Please select a gender.</p>
-                        </div>
-                      )}
+                      <FormInputGroupWithFeedback
+                        icon={cilUser}
+                        id="username"
+                        type="text"
+                        label="Username"
+                        autoComplete="username"
+                        required
+                        disabled={!allowSignUp}
+                        value={username}
+                        onChange={onUsernameInputChange}
+                        invalid={isValidated && !formValidityState.usernameValid}
+                        autoFocus
+                        feedbackMsg={USERNAME_FEEDBACK}
+                      />
+                      <FormInputGroupWithFeedback
+                        className="mt-3"
+                        icon={cilUser}
+                        id="name"
+                        type="text"
+                        label="Name"
+                        autoComplete="name"
+                        required
+                        disabled={!allowSignUp}
+                        value={name}
+                        onChange={onNameInputChange}
+                        invalid={isValidated && !formValidityState.nameValid}
+                        feedbackMsg={NAME_FEEDBACK}
+                      />
+                      <FormInputGroupWithFeedback
+                        className="mt-3"
+                        icon={cilEnvelopeClosed}
+                        id="email"
+                        type="email"
+                        label="Email Address"
+                        autoComplete="email"
+                        required
+                        disabled={!allowSignUp}
+                        value={email}
+                        onChange={onEmailInputChange}
+                        invalid={isValidated && !formValidityState.emailValid}
+                        feedbackMsg={EMAIL_FEEDBACK}
+                      />
+                      <FormInputGroupWithFeedback
+                        className="mt-3"
+                        icon={cilLockLocked}
+                        id="password"
+                        type="password"
+                        label="Password"
+                        autoComplete="password"
+                        required
+                        disabled={!allowSignUp}
+                        value={password}
+                        onChange={onPasswordInputChange}
+                        invalid={isValidated && !formValidityState.passwordValid}
+                        feedbackPaswordPolicy={true}
+                      />
+                      <FormInputGroupWithFeedback
+                        className="mt-3"
+                        icon={cilLockLocked}
+                        id="password-confirmation"
+                        type="password"
+                        label="Confirm Password"
+                        autoComplete="password-confirmation"
+                        required
+                        disabled={!allowSignUp}
+                        value={confirmPassword}
+                        onChange={onPasswordConfirmationInputChange}
+                        invalid={isValidated && !formValidityState.confirmPasswordMatch}
+                        feedbackMsg={PASSWORD_CONFIRMATION_FEEDBACK}
+                      />
+                      <FormSelectGroupWithFeedback
+                        className="mt-3"
+                        icon={cilPeople}
+                        id="gender"
+                        label="Gender"
+                        feedbackMsg="Please select a gender."
+                        value={gender}
+                        onChange={onGenderSelectChange}
+                        defaultValue={NOT_AVAILABLE}
+                        options={[
+                          { label: 'Gender', value: NOT_AVAILABLE, disabled: true },
+                          { label: 'Female', value: 'Female' },
+                          { label: 'Male', value: 'Male' },
+                        ]}
+                        invalid={isValidated && !formValidityState.genderValid}
+                        disabled={!allowSignUp}
+                      />
                       <p className="text-medium-emphasis mt-2">
                         Already a member? <Link to={'/login'}>Log In</Link>.
                       </p>
