@@ -53,7 +53,7 @@ const LoginPage: React.FC = () => {
     setForgotPasswordModalVisible(false);
   };
 
-  const forgotPasswordErrorHandler = (title: string, message: string): void => {
+  const toastErrorMessageHandler = (title: string, message: string): void => {
     addToast(buildToast(cilWarning, title, message));
   };
 
@@ -176,12 +176,13 @@ const LoginPage: React.FC = () => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
+        onProcessingErrorHandler={toastErrorMessageHandler}
       />
       <ForgotPasswordPage
         visible={forgotPasswordModalVisible}
         onCloseHandler={closeForgotPasswordFormHandler}
         onConfirmHandler={confirmForgotPasswordHandler}
-        onForgotPasswordErrorHandler={forgotPasswordErrorHandler}
+        onForgotPasswordErrorHandler={toastErrorMessageHandler}
       />
     </Fragment>
   );

@@ -202,6 +202,10 @@ const RegisterPage: React.FC = () => {
     }
   };
 
+  const toastErrorMessageHandler = (title: string, message: string): void => {
+    addToast(buildToast(cilWarning, title, message));
+  };
+
   return (
     <Fragment>
       <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -340,14 +344,16 @@ const RegisterPage: React.FC = () => {
                           value={gender}
                           onChange={onGenderSelectChange}
                         >
-                          <option value={NOT_AVAILABLE}>Select</option>
+                          <option value={NOT_AVAILABLE} disabled>
+                            Gender
+                          </option>
                           <option value="Female">Female</option>
                           <option value="Male">Male</option>
                         </CFormSelect>
                       </CInputGroup>
                       {isValidated && !formValidityState.genderValid && (
                         <div className="invalid-feedback" style={{ display: 'block' }}>
-                          <p>Please select a valid gender.</p>
+                          <p>Please select a gender.</p>
                         </div>
                       )}
                       <p className="text-medium-emphasis mt-2">
@@ -383,6 +389,7 @@ const RegisterPage: React.FC = () => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
+        onProcessingErrorHandler={toastErrorMessageHandler}
       />
     </Fragment>
   );
