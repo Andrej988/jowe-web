@@ -3,7 +3,12 @@ import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
-import { PASSWORD_RULES_STRING } from 'src/config/ServiceConfig';
+import {
+  PASSWORD_CONFIRMATION_FEEDBACK,
+  PASSWORD_POLICY_FEEDBACK,
+  PASSWORD_POLICY_STRING,
+} from 'src/config/ServiceConfig';
+import { isAtLeastXCharsLong, isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -12,23 +17,14 @@ interface Props extends PropsWithChildren {
   onChangePasswordErrorHandler: (toastTitle: string, toastMsg: string) => void;
 }
 
-const isFilled = (value: string): boolean => {
-  return value.trim() !== '';
-};
-
-const isAtLeastXCharsLong = (value: string, numOfChars: number): boolean => {
-  return value.trim().length >= numOfChars;
-};
-
-interface FormValidtyDetails {
+interface FormValidityState {
   currentPasswordValid: boolean;
   newPasswordValid: boolean;
   confirmPasswordMatch: boolean;
 }
 
-const PASSWORD_MATCH_STRING = 'Please check if password is according to the password rules below';
 const DEFAULT_IS_VALIDATED = false;
-const DEFAULT_FORM_VALIDITY_STATE: FormValidtyDetails = {
+const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   currentPasswordValid: false,
   newPasswordValid: false,
   confirmPasswordMatch: false,
@@ -36,7 +32,7 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidtyDetails = {
 
 const ChangePasswordPage: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
-  const [formValidtyDetails, setFormValidityDetails] = useState<FormValidtyDetails>(
+  const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
 
@@ -60,11 +56,11 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
     setIsValidated(true);
 
     const currentPasswordValid =
-      isFilled(currentPassword) && isAtLeastXCharsLong(currentPassword, 8);
-    const newPasswordValid = isFilled(newPassword) && isAtLeastXCharsLong(newPassword, 8);
-    const confirmPasswordValid = isFilled(confirmPassword) && newPassword === confirmPassword;
+      isNotEmpty(currentPassword) && isAtLeastXCharsLong(currentPassword, 8);
+    const newPasswordValid = isPasswordAccordingToPolicy(newPassword);
+    const confirmPasswordValid = isNotEmpty(confirmPassword) && newPassword === confirmPassword;
 
-    setFormValidityDetails({
+    setFormValidityState({
       currentPasswordValid,
       newPasswordValid,
       confirmPasswordMatch: confirmPasswordValid,
@@ -86,9 +82,9 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
 
   const isFormValid = (): boolean => {
     return (
-      formValidtyDetails.currentPasswordValid &&
-      formValidtyDetails.newPasswordValid &&
-      formValidtyDetails.confirmPasswordMatch
+      formValidtyState.currentPasswordValid &&
+      formValidtyState.newPasswordValid &&
+      formValidtyState.confirmPasswordMatch
     );
   };
 
@@ -97,7 +93,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
-    setFormValidityDetails(DEFAULT_FORM_VALIDITY_STATE);
+    setFormValidityState(DEFAULT_FORM_VALIDITY_STATE);
   };
 
   const onCloseFormHandler = (): void => {
@@ -135,7 +131,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
     >
       <CForm>
         <CFormInput
-          invalid={isValidated && !formValidtyDetails.currentPasswordValid}
+          invalid={isValidated && !formValidtyState.currentPasswordValid}
           type="password"
           id="currentPassword"
           autoComplete="current-password"
@@ -143,17 +139,14 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           placeholder="Current Password"
           value={currentPassword}
           onChange={onCurrentPasswordInputChangeHandler}
-          feedback={PASSWORD_MATCH_STRING}
+          feedback={PASSWORD_POLICY_FEEDBACK}
           required
           autoFocus
         />
 
         <CFormInput
           className="mt-3"
-          invalid={
-            isValidated &&
-            (!formValidtyDetails.newPasswordValid || !formValidtyDetails.confirmPasswordMatch)
-          }
+          invalid={isValidated && !formValidtyState.newPasswordValid}
           type="password"
           id="newPassword"
           autoComplete="new-password"
@@ -161,12 +154,12 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           placeholder="New Password"
           value={newPassword}
           onChange={onNewPasswordInputChangeHandler}
-          feedback={PASSWORD_MATCH_STRING}
+          feedback={PASSWORD_POLICY_FEEDBACK}
           required
         />
         <CFormInput
           className="mt-3"
-          invalid={isValidated && !formValidtyDetails.confirmPasswordMatch}
+          invalid={isValidated && !formValidtyState.confirmPasswordMatch}
           type="password"
           id="confirmNewPassword"
           autoComplete="confirm-password"
@@ -174,10 +167,10 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={onConfirmaPasswordInputChangeHandler}
-          feedback="New password must be according to rules and confirmation must match new password."
+          feedback={PASSWORD_CONFIRMATION_FEEDBACK}
           required
         />
-        <CFormFeedback className="mt-4">{PASSWORD_RULES_STRING}</CFormFeedback>
+        <CFormFeedback className="mt-4">{PASSWORD_POLICY_STRING}</CFormFeedback>
       </CForm>
     </Modal>
   );

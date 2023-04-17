@@ -1,45 +1,82 @@
-import { CForm, CFormInput } from '@coreui/react';
-import React, { useState } from 'react';
+import { CForm, CFormFeedback, CFormInput } from '@coreui/react';
+import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
+import {
+  AWS_CONFIRMATION_CODE_MAX_LENGTH,
+  CONFIRMATION_CODE_FEEDBACK,
+  PASSWORD_CONFIRMATION_FEEDBACK,
+  PASSWORD_POLICY_FEEDBACK,
+  PASSWORD_POLICY_STRING,
+} from 'src/config/ServiceConfig';
+import {
+  isNotEmpty,
+  isPasswordAccordingToPolicy,
+  isValidConfirmationCodeLength,
+  isValidEmail,
+} from 'src/utils/Validators';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
+  onForgotPasswordErrorHandler: (toastTitle: string, toastMsg: string) => void;
 }
 
-const STATE_INIT = {
+interface FormState {
+  primaryButtonText: string;
+  emailDisabled: boolean;
+  confirmationCodeDisabled: boolean;
+  newPasswordDisabled: boolean;
+  passwordConfirmationDisabled: boolean;
+}
+
+interface FormValidityState {
+  emailValid: boolean;
+  confirmationCodeValid: boolean;
+  newPasswordValid: boolean;
+  confirmPasswordMatch: boolean;
+}
+
+const STATE_INIT: FormState = {
   primaryButtonText: 'Send Confirmation Code',
-  usernameDisabled: false,
+  emailDisabled: false,
   confirmationCodeDisabled: true,
   newPasswordDisabled: true,
   passwordConfirmationDisabled: true,
 };
 
-const STATE_CODE_SENT = {
+const STATE_CODE_SENT: FormState = {
   primaryButtonText: 'Confirm',
-  usernameDisabled: true,
+  emailDisabled: true,
   confirmationCodeDisabled: false,
   newPasswordDisabled: false,
   passwordConfirmationDisabled: false,
 };
 
-const MAX_LENGTH = 10;
+const DEFAULT_IS_VALIDATED = false;
+const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
+  emailValid: false,
+  confirmationCodeValid: false,
+  newPasswordValid: false,
+  confirmPasswordMatch: false,
+};
 
 const ForgotPasswordPage: React.FC<Props> = (props) => {
-  const [formState, setFormState] = useState(STATE_INIT);
-  const [isTouched, setIsTouched] = useState(false);
-  const [isValid, setIsValid] = useState(false);
+  const [formState, setFormState] = useState<FormState>(STATE_INIT);
+  const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
+  const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
+    DEFAULT_FORM_VALIDITY_STATE,
+  );
 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [confirmationCode, setConfirmatioCode] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
-  const onUsernameChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-    setUsername(event.target.value);
+  const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+    setEmail(event.target.value);
   };
 
   const onConfirmationCodeInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -54,29 +91,42 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
     setPasswordConfirmation(event.target.value);
   };
 
-  /* const validateForm = (value: string): void => {
-    if (!isTouched) {
-      setIsTouched(true);
-    }
-
-    if (value.length <= MAX_LENGTH) {
-      setConfirmatioCode(value);
-    }
-  }; */
-
-  /* const isConfirmationCodeValid = (): boolean => {
-    return confirmationCode.length >= 6 && confirmationCode.length <= MAX_LENGTH;
-  };
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsValid(isConfirmationCodeValid());
-    }, 250);
+    if (isValidated) {
+      const timerId = setTimeout(() => {
+        validateForm();
+      }, 250);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [confirmationCode]); */
+      // Cleanup
+      return () => {
+        clearTimeout(timerId);
+      };
+    }
+  }, [email, confirmationCode, password, passwordConfirmation, isValidated]);
+
+  const validateForm = (): boolean => {
+    setIsValidated(true);
+
+    const emailValid = isNotEmpty(email) && isValidEmail(email);
+    let confirmationCodeValid = true;
+    let newPasswordValid = true;
+    let confirmPasswordValid = true;
+
+    if (formState === STATE_CODE_SENT) {
+      confirmationCodeValid = isValidConfirmationCodeLength(confirmationCode);
+      newPasswordValid = isPasswordAccordingToPolicy(password);
+      confirmPasswordValid = isNotEmpty(passwordConfirmation) && passwordConfirmation === password;
+    }
+
+    setFormValidityState({
+      emailValid,
+      confirmationCodeValid,
+      newPasswordValid,
+      confirmPasswordMatch: confirmPasswordValid,
+    });
+
+    return emailValid && confirmationCodeValid && newPasswordValid && confirmPasswordValid;
+  };
 
   const onCloseFormHandler = (): void => {
     props.onCloseHandler();
@@ -86,35 +136,42 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
   const resetForm = (): void => {
     setTimeout(() => {
       setFormState(STATE_INIT);
-      setUsername('');
+      setIsValidated(DEFAULT_IS_VALIDATED);
+      setFormValidityState(DEFAULT_FORM_VALIDITY_STATE);
+      setEmail('');
       setConfirmatioCode('');
       setPassword('');
       setPasswordConfirmation('');
-      setIsTouched(false);
-      setIsValid(false);
     }, 500);
   };
 
   const onConfirmHandler = (): void => {
-    if (formState === STATE_INIT) {
-      AuthService.getInstance()
-        .initForgotPasswordFlos(username)
-        .then(() => {
-          setFormState(STATE_CODE_SENT);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    } else {
-      AuthService.getInstance()
-        .completeForgotPasswordFlow(username, confirmationCode, password)
-        .then(() => {
-          props.onConfirmHandler();
-          resetForm();
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+    const isFormValid = validateForm();
+
+    if (isFormValid) {
+      if (formState === STATE_INIT) {
+        AuthService.getInstance()
+          .initForgotPasswordFlos(email)
+          .then(() => {
+            setFormState(STATE_CODE_SENT);
+            setIsValidated(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            props.onForgotPasswordErrorHandler('Forgot Password Error', err.message);
+          });
+      } else {
+        AuthService.getInstance()
+          .completeForgotPasswordFlow(email, confirmationCode, password)
+          .then(() => {
+            props.onConfirmHandler();
+            resetForm();
+          })
+          .catch((err) => {
+            console.error(err);
+            props.onForgotPasswordErrorHandler('Forgot Password Error', err.message);
+          });
+      }
     }
   };
 
@@ -132,51 +189,62 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
     >
       <CForm>
         <CFormInput
-          invalid={!isValid && isTouched}
-          type="type"
-          id="Username"
-          autoComplete="username"
-          label="Username or Email Address"
-          value={username}
-          onChange={onUsernameChangeHandler}
-          disabled={formState.usernameDisabled}
+          invalid={isValidated && !formValidtyState.emailValid}
+          type="email"
+          id="Email"
+          autoComplete="email"
+          floatingLabel="Email Address"
+          placeholder="Email Address"
+          value={email}
+          onChange={onEmailChangeHandler}
+          disabled={formState.emailDisabled}
+          feedback="Please enter a valid email address."
           required
           autoFocus
         />
         <CFormInput
-          invalid={!isValid && isTouched}
+          className="mt-3"
+          invalid={isValidated && !formValidtyState.confirmationCodeValid}
           type="text"
           id="confirmationNumber"
           autoComplete="confirmationNumber"
-          label="Confirmation code"
+          floatingLabel="Confirmation code"
+          placeholder="Confirmation code"
           value={confirmationCode}
-          maxLength={MAX_LENGTH}
+          maxLength={AWS_CONFIRMATION_CODE_MAX_LENGTH}
           onChange={onConfirmationCodeInputChangeHandler}
           disabled={formState.confirmationCodeDisabled}
-          required
+          feedback={CONFIRMATION_CODE_FEEDBACK}
         />
         <CFormInput
-          invalid={!isValid && isTouched}
+          className="mt-3"
+          invalid={isValidated && !formValidtyState.newPasswordValid}
           type="password"
           id="newPassword"
           autoComplete="newPassword"
-          label="New Password"
+          floatingLabel="New Password"
+          placeholder="New Password"
           value={password}
           onChange={onPasswordChangeHandler}
           disabled={formState.newPasswordDisabled}
-          required
+          feedback={PASSWORD_POLICY_FEEDBACK}
         />
         <CFormInput
-          invalid={!isValid && isTouched}
+          className="mt-3"
+          invalid={isValidated && !formValidtyState.confirmPasswordMatch}
           type="password"
           id="confirmNewPassword"
           autoComplete="confirmNewPassword"
-          label="Confirm Password"
+          floatingLabel="Confirm Password"
+          placeholder="Confirm Password"
           value={passwordConfirmation}
           onChange={onPasswordConfirmationChangeHandler}
           disabled={formState.passwordConfirmationDisabled}
-          required
+          feedback={PASSWORD_CONFIRMATION_FEEDBACK}
         />
+        {formState === STATE_CODE_SENT && (
+          <CFormFeedback className="mt-4">{PASSWORD_POLICY_STRING}</CFormFeedback>
+        )}
       </CForm>
     </Modal>
   );

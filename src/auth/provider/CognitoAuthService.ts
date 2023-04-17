@@ -277,8 +277,7 @@ export default class CognitoAuthService {
     const user: CognitoUser = this.buildCognitoUser(username);
     return await new Promise<boolean>((resolve, reject) => {
       user.forgotPassword({
-        onSuccess(data) {
-          console.log('data', data);
+        onSuccess() {
           resolve(true);
         },
         onFailure(err) {
@@ -297,8 +296,7 @@ export default class CognitoAuthService {
     const user: CognitoUser = this.buildCognitoUser(username);
     return await new Promise<boolean>((resolve, reject) => {
       user.confirmPassword(verificationCode, newPassword, {
-        onSuccess(data) {
-          console.log('data', data);
+        onSuccess() {
           resolve(true);
         },
         onFailure(err) {

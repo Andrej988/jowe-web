@@ -53,6 +53,10 @@ const LoginPage: React.FC = () => {
     setForgotPasswordModalVisible(false);
   };
 
+  const forgotPasswordErrorHandler = (title: string, message: string): void => {
+    addToast(buildToast(cilWarning, title, message));
+  };
+
   const confirmAccountHandler = (): void => {
     AuthService.getInstance()
       .login(username, password)
@@ -67,8 +71,8 @@ const LoginPage: React.FC = () => {
   };
 
   const confirmForgotPasswordHandler = (): void => {
-    console.log('here 123');
     setForgotPasswordModalVisible(false);
+    addToast(buildToast(cilLockLocked, 'Forgot Password', 'New password was successfully set'));
   };
 
   const loginHandler = (event: React.ChangeEvent<HTMLFormElement>): void => {
@@ -177,6 +181,7 @@ const LoginPage: React.FC = () => {
         visible={forgotPasswordModalVisible}
         onCloseHandler={closeForgotPasswordFormHandler}
         onConfirmHandler={confirmForgotPasswordHandler}
+        onForgotPasswordErrorHandler={forgotPasswordErrorHandler}
       />
     </Fragment>
   );
