@@ -1,57 +1,56 @@
-import { CForm, CFormInput } from '@coreui/react';
+import { CForm, CFormFeedback, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/auth/AuthService';
+import { isValidConfirmationCodeLength } from 'src/utils/Validators';
+import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
+import { CONFIRMATION_CODE_FEEDBACK } from 'src/config/CommonStrings';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
   username: string;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
+  onProcessingErrorHandler: (toastTitle: string, toastMsg: string) => void;
 }
 
-const MAX_LENGTH = 10;
-const INPUT_MESSAGE = `Account confirmation code was sent to your e-mail address.`;
-const DEFAULT_VALUE_IS_TOUCHED = false;
+const INPUT_MESSAGE = `Account verification code was sent to your e-mail address.`;
+const DEFAULT_VALUE_IS_VALIDATED = false;
 const DEFAULT_VALUE_IS_VALID = false;
 const DEFAULT_VALUE = '';
 
 const AccountConfirmationPage: React.FC<Props> = (props) => {
-  const [isTouched, setIsTouched] = useState(DEFAULT_VALUE_IS_TOUCHED);
+  const [isValidated, setIsValidated] = useState(DEFAULT_VALUE_IS_VALIDATED);
   const [isValid, setIsValid] = useState(DEFAULT_VALUE_IS_VALID);
   const [confirmationCode, setConfirmatioCode] = useState<string>(DEFAULT_VALUE);
 
   const onConfirmationCodeInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-    validateForm(event.target.value);
+    setConfirmatioCode(event.target.value);
   };
 
-  const validateForm = (value: string): void => {
-    if (!isTouched) {
-      setIsTouched(true);
-    }
+  const validateForm = (): boolean => {
+    setIsValidated(true);
 
-    if (value.length <= MAX_LENGTH) {
-      setConfirmatioCode(value);
-    }
-  };
-
-  const isConfirmationCodeValid = (): boolean => {
-    return confirmationCode.length >= 6 && confirmationCode.length <= MAX_LENGTH;
+    const isValid = isValidConfirmationCodeLength(confirmationCode);
+    setIsValid(isValid);
+    return isValid;
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsValid(isConfirmationCodeValid());
-    }, 50);
+    if (isValidated) {
+      const timer = setTimeout(() => {
+        validateForm();
+      }, 50);
 
-    return () => {
-      clearTimeout(timer);
-    };
+      return () => {
+        clearTimeout(timer);
+      };
+    }
   }, [confirmationCode]);
 
   const clearForm = (): void => {
-    setIsTouched(DEFAULT_VALUE_IS_TOUCHED);
+    setIsValidated(DEFAULT_VALUE_IS_VALIDATED);
     setIsValid(DEFAULT_VALUE_IS_VALID);
     setConfirmatioCode(DEFAULT_VALUE);
   };
@@ -62,18 +61,17 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
   };
 
   const onAccountConfirmation = (): void => {
-    if (isConfirmationCodeValid()) {
+    const isValid = validateForm();
+    if (isValid) {
       AuthService.getInstance()
         .confirmAccount(props.username, confirmationCode)
-        .then((a) => {
+        .then(() => {
           props.onSaveHandler();
         })
         .catch((err: Error) => {
           console.error(err);
-          alert(err);
+          props.onProcessingErrorHandler('Account Confirmation Error', err.message);
         });
-    } else {
-      validateForm('');
     }
   };
 
@@ -89,17 +87,18 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     >
       <CForm>
         <CFormInput
-          invalid={!isValid && isTouched}
+          invalid={isValidated && !isValid}
           type="text"
           id="confirmationNumber"
-          label="Confirmation code"
+          label="Verification code"
           value={confirmationCode}
-          maxLength={MAX_LENGTH}
-          text={INPUT_MESSAGE}
+          maxLength={AWS_CONFIRMATION_CODE_MAX_LENGTH}
           onChange={onConfirmationCodeInputChangeHandler}
           autoFocus
           required
+          feedback={CONFIRMATION_CODE_FEEDBACK}
         />
+        <CFormFeedback className="mt-4">{INPUT_MESSAGE}</CFormFeedback>
       </CForm>
     </Modal>
   );
