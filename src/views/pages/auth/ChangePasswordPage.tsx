@@ -34,7 +34,7 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidtyDetails = {
   confirmPasswordMatch: false,
 };
 
-const AccountConfirmationPage: React.FC<Props> = (props) => {
+const ChangePasswordPage: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
   const [formValidtyDetails, setFormValidityDetails] = useState<FormValidtyDetails>(
     DEFAULT_FORM_VALIDITY_STATE,
@@ -137,11 +137,11 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
       <CForm>
         <CFormInput
           invalid={isValidated && !formValidtyDetails.currentPasswordValid}
-          floatingLabel
           type="password"
           id="currentPassword"
           autoComplete="current-password"
-          label="Current Password"
+          floatingLabel="Current Password"
+          placeholder="Current Password"
           value={currentPassword}
           onChange={onCurrentPasswordInputChangeHandler}
           feedback={PASSWORD_MATCH_STRING}
@@ -155,11 +155,11 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
             isValidated &&
             (!formValidtyDetails.newPasswordValid || !formValidtyDetails.confirmPasswordMatch)
           }
-          floatingLabel
           type="password"
           id="newPassword"
           autoComplete="new-password"
-          label="New Password"
+          floatingLabel="New Password"
+          placeholder="New Password"
           value={newPassword}
           onChange={onNewPasswordInputChangeHandler}
           feedback={PASSWORD_MATCH_STRING}
@@ -167,12 +167,12 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
         />
         <CFormInput
           className="mt-3"
-          floatingLabel
           invalid={isValidated && !formValidtyDetails.confirmPasswordMatch}
           type="password"
           id="confirmNewPassword"
           autoComplete="confirm-password"
-          label="Confirm Password"
+          floatingLabel="Confirm Password"
+          placeholder="Confirm Password"
           value={confirmPassword}
           onChange={onConfirmaPasswordInputChangeHandler}
           feedback="New password must be according to rules and confirmation must match new password."
@@ -184,4 +184,4 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
   );
 };
 
-export default AccountConfirmationPage;
+export default ChangePasswordPage;
