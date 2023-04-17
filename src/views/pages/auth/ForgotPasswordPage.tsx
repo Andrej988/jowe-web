@@ -208,7 +208,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           type="text"
           id="confirmationNumber"
           autoComplete="confirmationNumber"
-          floatingLabel="Confirmation code"
+          floatingLabel="Verification code"
           placeholder="Confirmation code"
           value={confirmationCode}
           maxLength={AWS_CONFIRMATION_CODE_MAX_LENGTH}

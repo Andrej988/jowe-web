@@ -1,7 +1,7 @@
 import { NAME_MAX_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from './ServiceConfig';
 
 export const CONFIRMATION_CODE_FEEDBACK =
-  'Please enter a valid confirmation code received via email.';
+  'Please enter a valid verification code received via email.';
 
 export const PASSWORD_POLICY_FEEDBACK =
   'Please check if password is according to the password policy below';

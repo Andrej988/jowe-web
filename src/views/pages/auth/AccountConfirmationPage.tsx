@@ -1,10 +1,11 @@
-import { CForm, CFormInput } from '@coreui/react';
+import { CForm, CFormFeedback, CFormInput } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/auth/AuthService';
 import { isValidConfirmationCodeLength } from 'src/utils/Validators';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
+import { CONFIRMATION_CODE_FEEDBACK } from 'src/config/CommonStrings';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -14,7 +15,7 @@ interface Props extends PropsWithChildren {
   onProcessingErrorHandler: (toastTitle: string, toastMsg: string) => void;
 }
 
-const INPUT_MESSAGE = `Account confirmation code was sent to your e-mail address.`;
+const INPUT_MESSAGE = `Account verification code was sent to your e-mail address.`;
 const DEFAULT_VALUE_IS_VALIDATED = false;
 const DEFAULT_VALUE_IS_VALID = false;
 const DEFAULT_VALUE = '';
@@ -89,14 +90,15 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
           invalid={isValidated && !isValid}
           type="text"
           id="confirmationNumber"
-          label="Confirmation code"
+          label="Verification code"
           value={confirmationCode}
           maxLength={AWS_CONFIRMATION_CODE_MAX_LENGTH}
-          text={INPUT_MESSAGE}
           onChange={onConfirmationCodeInputChangeHandler}
           autoFocus
           required
+          feedback={CONFIRMATION_CODE_FEEDBACK}
         />
+        <CFormFeedback className="mt-4">{INPUT_MESSAGE}</CFormFeedback>
       </CForm>
     </Modal>
   );
