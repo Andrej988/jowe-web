@@ -8,13 +8,9 @@ import {
   CCol,
   CContainer,
   CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
   CRow,
   CToaster,
 } from '@coreui/react';
-import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthService from 'src/auth/AuthService';
@@ -22,6 +18,10 @@ import AccountConfirmationPage from './AccountConfirmationPage';
 import { UserNotConfirmedError } from 'src/auth/errors/AuthenticationErrors';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import buildToast from 'src/components/utils/Toast';
+import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
+
+const TOAST_TITLE_LOGIN_FAILURE = 'Authentication Error';
+const TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS = 'Missing credentials!';
 
 const LoginPage: React.FC = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
@@ -33,6 +33,14 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  const sendToastMessageHandler = (
+    icon: string | string[],
+    title: string,
+    message: string,
+  ): void => {
+    addToast(buildToast(icon, title, message));
+  };
 
   const openAccountConfirmationModal = (): void => {
     setAccountConfirmationModalVisible(true);
@@ -53,10 +61,6 @@ const LoginPage: React.FC = () => {
     setForgotPasswordModalVisible(false);
   };
 
-  const toastErrorMessageHandler = (title: string, message: string): void => {
-    addToast(buildToast(cilWarning, title, message));
-  };
-
   const confirmAccountHandler = (): void => {
     AuthService.getInstance()
       .login(username, password)
@@ -66,20 +70,23 @@ const LoginPage: React.FC = () => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        addToast(buildToast(cilWarning, 'Authentication Error', err.message));
+        sendToastMessageHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
       });
   };
 
   const confirmForgotPasswordHandler = (): void => {
     setForgotPasswordModalVisible(false);
-    addToast(buildToast(cilLockLocked, 'Forgot Password', 'New password was successfully set'));
   };
 
   const loginHandler = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
     if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
-      addToast(buildToast(cilWarning, 'Authentication Error', 'Missing credentials!'));
+      sendToastMessageHandler(
+        cilWarning,
+        TOAST_TITLE_LOGIN_FAILURE,
+        TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS,
+      );
       return;
     }
 
@@ -97,7 +104,7 @@ const LoginPage: React.FC = () => {
           setPassword(pass);
           openAccountConfirmationModal();
         } else {
-          addToast(buildToast(cilWarning, 'Authentication Error', err.message));
+          sendToastMessageHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
         }
       });
   };
@@ -115,36 +122,27 @@ const LoginPage: React.FC = () => {
                     <CForm className={'needs-validation'} onSubmit={loginHandler}>
                       <h1>Login</h1>
                       <p className="text-medium-emphasis">Sign In to your account.</p>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          id="username"
-                          floatingLabel="Username or Email Address"
-                          autoFocus
-                          placeholder="Username"
-                          autoComplete="username"
-                          required
-                          ref={usernameRef}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-4">
-                        <CInputGroupText>
-                          <CIcon icon={cilLockLocked} />
-                        </CInputGroupText>
-                        <CFormInput
-                          id="password"
-                          type="password"
-                          floatingLabel="Password"
-                          placeholder="Password"
-                          autoComplete="current-password"
-                          required
-                          ref={passwordRef}
-                        />
-                      </CInputGroup>
-                      <p className="text-medium-emphasis">
+                      <FormInputGroupWithFeedback
+                        icon={cilUser}
+                        id="username"
+                        type="text"
+                        label="Username or Email Address"
+                        autoComplete="username"
+                        autoFocus
+                        required
+                        inputRef={usernameRef}
+                      />
+                      <FormInputGroupWithFeedback
+                        className="mt-3"
+                        icon={cilLockLocked}
+                        id="password"
+                        type="password"
+                        label="Password"
+                        autoComplete="current-password"
+                        required
+                        inputRef={passwordRef}
+                      />
+                      <p className="text-medium-emphasis mt-4">
                         <a
                           href="/"
                           onClick={openForgotPasswordModalHandler}
@@ -176,13 +174,13 @@ const LoginPage: React.FC = () => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
-        onProcessingErrorHandler={toastErrorMessageHandler}
+        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
       />
       <ForgotPasswordPage
         visible={forgotPasswordModalVisible}
         onCloseHandler={closeForgotPasswordFormHandler}
         onConfirmHandler={confirmForgotPasswordHandler}
-        onForgotPasswordErrorHandler={toastErrorMessageHandler}
+        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
       />
     </Fragment>
   );

@@ -8,15 +8,18 @@ import {
   CModalFooter,
   CButton,
 } from '@coreui/react';
+import CIcon from '@coreui/icons-react';
 
 interface Props extends PropsWithChildren {
   title: string;
   visible: boolean;
   size?: 'sm' | 'lg' | 'xl' | undefined;
+  primaryButtonIcon?: string | string[];
   primaryButtonText: string;
   primaryButtonColor?: string;
   primaryButtonHandler: () => void;
   showSecondaryButton: boolean;
+  secondaryButtonIcon?: string | string[];
   secondaryButtonText?: string;
   secondaryButtonColor?: string;
   secondaryButtonHandler?: () => void;
@@ -43,6 +46,7 @@ const Modal: React.FC<Props> = (props) => {
           variant="outline"
           onClick={props.primaryButtonHandler}
         >
+          {props.primaryButtonIcon !== undefined && <CIcon icon={props.primaryButtonIcon} />}{' '}
           {props.primaryButtonText}
         </CButton>
         {props.showSecondaryButton ? (
@@ -53,6 +57,7 @@ const Modal: React.FC<Props> = (props) => {
             variant="outline"
             onClick={props.secondaryButtonHandler}
           >
+            {props.secondaryButtonIcon !== undefined && <CIcon icon={props.secondaryButtonIcon} />}{' '}
             {props.secondaryButtonText}
           </CButton>
         ) : (

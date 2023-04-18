@@ -1,3 +1,4 @@
+import { cilTrash } from '@coreui/icons';
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
@@ -23,6 +24,7 @@ const DeleteAccountPage: React.FC<Props> = (props) => {
     <Modal
       title="Delete Account"
       visible={props.visible}
+      primaryButtonIcon={cilTrash}
       primaryButtonText="Delete"
       primaryButtonHandler={onDeleteConfirmationHandler}
       primaryButtonColor="danger"

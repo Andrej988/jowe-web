@@ -1,4 +1,4 @@
-import { CForm, CFormFeedback, CFormInput } from '@coreui/react';
+import { CForm, CFormFeedback } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import Modal from 'src/components/utils/Modal';
@@ -6,19 +6,27 @@ import AuthService from 'src/auth/AuthService';
 import { isValidConfirmationCodeLength } from 'src/utils/Validators';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
 import { CONFIRMATION_CODE_FEEDBACK } from 'src/config/CommonStrings';
+import { cilDialpad, cilWarning } from '@coreui/icons';
+import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
   username: string;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
-  onProcessingErrorHandler: (toastTitle: string, toastMsg: string) => void;
+  onSendToastMsgToReceiverHandler?: (
+    icon: string | string[],
+    toastTitle: string,
+    toastMsg: string,
+  ) => void;
 }
 
-const INPUT_MESSAGE = `Account verification code was sent to your e-mail address.`;
 const DEFAULT_VALUE_IS_VALIDATED = false;
 const DEFAULT_VALUE_IS_VALID = false;
 const DEFAULT_VALUE = '';
+
+const INPUT_MESSAGE = `Account verification code was sent to your e-mail address.`;
+const TOAST_TITLE_ACCOUNT_CONFIRMATION_FAILURE = 'Account Confirmation Error';
 
 const AccountConfirmationPage: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_VALUE_IS_VALIDATED);
@@ -27,6 +35,12 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
 
   const onConfirmationCodeInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setConfirmatioCode(event.target.value);
+  };
+
+  const sendToastMessage = (icon: string | string[], title: string, message: string): void => {
+    if (props.onSendToastMsgToReceiverHandler !== undefined) {
+      props.onSendToastMsgToReceiverHandler(icon, title, message);
+    }
   };
 
   const validateForm = (): boolean => {
@@ -70,7 +84,7 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
         })
         .catch((err: Error) => {
           console.error(err);
-          props.onProcessingErrorHandler('Account Confirmation Error', err.message);
+          sendToastMessage(cilWarning, TOAST_TITLE_ACCOUNT_CONFIRMATION_FAILURE, err.message);
         });
     }
   };
@@ -86,17 +100,20 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
       onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm>
-        <CFormInput
-          invalid={isValidated && !isValid}
-          type="text"
+        <FormInputGroupWithFeedback
+          icon={cilDialpad}
+          className="mt-3"
           id="confirmationNumber"
-          label="Verification code"
+          type="text"
+          label="Verification Code"
+          autoComplete="verification-code"
           value={confirmationCode}
           maxLength={AWS_CONFIRMATION_CODE_MAX_LENGTH}
           onChange={onConfirmationCodeInputChangeHandler}
+          feedbackMsg={CONFIRMATION_CODE_FEEDBACK}
+          invalid={isValidated && !isValid}
           autoFocus
           required
-          feedback={CONFIRMATION_CODE_FEEDBACK}
         />
         <CFormFeedback className="mt-4">{INPUT_MESSAGE}</CFormFeedback>
       </CForm>
