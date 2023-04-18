@@ -1,11 +1,21 @@
 import React, { type PropsWithChildren } from 'react';
 import styles from './PasswordPolicyFeedback.module.css';
+import { PASSWORD_POLICY } from 'src/config/ServiceConfig';
+import { type PasswordPolicyDetail } from 'src/config/PasswordPolicy';
 
 interface Props extends PropsWithChildren {
   invalid: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
+
+const getStringForPolicyDetail = (
+  policyDetail: PasswordPolicyDetail,
+  isLastItem: boolean,
+): string => {
+  const delimiter = isLastItem ? '.' : ',';
+  return `${policyDetail}${delimiter}`;
+};
 
 const PasswordPolicyFeedback: React.FC<Props> = (props) => {
   let classNames = props.invalid ? 'invalid-feedback' : styles['feedback-valid'];
@@ -18,13 +28,21 @@ const PasswordPolicyFeedback: React.FC<Props> = (props) => {
 
   return (
     <div className={classNames} style={style}>
-      Password must contain at least 8 characters and must include:
-      <ul>
-        <li>at least one number,</li>
-        <li>at least one uppercase letter,</li>
-        <li>at least one lowercase letter,</li>
-        <li>at least one special character (!, @, #, $, %, ^, &, *, =, +, or -).</li>
-      </ul>
+      Password must contain at least {PASSWORD_POLICY.minNumberOfChars} characters and must include:
+      {PASSWORD_POLICY.policyDetails.length > 0 && (
+        <ul>
+          {PASSWORD_POLICY.policyDetails.map((detail, index) => {
+            return (
+              <li key={index}>
+                {getStringForPolicyDetail(
+                  detail,
+                  index === PASSWORD_POLICY.policyDetails.length - 1,
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 };
