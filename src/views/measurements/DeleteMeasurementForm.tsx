@@ -1,3 +1,4 @@
+import { cilTrash } from '@coreui/icons';
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import Modal from 'src/components/utils/Modal';
@@ -16,6 +17,7 @@ const DeleteMeasurementForm: React.FC<Props> = (props) => {
     <Modal
       title="Delete a Measurement"
       visible={props.visible}
+      primaryButtonIcon={cilTrash}
       primaryButtonColor="danger"
       primaryButtonText="Delete"
       primaryButtonHandler={props.onDeleteHandler}
