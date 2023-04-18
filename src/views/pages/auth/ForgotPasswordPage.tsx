@@ -1,6 +1,5 @@
 import { CForm } from '@coreui/react';
-import React, { useEffect, useState } from 'react';
-import type { ChangeEvent, PropsWithChildren } from 'react';
+import React, { useEffect, useState, type ChangeEvent } from 'react';
 import AuthService from 'src/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
@@ -23,16 +22,12 @@ import {
   cilLockUnlocked,
   cilWarning,
 } from '@coreui/icons';
+import { type PropsWithChildrenAndToastMessaging } from 'src/components/utils/ToasterProps';
 
-interface Props extends PropsWithChildren {
+interface Props extends PropsWithChildrenAndToastMessaging {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
-  onSendToastMsgToReceiverHandler?: (
-    icon: string | string[],
-    title: string,
-    message: string,
-  ) => void;
 }
 
 interface FormState {
@@ -108,12 +103,6 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
     setPasswordConfirmation(event.target.value);
   };
 
-  const sendToastMessage = (icon: string | string[], title: string, message: string): void => {
-    if (props.onSendToastMsgToReceiverHandler !== undefined) {
-      props.onSendToastMsgToReceiverHandler(icon, title, message);
-    }
-  };
-
   useEffect(() => {
     if (isValidated) {
       const timerId = setTimeout(() => {
@@ -175,7 +164,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
         AuthService.getInstance()
           .initForgotPasswordFlos(email)
           .then(() => {
-            sendToastMessage(
+            props.onSendToastMsgHandler(
               cilEnvelopeClosed,
               TOAST_TITLE_SUCCESS,
               TOAST_MESSAGE_VERIFICATION_CODE_SENT,
@@ -185,19 +174,23 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           })
           .catch((err) => {
             console.log(err);
-            sendToastMessage(cilWarning, TOAST_TITLE_FAILURE, err.message);
+            props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_FAILURE, err.message);
           });
       } else {
         AuthService.getInstance()
           .completeForgotPasswordFlow(email, confirmationCode, password)
           .then(() => {
             props.onConfirmHandler();
-            sendToastMessage(cilLockUnlocked, TOAST_TITLE_SUCCESS, TOAST_MESSAGE_FLOW_SUCCESSFUL);
+            props.onSendToastMsgHandler(
+              cilLockUnlocked,
+              TOAST_TITLE_SUCCESS,
+              TOAST_MESSAGE_FLOW_SUCCESSFUL,
+            );
             resetForm();
           })
           .catch((err) => {
             console.error(err);
-            sendToastMessage(cilWarning, TOAST_TITLE_FAILURE, err.message);
+            props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_FAILURE, err.message);
           });
       }
     }
