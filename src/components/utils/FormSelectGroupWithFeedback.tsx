@@ -20,10 +20,11 @@ interface Props extends PropsWithChildren {
   disabled?: boolean;
   required?: boolean;
   feedbackMsg: string;
-  value: string | number | string[] | undefined;
-  onChange: React.ChangeEventHandler<HTMLSelectElement> | undefined;
+  value?: string | number | string[];
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
   defaultValue: string | number;
   options: Option[];
+  ref?: React.Ref<HTMLSelectElement>;
 }
 
 const FormSelectGroupWithFeedback: React.FC<Props> = (props) => {
@@ -44,6 +45,7 @@ const FormSelectGroupWithFeedback: React.FC<Props> = (props) => {
           value={props.value}
           onChange={props.onChange}
           options={props.options}
+          ref={props.ref}
         />
       </CInputGroup>
       {props.feedbackMsg != null && props.invalid != null && props.invalid && (

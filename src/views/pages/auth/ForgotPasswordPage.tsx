@@ -1,4 +1,4 @@
-import { CForm, CFormInput } from '@coreui/react';
+import { CForm } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
@@ -8,7 +8,6 @@ import {
   CONFIRMATION_CODE_FEEDBACK,
   EMAIL_FEEDBACK,
   PASSWORD_CONFIRMATION_FEEDBACK,
-  PASSWORD_POLICY_FEEDBACK,
 } from 'src/config/CommonStrings';
 import {
   isNotEmpty,
@@ -16,13 +15,24 @@ import {
   isValidConfirmationCodeLength,
   isValidEmail,
 } from 'src/utils/Validators';
-import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
+import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
+import {
+  cilDialpad,
+  cilEnvelopeClosed,
+  cilLockLocked,
+  cilLockUnlocked,
+  cilWarning,
+} from '@coreui/icons';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
-  onForgotPasswordErrorHandler: (toastTitle: string, toastMsg: string) => void;
+  onSendToastMsgToReceiverHandler?: (
+    icon: string | string[],
+    title: string,
+    message: string,
+  ) => void;
 }
 
 interface FormState {
@@ -64,6 +74,12 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   confirmPasswordMatch: false,
 };
 
+const TOAST_TITLE_SUCCESS = 'Forgot Password';
+const TOAST_TITLE_FAILURE = 'Forgot Password Error';
+const TOAST_MESSAGE_VERIFICATION_CODE_SENT = 'Verification code was sent to your email address.';
+const TOAST_MESSAGE_FLOW_SUCCESSFUL =
+  'New password was successfully set. Please login with new password.';
+
 const ForgotPasswordPage: React.FC<Props> = (props) => {
   const [formState, setFormState] = useState<FormState>(STATE_INIT);
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
@@ -90,6 +106,12 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
 
   const onPasswordConfirmationChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setPasswordConfirmation(event.target.value);
+  };
+
+  const sendToastMessage = (icon: string | string[], title: string, message: string): void => {
+    if (props.onSendToastMsgToReceiverHandler !== undefined) {
+      props.onSendToastMsgToReceiverHandler(icon, title, message);
+    }
   };
 
   useEffect(() => {
@@ -153,23 +175,29 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
         AuthService.getInstance()
           .initForgotPasswordFlos(email)
           .then(() => {
+            sendToastMessage(
+              cilEnvelopeClosed,
+              TOAST_TITLE_SUCCESS,
+              TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+            );
             setFormState(STATE_CODE_SENT);
             setIsValidated(false);
           })
           .catch((err) => {
             console.log(err);
-            props.onForgotPasswordErrorHandler('Forgot Password Error', err.message);
+            sendToastMessage(cilWarning, TOAST_TITLE_FAILURE, err.message);
           });
       } else {
         AuthService.getInstance()
           .completeForgotPasswordFlow(email, confirmationCode, password)
           .then(() => {
             props.onConfirmHandler();
+            sendToastMessage(cilLockUnlocked, TOAST_TITLE_SUCCESS, TOAST_MESSAGE_FLOW_SUCCESSFUL);
             resetForm();
           })
           .catch((err) => {
             console.error(err);
-            props.onForgotPasswordErrorHandler('Forgot Password Error', err.message);
+            sendToastMessage(cilWarning, TOAST_TITLE_FAILURE, err.message);
           });
       }
     }
@@ -188,63 +216,60 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
       onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm>
-        <CFormInput
-          invalid={isValidated && !formValidtyState.emailValid}
+        <FormInputGroupWithFeedback
+          icon={cilEnvelopeClosed}
+          id="email"
           type="email"
-          id="Email"
+          label="Email Address"
           autoComplete="email"
-          floatingLabel="Email Address"
-          placeholder="Email Address"
           value={email}
           onChange={onEmailChangeHandler}
           disabled={formState.emailDisabled}
-          feedback={EMAIL_FEEDBACK}
           required
           autoFocus
+          feedbackMsg={EMAIL_FEEDBACK}
+          invalid={isValidated && !formValidtyState.emailValid}
         />
-        <CFormInput
+        <FormInputGroupWithFeedback
+          icon={cilDialpad}
           className="mt-3"
-          invalid={isValidated && !formValidtyState.confirmationCodeValid}
-          type="text"
           id="confirmationNumber"
-          autoComplete="confirmationNumber"
-          floatingLabel="Verification code"
-          placeholder="Confirmation code"
+          type="text"
+          label="Verification Code"
+          autoComplete="verification-code"
           value={confirmationCode}
           maxLength={AWS_CONFIRMATION_CODE_MAX_LENGTH}
           onChange={onConfirmationCodeInputChangeHandler}
           disabled={formState.confirmationCodeDisabled}
-          feedback={CONFIRMATION_CODE_FEEDBACK}
+          feedbackMsg={CONFIRMATION_CODE_FEEDBACK}
+          invalid={isValidated && !formValidtyState.confirmationCodeValid}
         />
-        <CFormInput
+        <FormInputGroupWithFeedback
+          icon={cilLockLocked}
           className="mt-3"
-          invalid={isValidated && !formValidtyState.newPasswordValid}
-          type="password"
           id="newPassword"
-          autoComplete="newPassword"
-          floatingLabel="New Password"
-          placeholder="New Password"
+          type="password"
+          label="New Password"
+          autoComplete="new-password"
           value={password}
           onChange={onPasswordChangeHandler}
           disabled={formState.newPasswordDisabled}
-          feedback={PASSWORD_POLICY_FEEDBACK}
+          feedbackPaswordPolicy={true}
+          invalid={isValidated && !formValidtyState.newPasswordValid}
         />
-        <CFormInput
+        <FormInputGroupWithFeedback
+          icon={cilLockLocked}
           className="mt-3"
-          invalid={isValidated && !formValidtyState.confirmPasswordMatch}
-          type="password"
           id="confirmNewPassword"
-          autoComplete="confirmNewPassword"
-          floatingLabel="Confirm Password"
-          placeholder="Confirm Password"
+          type="password"
+          label="Confirm Password"
+          autoComplete="confirm-password"
           value={passwordConfirmation}
           onChange={onPasswordConfirmationChangeHandler}
           disabled={formState.passwordConfirmationDisabled}
-          feedback={PASSWORD_CONFIRMATION_FEEDBACK}
+          feedbackMsg={PASSWORD_CONFIRMATION_FEEDBACK}
+          invalid={isValidated && !formValidtyState.confirmPasswordMatch}
         />
-        {formState === STATE_CODE_SENT && (
-          <PasswordPolicyFeedback invalid={false} className="mt-4" />
-        )}
       </CForm>
     </Modal>
   );

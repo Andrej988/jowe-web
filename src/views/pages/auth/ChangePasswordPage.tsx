@@ -1,17 +1,27 @@
-import { CForm, CFormInput } from '@coreui/react';
+import { cilLockLocked, cilSettings, cilWarning } from '@coreui/icons';
+import { CForm } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent, PropsWithChildren } from 'react';
 import AuthService from 'src/auth/AuthService';
+import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import Modal from 'src/components/utils/Modal';
 import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
-import { PASSWORD_CONFIRMATION_FEEDBACK, PASSWORD_POLICY_FEEDBACK } from 'src/config/CommonStrings';
-import { isAtLeastXCharsLong, isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
+import {
+  CURRENT_PASSWORD_MISSING,
+  PASSWORD_CONFIRMATION_FEEDBACK,
+  PASSWORD_POLICY_FEEDBACK,
+} from 'src/config/CommonStrings';
+import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
-  onChangePasswordErrorHandler: (toastTitle: string, toastMsg: string) => void;
+  onSendToastMsgToReceiverHandler: (
+    icon: string | string[],
+    toastTitle: string,
+    toastMsg: string,
+  ) => void;
 }
 
 interface FormValidityState {
@@ -27,6 +37,10 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   confirmPasswordMatch: false,
 };
 
+const TOAST_TITLE_CHANGE_PASSWORD_SUCCESSFUL = 'Change Password';
+const TOAST_TITLE_CHANGE_PASSWORD_FAILURE = 'Change Password Error';
+const TOAST_MESSAGE_CHANGE_PASSWORD_SUCCESFUL = 'Your password was changed successfully.';
+
 const ChangePasswordPage: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
@@ -36,6 +50,12 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const sendToastMessage = (icon: string | string[], title: string, message: string): void => {
+    if (props.onSendToastMsgToReceiverHandler !== undefined) {
+      props.onSendToastMsgToReceiverHandler(icon, title, message);
+    }
+  };
 
   const onCurrentPasswordInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setCurrentPassword(event.target.value);
@@ -50,8 +70,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   };
 
   const validateForm = (): boolean => {
-    const currentPasswordValid =
-      isNotEmpty(currentPassword) && isAtLeastXCharsLong(currentPassword, 8);
+    const currentPasswordValid = isNotEmpty(currentPassword);
     const newPasswordValid = isPasswordAccordingToPolicy(newPassword);
     const confirmPasswordValid = isNotEmpty(confirmPassword) && newPassword === confirmPassword;
 
@@ -86,9 +105,15 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
     setFormValidityState(DEFAULT_FORM_VALIDITY_STATE);
   };
 
+  const clearFormWithSlightTimeout = (): void => {
+    setTimeout(() => {
+      clearForm();
+    }, 250);
+  };
+
   const onCloseFormHandler = (): void => {
     props.onCloseHandler();
-    clearForm();
+    clearFormWithSlightTimeout();
   };
 
   const onChangePasswordConfirmationHandler = (): void => {
@@ -98,12 +123,17 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
       AuthService.getInstance()
         .changePassword(currentPassword, newPassword)
         .then(() => {
+          sendToastMessage(
+            cilSettings,
+            TOAST_TITLE_CHANGE_PASSWORD_SUCCESSFUL,
+            TOAST_MESSAGE_CHANGE_PASSWORD_SUCCESFUL,
+          );
           props.onConfirmHandler();
-          clearForm();
+          clearFormWithSlightTimeout();
         })
         .catch((err) => {
           console.error(err);
-          props.onChangePasswordErrorHandler('Change Password Error', err.message);
+          sendToastMessage(cilWarning, TOAST_TITLE_CHANGE_PASSWORD_FAILURE, err.message);
         });
     }
   };
@@ -121,45 +151,44 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
       onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm>
-        <CFormInput
-          invalid={isValidated && !formValidtyState.currentPasswordValid}
-          type="password"
+        <FormInputGroupWithFeedback
+          icon={cilLockLocked}
           id="currentPassword"
+          type="password"
+          label="Current Password"
           autoComplete="current-password"
-          floatingLabel="Current Password"
-          placeholder="Current Password"
           value={currentPassword}
           onChange={onCurrentPasswordInputChangeHandler}
-          feedback={PASSWORD_POLICY_FEEDBACK}
+          feedbackMsg={CURRENT_PASSWORD_MISSING}
           required
           autoFocus
+          invalid={isValidated && !formValidtyState.currentPasswordValid}
         />
-
-        <CFormInput
+        <FormInputGroupWithFeedback
           className="mt-3"
-          invalid={isValidated && !formValidtyState.newPasswordValid}
-          type="password"
+          icon={cilLockLocked}
           id="newPassword"
+          type="password"
+          label="New Password"
           autoComplete="new-password"
-          floatingLabel="New Password"
-          placeholder="New Password"
           value={newPassword}
           onChange={onNewPasswordInputChangeHandler}
-          feedback={PASSWORD_POLICY_FEEDBACK}
+          feedbackMsg={PASSWORD_POLICY_FEEDBACK}
           required
+          invalid={isValidated && !formValidtyState.newPasswordValid}
         />
-        <CFormInput
+        <FormInputGroupWithFeedback
           className="mt-3"
-          invalid={isValidated && !formValidtyState.confirmPasswordMatch}
-          type="password"
+          icon={cilLockLocked}
           id="confirmNewPassword"
+          type="password"
+          label="Confirm Password"
           autoComplete="confirm-password"
-          floatingLabel="Confirm Password"
-          placeholder="Confirm Password"
           value={confirmPassword}
           onChange={onConfirmaPasswordInputChangeHandler}
-          feedback={PASSWORD_CONFIRMATION_FEEDBACK}
+          feedbackMsg={PASSWORD_CONFIRMATION_FEEDBACK}
           required
+          invalid={isValidated && !formValidtyState.confirmPasswordMatch}
         />
         <PasswordPolicyFeedback invalid={false} className="mt-4" />
       </CForm>

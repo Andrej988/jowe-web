@@ -66,6 +66,9 @@ const INITIAL_FORM_VALIDITY_STATE: FormValidityState = {
 const allowSignUp = ALLOW_SIGN_UP;
 const NOT_AVAILABLE = 'N/A';
 
+const TOAST_TITLE_SIGNUP_SUCCESSFUL = 'Sign Up';
+const TOAST_MESSAGE_VERIFICATION_CODE_SENT = 'Verification code was sent to your email address.';
+
 const RegisterPage: React.FC = () => {
   const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
   const navigate = useNavigate();
@@ -83,6 +86,14 @@ const RegisterPage: React.FC = () => {
   const [formValidityState, setFormValidityState] = useState<FormValidityState>(
     INITIAL_FORM_VALIDITY_STATE,
   );
+
+  const sendToastMessageHandler = (
+    icon: string | string[],
+    title: string,
+    message: string,
+  ): void => {
+    addToast(buildToast(icon, title, message));
+  };
 
   const openAccountConfirmationModal = (): void => {
     setAccountConfirmationModalVisible(true);
@@ -102,7 +113,7 @@ const RegisterPage: React.FC = () => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        addToast(buildToast(cilWarning, 'Authentication Error', err.message));
+        sendToastMessageHandler(cilWarning, 'Authentication Error', err.message);
       });
   };
 
@@ -190,16 +201,17 @@ const RegisterPage: React.FC = () => {
         .then((username: string) => {
           setUsername(username);
           setPassword(registrationRequest.password);
+          sendToastMessageHandler(
+            cilEnvelopeClosed,
+            TOAST_TITLE_SIGNUP_SUCCESSFUL,
+            TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+          );
           openAccountConfirmationModal();
         })
         .catch((err: Error) => {
-          addToast(buildToast(cilWarning, 'Sign Up Error', err.message));
+          sendToastMessageHandler(cilWarning, 'Sign Up Error', err.message);
         });
     }
-  };
-
-  const toastErrorMessageHandler = (title: string, message: string): void => {
-    addToast(buildToast(cilWarning, title, message));
   };
 
   return (
@@ -338,7 +350,7 @@ const RegisterPage: React.FC = () => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
-        onProcessingErrorHandler={toastErrorMessageHandler}
+        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
       />
     </Fragment>
   );

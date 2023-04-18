@@ -9,7 +9,7 @@ import {
   CDropdownToggle,
   CToaster,
 } from '@coreui/react';
-import { cilLockLocked, cilSettings, cilTrash, cilWarning } from '@coreui/icons';
+import { cilLockLocked, cilSettings, cilTrash } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import AuthService from 'src/auth/AuthService';
 import { useNavigate } from 'react-router-dom';
@@ -47,6 +47,14 @@ const AppProfileDropdown: React.FC = () => {
     state.auth.user.name != null ? state.auth.user.name : '',
   );
 
+  const sendToastMessageHandler = (
+    icon: string | string[],
+    title: string,
+    message: string,
+  ): void => {
+    addToast(buildToast(icon, title, message));
+  };
+
   const openDeleteAccountModalHandler = (): void => {
     setDeleteAccountModalVisible(true);
   };
@@ -70,11 +78,6 @@ const AppProfileDropdown: React.FC = () => {
 
   const confirmPasswordChangeHandler = (): void => {
     setChangePasswordModalVisible(false);
-    addToast(buildToast(cilSettings, 'Change Password', 'Your password was changed successfully.'));
-  };
-
-  const passwordChangeErrorHandler = (title: string, message: string): void => {
-    addToast(buildToast(cilWarning, title, message));
   };
 
   const signOutHandler = (): void => {
@@ -125,7 +128,7 @@ const AppProfileDropdown: React.FC = () => {
         visible={changePasswordModalVisible}
         onCloseHandler={closeChangePasswordModalHandler}
         onConfirmHandler={confirmPasswordChangeHandler}
-        onChangePasswordErrorHandler={passwordChangeErrorHandler}
+        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
       />
     </Fragment>
   );

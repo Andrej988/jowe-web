@@ -18,8 +18,11 @@ interface Props extends PropsWithChildren {
   required?: boolean;
   feedbackMsg?: string;
   feedbackPaswordPolicy?: boolean;
-  value: string | number | string[] | undefined;
-  onChange: React.ChangeEventHandler<HTMLInputElement> | undefined;
+  value?: string | number | string[];
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  inputRef?: React.Ref<HTMLInputElement>;
+  minLength?: number;
+  maxLength?: number;
 }
 
 const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
@@ -41,6 +44,9 @@ const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
           disabled={props.disabled}
           value={props.value}
           onChange={props.onChange}
+          ref={props.inputRef}
+          minLength={props.minLength}
+          maxLength={props.maxLength}
         />
       </CInputGroup>
       {props.feedbackPaswordPolicy !== true &&
