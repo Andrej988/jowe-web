@@ -22,9 +22,10 @@ import {
   cilLockUnlocked,
   cilWarning,
 } from '@coreui/icons';
-import { type PropsWithChildrenAndToastMessaging } from 'src/components/utils/ToasterProps';
+import { useDispatch } from 'react-redux';
+import { ToastMsg, toasterActions } from 'src/store/Store';
 
-interface Props extends PropsWithChildrenAndToastMessaging {
+interface Props {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
@@ -81,6 +82,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
   const [confirmationCode, setConfirmatioCode] = useState('');
@@ -164,33 +166,41 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
         AuthService.getInstance()
           .initForgotPasswordFlos(email)
           .then(() => {
-            props.onSendToastMsgHandler(
-              cilEnvelopeClosed,
-              TOAST_TITLE_SUCCESS,
-              TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+            dispatch(
+              toasterActions.addMessage(
+                new ToastMsg(
+                  cilEnvelopeClosed,
+                  TOAST_TITLE_SUCCESS,
+                  TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+                ),
+              ),
             );
             setFormState(STATE_CODE_SENT);
             setIsValidated(false);
           })
           .catch((err) => {
             console.log(err);
-            props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_FAILURE, err.message);
+            dispatch(
+              toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_FAILURE, err.message)),
+            );
           });
       } else {
         AuthService.getInstance()
           .completeForgotPasswordFlow(email, confirmationCode, password)
           .then(() => {
             props.onConfirmHandler();
-            props.onSendToastMsgHandler(
-              cilLockUnlocked,
-              TOAST_TITLE_SUCCESS,
-              TOAST_MESSAGE_FLOW_SUCCESSFUL,
+            dispatch(
+              toasterActions.addMessage(
+                new ToastMsg(cilLockUnlocked, TOAST_TITLE_SUCCESS, TOAST_MESSAGE_FLOW_SUCCESSFUL),
+              ),
             );
             resetForm();
           })
           .catch((err) => {
             console.error(err);
-            props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_FAILURE, err.message);
+            dispatch(
+              toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_FAILURE, err.message)),
+            );
           });
       }
     }

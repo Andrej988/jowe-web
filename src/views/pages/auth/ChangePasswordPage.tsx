@@ -2,19 +2,20 @@ import { cilLockLocked, cilSettings, cilWarning } from '@coreui/icons';
 import { CForm } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
+import { useDispatch } from 'react-redux';
 import AuthService from 'src/auth/AuthService';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import Modal from 'src/components/utils/Modal';
 import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
-import { type PropsWithChildrenAndToastMessaging } from 'src/components/utils/ToasterProps';
 import {
   CURRENT_PASSWORD_MISSING,
   PASSWORD_CONFIRMATION_FEEDBACK,
   PASSWORD_POLICY_FEEDBACK,
 } from 'src/config/CommonStrings';
+import { ToastMsg, toasterActions } from 'src/store/Store';
 import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
 
-interface Props extends PropsWithChildrenAndToastMessaging {
+interface Props {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
@@ -42,6 +43,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
+  const dispatch = useDispatch();
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -113,17 +115,25 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
       AuthService.getInstance()
         .changePassword(currentPassword, newPassword)
         .then(() => {
-          props.onSendToastMsgHandler(
-            cilSettings,
-            TOAST_TITLE_CHANGE_PASSWORD_SUCCESSFUL,
-            TOAST_MESSAGE_CHANGE_PASSWORD_SUCCESFUL,
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(
+                cilSettings,
+                TOAST_TITLE_CHANGE_PASSWORD_SUCCESSFUL,
+                TOAST_MESSAGE_CHANGE_PASSWORD_SUCCESFUL,
+              ),
+            ),
           );
           props.onConfirmHandler();
           clearFormWithSlightTimeout();
         })
         .catch((err) => {
           console.error(err);
-          props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_CHANGE_PASSWORD_FAILURE, err.message);
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(cilWarning, TOAST_TITLE_CHANGE_PASSWORD_FAILURE, err.message),
+            ),
+          );
         });
     }
   };
