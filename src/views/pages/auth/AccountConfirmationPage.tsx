@@ -1,6 +1,5 @@
 import { CForm, CFormFeedback } from '@coreui/react';
-import React, { useEffect, useState } from 'react';
-import type { ChangeEvent, PropsWithChildren } from 'react';
+import React, { useEffect, useState, type ChangeEvent } from 'react';
 import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/auth/AuthService';
 import { isValidConfirmationCodeLength } from 'src/utils/Validators';
@@ -8,17 +7,13 @@ import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
 import { CONFIRMATION_CODE_FEEDBACK } from 'src/config/CommonStrings';
 import { cilDialpad, cilWarning } from '@coreui/icons';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
+import { type PropsWithChildrenAndToastMessaging } from 'src/components/utils/ToasterProps';
 
-interface Props extends PropsWithChildren {
+interface Props extends PropsWithChildrenAndToastMessaging {
   visible: boolean;
   username: string;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
-  onSendToastMsgToReceiverHandler?: (
-    icon: string | string[],
-    toastTitle: string,
-    toastMsg: string,
-  ) => void;
 }
 
 const DEFAULT_VALUE_IS_VALIDATED = false;
@@ -35,12 +30,6 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
 
   const onConfirmationCodeInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setConfirmatioCode(event.target.value);
-  };
-
-  const sendToastMessage = (icon: string | string[], title: string, message: string): void => {
-    if (props.onSendToastMsgToReceiverHandler !== undefined) {
-      props.onSendToastMsgToReceiverHandler(icon, title, message);
-    }
   };
 
   const validateForm = (): boolean => {
@@ -84,7 +73,11 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
         })
         .catch((err: Error) => {
           console.error(err);
-          sendToastMessage(cilWarning, TOAST_TITLE_ACCOUNT_CONFIRMATION_FAILURE, err.message);
+          props.onSendToastMsgHandler(
+            cilWarning,
+            TOAST_TITLE_ACCOUNT_CONFIRMATION_FAILURE,
+            err.message,
+          );
         });
     }
   };

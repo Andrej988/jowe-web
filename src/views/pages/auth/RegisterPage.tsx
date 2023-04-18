@@ -1,11 +1,4 @@
-import React, {
-  type ChangeEvent,
-  Fragment,
-  useRef,
-  useState,
-  type ReactElement,
-  useEffect,
-} from 'react';
+import React, { type ChangeEvent, Fragment, useState, useEffect } from 'react';
 import {
   CButton,
   CCard,
@@ -15,7 +8,6 @@ import {
   CContainer,
   CForm,
   CRow,
-  CToaster,
 } from '@coreui/react';
 import { cilEnvelopeClosed, cilLockLocked, cilPeople, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -35,7 +27,6 @@ import {
 } from 'src/config/CommonStrings';
 import AccountConfirmationPage from './AccountConfirmationPage';
 import { UserRegistrationRequest } from 'src/auth/model/UserRegistrationRequest';
-import buildToast from 'src/components/utils/Toast';
 import {
   isCorrectLength,
   isNotEmpty,
@@ -44,6 +35,7 @@ import {
 } from 'src/utils/Validators';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import FormSelectGroupWithFeedback from 'src/components/utils/FormSelectGroupWithFeedback';
+import { type PropsWithToastMessaging } from 'src/components/utils/ToasterProps';
 
 interface FormValidityState {
   usernameValid: boolean;
@@ -67,13 +59,12 @@ const allowSignUp = ALLOW_SIGN_UP;
 const NOT_AVAILABLE = 'N/A';
 
 const TOAST_TITLE_SIGNUP_SUCCESSFUL = 'Sign Up';
+const TOAST_TITLE_SIGNUP_FAILURE = 'Sign Up Error';
 const TOAST_MESSAGE_VERIFICATION_CODE_SENT = 'Verification code was sent to your email address.';
 
-const RegisterPage: React.FC = () => {
+const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
   const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
   const navigate = useNavigate();
-  const [toast, addToast] = useState<ReactElement | undefined>();
-  const toaster = useRef<HTMLDivElement | null>(null);
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -86,14 +77,6 @@ const RegisterPage: React.FC = () => {
   const [formValidityState, setFormValidityState] = useState<FormValidityState>(
     INITIAL_FORM_VALIDITY_STATE,
   );
-
-  const sendToastMessageHandler = (
-    icon: string | string[],
-    title: string,
-    message: string,
-  ): void => {
-    addToast(buildToast(icon, title, message));
-  };
 
   const openAccountConfirmationModal = (): void => {
     setAccountConfirmationModalVisible(true);
@@ -113,7 +96,7 @@ const RegisterPage: React.FC = () => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        sendToastMessageHandler(cilWarning, 'Authentication Error', err.message);
+        props.onSendToastMsgHandler(cilWarning, 'Authentication Error', err.message);
       });
   };
 
@@ -201,7 +184,7 @@ const RegisterPage: React.FC = () => {
         .then((username: string) => {
           setUsername(username);
           setPassword(registrationRequest.password);
-          sendToastMessageHandler(
+          props.onSendToastMsgHandler(
             cilEnvelopeClosed,
             TOAST_TITLE_SIGNUP_SUCCESSFUL,
             TOAST_MESSAGE_VERIFICATION_CODE_SENT,
@@ -209,7 +192,7 @@ const RegisterPage: React.FC = () => {
           openAccountConfirmationModal();
         })
         .catch((err: Error) => {
-          sendToastMessageHandler(cilWarning, 'Sign Up Error', err.message);
+          props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_SIGNUP_FAILURE, err.message);
         });
     }
   };
@@ -218,7 +201,6 @@ const RegisterPage: React.FC = () => {
     <Fragment>
       <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
         <CContainer>
-          <CToaster ref={toaster} push={toast} placement="top-end" />
           <CRow className="justify-content-center">
             <CCol sm={10} md={8} lg={6} xl={5}>
               <CCardGroup>
@@ -350,7 +332,7 @@ const RegisterPage: React.FC = () => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
-        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
+        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
     </Fragment>
   );

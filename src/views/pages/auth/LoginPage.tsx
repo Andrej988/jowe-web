@@ -1,5 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react';
-import type { ReactElement, RefObject } from 'react';
+import React, { Fragment, useRef, useState, type RefObject } from 'react';
 import {
   CButton,
   CCard,
@@ -9,7 +8,6 @@ import {
   CContainer,
   CForm,
   CRow,
-  CToaster,
 } from '@coreui/react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,30 +15,20 @@ import AuthService from 'src/auth/AuthService';
 import AccountConfirmationPage from './AccountConfirmationPage';
 import { UserNotConfirmedError } from 'src/auth/errors/AuthenticationErrors';
 import ForgotPasswordPage from './ForgotPasswordPage';
-import buildToast from 'src/components/utils/Toast';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
+import { type PropsWithToastMessaging } from 'src/components/utils/ToasterProps';
 
 const TOAST_TITLE_LOGIN_FAILURE = 'Authentication Error';
 const TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS = 'Missing credentials!';
 
-const LoginPage: React.FC = () => {
+const LoginPage: React.FC<PropsWithToastMessaging> = (props) => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
   const passwordRef: RefObject<HTMLInputElement> = useRef(null);
-  const [toast, addToast] = useState<ReactElement | undefined>();
-  const toaster = useRef<HTMLDivElement | null>(null);
   const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
   const [forgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-
-  const sendToastMessageHandler = (
-    icon: string | string[],
-    title: string,
-    message: string,
-  ): void => {
-    addToast(buildToast(icon, title, message));
-  };
 
   const openAccountConfirmationModal = (): void => {
     setAccountConfirmationModalVisible(true);
@@ -70,7 +58,7 @@ const LoginPage: React.FC = () => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        sendToastMessageHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
+        props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
       });
   };
 
@@ -82,7 +70,7 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
 
     if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
-      sendToastMessageHandler(
+      props.onSendToastMsgHandler(
         cilWarning,
         TOAST_TITLE_LOGIN_FAILURE,
         TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS,
@@ -104,7 +92,7 @@ const LoginPage: React.FC = () => {
           setPassword(pass);
           openAccountConfirmationModal();
         } else {
-          sendToastMessageHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
+          props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
         }
       });
   };
@@ -113,7 +101,6 @@ const LoginPage: React.FC = () => {
     <Fragment>
       <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
         <CContainer>
-          <CToaster ref={toaster} push={toast} placement="top-end" />
           <CRow className="justify-content-center">
             <CCol sm={10} md={8} lg={6} xl={5}>
               <CCardGroup>
@@ -174,13 +161,13 @@ const LoginPage: React.FC = () => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
-        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
+        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
       <ForgotPasswordPage
         visible={forgotPasswordModalVisible}
         onCloseHandler={closeForgotPasswordFormHandler}
         onConfirmHandler={confirmForgotPasswordHandler}
-        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
+        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
     </Fragment>
   );

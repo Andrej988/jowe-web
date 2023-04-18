@@ -1,11 +1,12 @@
 import { cilLockLocked, cilSettings, cilWarning } from '@coreui/icons';
 import { CForm } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
-import type { ChangeEvent, PropsWithChildren } from 'react';
+import type { ChangeEvent } from 'react';
 import AuthService from 'src/auth/AuthService';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import Modal from 'src/components/utils/Modal';
 import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
+import { type PropsWithChildrenAndToastMessaging } from 'src/components/utils/ToasterProps';
 import {
   CURRENT_PASSWORD_MISSING,
   PASSWORD_CONFIRMATION_FEEDBACK,
@@ -13,15 +14,10 @@ import {
 } from 'src/config/CommonStrings';
 import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
 
-interface Props extends PropsWithChildren {
+interface Props extends PropsWithChildrenAndToastMessaging {
   visible: boolean;
   onCloseHandler: () => void;
   onConfirmHandler: () => void;
-  onSendToastMsgToReceiverHandler: (
-    icon: string | string[],
-    toastTitle: string,
-    toastMsg: string,
-  ) => void;
 }
 
 interface FormValidityState {
@@ -50,12 +46,6 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  const sendToastMessage = (icon: string | string[], title: string, message: string): void => {
-    if (props.onSendToastMsgToReceiverHandler !== undefined) {
-      props.onSendToastMsgToReceiverHandler(icon, title, message);
-    }
-  };
 
   const onCurrentPasswordInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setCurrentPassword(event.target.value);
@@ -123,7 +113,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
       AuthService.getInstance()
         .changePassword(currentPassword, newPassword)
         .then(() => {
-          sendToastMessage(
+          props.onSendToastMsgHandler(
             cilSettings,
             TOAST_TITLE_CHANGE_PASSWORD_SUCCESSFUL,
             TOAST_MESSAGE_CHANGE_PASSWORD_SUCCESFUL,
@@ -133,7 +123,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
         })
         .catch((err) => {
           console.error(err);
-          sendToastMessage(cilWarning, TOAST_TITLE_CHANGE_PASSWORD_FAILURE, err.message);
+          props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_CHANGE_PASSWORD_FAILURE, err.message);
         });
     }
   };

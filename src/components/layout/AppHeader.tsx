@@ -18,8 +18,9 @@ import AppBreadcrumb from './AppBreadcrumb';
 import AppProfileDropdown from './AppProfileDropdown';
 import { logo } from 'src/assets/brand/logo';
 import { layoutActions } from 'src/store/Store';
+import { type PropsWithToastMessaging } from '../utils/ToasterProps';
 
-const AppHeader: React.FC = () => {
+const AppHeader: React.FC<PropsWithToastMessaging> = (props) => {
   const dispatch = useDispatch();
 
   return (
@@ -42,7 +43,7 @@ const AppHeader: React.FC = () => {
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-3">
-          <AppProfileDropdown />
+          <AppProfileDropdown onSendToastMsgHandler={props.onSendToastMsgHandler} />
         </CHeaderNav>
       </CContainer>
       <CHeaderDivider />

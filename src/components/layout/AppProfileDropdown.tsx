@@ -1,4 +1,4 @@
-import React, { Fragment, type ReactElement, useRef, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   CAvatar,
   CDropdown,
@@ -7,7 +7,6 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
-  CToaster,
 } from '@coreui/react';
 import { cilLockLocked, cilSettings, cilTrash } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
@@ -21,7 +20,7 @@ import avatar_male from '../../assets/images/avatars/anonymous-male.jpg';
 import avatar_female from '../../assets/images/avatars/anonymous-female.jpg';
 import DeleteAccountPage from 'src/views/pages/auth/DeleteAccountPage';
 import ChangePasswordPage from 'src/views/pages/auth/ChangePasswordPage';
-import buildToast from '../utils/Toast';
+import { type PropsWithToastMessaging } from '../utils/ToasterProps';
 
 const getAvatar = (): string => {
   const gender = AuthService.getInstance().getUserData().gender;
@@ -32,13 +31,10 @@ const getAvatar = (): string => {
   }
 };
 
-const AppProfileDropdown: React.FC = () => {
+const AppProfileDropdown: React.FC<PropsWithToastMessaging> = (props) => {
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
   const navigate = useNavigate();
-
-  const [toast, addToast] = useState<ReactElement | undefined>();
-  const toaster = useRef<HTMLDivElement | null>(null);
 
   const username: string = useSelector((state: RootState) =>
     state.auth.user.username != null ? state.auth.user.username : '',
@@ -46,14 +42,6 @@ const AppProfileDropdown: React.FC = () => {
   const name: string = useSelector((state: RootState) =>
     state.auth.user.name != null ? state.auth.user.name : '',
   );
-
-  const sendToastMessageHandler = (
-    icon: string | string[],
-    title: string,
-    message: string,
-  ): void => {
-    addToast(buildToast(icon, title, message));
-  };
 
   const openDeleteAccountModalHandler = (): void => {
     setDeleteAccountModalVisible(true);
@@ -91,7 +79,6 @@ const AppProfileDropdown: React.FC = () => {
 
   return (
     <Fragment>
-      <CToaster ref={toaster} push={toast} placement="top-end" />
       <CDropdown alignment="end" variant="nav-item" popper={false}>
         <CDropdownToggle className="py-0" caret={false}>
           {username}
@@ -128,7 +115,7 @@ const AppProfileDropdown: React.FC = () => {
         visible={changePasswordModalVisible}
         onCloseHandler={closeChangePasswordModalHandler}
         onConfirmHandler={confirmPasswordChangeHandler}
-        onSendToastMsgToReceiverHandler={sendToastMessageHandler}
+        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
     </Fragment>
   );
