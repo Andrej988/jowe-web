@@ -222,6 +222,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           autoFocus
           feedbackMsg={EMAIL_FEEDBACK}
           invalid={isValidated && !formValidtyState.emailValid}
+          showValidIndicator={isValidated}
         />
         <FormInputGroupWithFeedback
           icon={cilDialpad}
@@ -249,6 +250,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           disabled={formState.newPasswordDisabled}
           feedbackPaswordPolicy={true}
           invalid={isValidated && !formValidtyState.newPasswordValid}
+          showValidIndicator={isValidated}
         />
         <FormInputGroupWithFeedback
           icon={cilLockLocked}
@@ -262,6 +264,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           disabled={formState.passwordConfirmationDisabled}
           feedbackMsg={PASSWORD_CONFIRMATION_FEEDBACK}
           invalid={isValidated && !formValidtyState.confirmPasswordMatch}
+          showValidIndicator={isValidated}
         />
       </CForm>
     </Modal>

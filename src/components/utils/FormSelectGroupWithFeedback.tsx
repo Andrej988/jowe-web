@@ -25,6 +25,7 @@ interface Props extends PropsWithChildren {
   defaultValue: string | number;
   options: Option[];
   ref?: React.Ref<HTMLSelectElement>;
+  showValidIndicator?: boolean;
 }
 
 const FormSelectGroupWithFeedback: React.FC<Props> = (props) => {
@@ -46,6 +47,11 @@ const FormSelectGroupWithFeedback: React.FC<Props> = (props) => {
           onChange={props.onChange}
           options={props.options}
           ref={props.ref}
+          valid={
+            props.showValidIndicator === true &&
+            props.invalid === false &&
+            (props.disabled === false || props.disabled === undefined)
+          }
         />
       </CInputGroup>
       {props.feedbackMsg != null && props.invalid != null && props.invalid && (

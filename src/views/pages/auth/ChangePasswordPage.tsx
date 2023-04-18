@@ -166,6 +166,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           feedbackMsg={PASSWORD_POLICY_FEEDBACK}
           required
           invalid={isValidated && !formValidtyState.newPasswordValid}
+          showValidIndicator={isValidated}
         />
         <FormInputGroupWithFeedback
           className="mt-3"
@@ -179,6 +180,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           feedbackMsg={PASSWORD_CONFIRMATION_FEEDBACK}
           required
           invalid={isValidated && !formValidtyState.confirmPasswordMatch}
+          showValidIndicator={isValidated}
         />
         <PasswordPolicyFeedback invalid={false} className="mt-4" />
       </CForm>
