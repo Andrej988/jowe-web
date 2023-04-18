@@ -225,6 +225,7 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
                         invalid={isValidated && !formValidityState.usernameValid}
                         autoFocus
                         feedbackMsg={USERNAME_FEEDBACK}
+                        showValidIndicator={isValidated}
                       />
                       <FormInputGroupWithFeedback
                         className="mt-3"
@@ -239,6 +240,7 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
                         onChange={onNameInputChange}
                         invalid={isValidated && !formValidityState.nameValid}
                         feedbackMsg={NAME_FEEDBACK}
+                        showValidIndicator={isValidated}
                       />
                       <FormInputGroupWithFeedback
                         className="mt-3"
@@ -253,6 +255,7 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
                         onChange={onEmailInputChange}
                         invalid={isValidated && !formValidityState.emailValid}
                         feedbackMsg={EMAIL_FEEDBACK}
+                        showValidIndicator={isValidated}
                       />
                       <FormInputGroupWithFeedback
                         className="mt-3"
@@ -267,6 +270,7 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
                         onChange={onPasswordInputChange}
                         invalid={isValidated && !formValidityState.passwordValid}
                         feedbackPaswordPolicy={true}
+                        showValidIndicator={isValidated}
                       />
                       <FormInputGroupWithFeedback
                         className="mt-3"
@@ -281,6 +285,7 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
                         onChange={onPasswordConfirmationInputChange}
                         invalid={isValidated && !formValidityState.confirmPasswordMatch}
                         feedbackMsg={PASSWORD_CONFIRMATION_FEEDBACK}
+                        showValidIndicator={isValidated}
                       />
                       <FormSelectGroupWithFeedback
                         className="mt-3"
@@ -298,6 +303,7 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
                         ]}
                         invalid={isValidated && !formValidityState.genderValid}
                         disabled={!allowSignUp}
+                        showValidIndicator={isValidated}
                       />
                       <p className="text-medium-emphasis mt-2">
                         Already a member? <Link to={'/login'}>Log In</Link>.
