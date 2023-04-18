@@ -3,14 +3,7 @@ import {
   AWS_CONFIRMATION_CODE_MIN_LENGTH,
   PASSWORD_POLICY,
 } from 'src/config/ServiceConfig';
-import {
-  AT_LEAST_ONE_LOWERCASE_CHAR_REGEX,
-  AT_LEAST_ONE_NUMBER_REGEX,
-  AT_LEAST_ONE_SPECIAL_CHAR_REGEX,
-  AT_LEAST_ONE_UPPERCASE_CHAR_REGEX,
-  EMAIL_REGEX,
-} from './Regex';
-import { PasswordPolicy } from 'src/config/PasswordPolicy';
+import { EMAIL_REGEX } from './Regex';
 
 export const isNotEmpty = (value: string): boolean => {
   return value.trim() !== '';
@@ -40,33 +33,6 @@ export const isValidConfirmationCodeLength = (confirmationCode: string): boolean
   );
 };
 
-export const isPasswordAccordingToPolicy = (value: string): boolean => {
-  if (!isNotEmpty(value)) {
-    return false;
-  }
-
-  for (const policy of PASSWORD_POLICY) {
-    const isValid = validateByPasswordPolicy(value, policy);
-    if (!isValid) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const validateByPasswordPolicy = (value: string, policy: PasswordPolicy): boolean => {
-  switch (policy) {
-    case PasswordPolicy.AT_LEAST_8_CHARS:
-      return isAtLeastXCharsLong(value, 8);
-    case PasswordPolicy.AT_LEAST_1_NUMBER:
-      return AT_LEAST_ONE_NUMBER_REGEX.test(value);
-    case PasswordPolicy.AT_LEAST_1_LOWERCASE_CHAR:
-      return AT_LEAST_ONE_LOWERCASE_CHAR_REGEX.test(value);
-    case PasswordPolicy.AT_LEAST_1_UPPERCASE_CHAR:
-      return AT_LEAST_ONE_UPPERCASE_CHAR_REGEX.test(value);
-    case PasswordPolicy.AT_LEAST_1_SPECIAL_CHARACTER:
-      return AT_LEAST_ONE_SPECIAL_CHAR_REGEX.test(value);
-    default:
-      throw new Error('Password Policy is not implemented!');
-  }
+export const isPasswordAccordingToPolicy = (password: string): boolean => {
+  return PASSWORD_POLICY.isPasswordAccordingToPolicy(password);
 };

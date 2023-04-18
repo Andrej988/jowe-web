@@ -1,5 +1,5 @@
 import { CognitoConfig } from 'src/auth/provider/CognitoConfig';
-import { PasswordPolicy } from './PasswordPolicy';
+import { PasswordPolicy, PasswordPolicyDetail } from './PasswordPolicy';
 
 export const SERVICE_URL: string | undefined = process.env.REACT_APP_WEIGHT_TRACKER_SERVICE_URL;
 
@@ -13,13 +13,12 @@ export const COGNITO_CONFIG = new CognitoConfig(
   process.env.REACT_APP_COGNITO_CLIENT_ID,
 );
 
-export const PASSWORD_POLICY: PasswordPolicy[] = [
-  PasswordPolicy.AT_LEAST_8_CHARS,
-  PasswordPolicy.AT_LEAST_1_NUMBER,
-  PasswordPolicy.AT_LEAST_1_SPECIAL_CHARACTER,
-  PasswordPolicy.AT_LEAST_1_UPPERCASE_CHAR,
-  PasswordPolicy.AT_LEAST_1_LOWERCASE_CHAR,
-];
+export const PASSWORD_POLICY = new PasswordPolicy(8, [
+  PasswordPolicyDetail.AT_LEAST_1_NUMBER,
+  PasswordPolicyDetail.AT_LEAST_1_UPPERCASE_CHAR,
+  PasswordPolicyDetail.AT_LEAST_1_LOWERCASE_CHAR,
+  PasswordPolicyDetail.AT_LEAST_1_SPECIAL_CHARACTER,
+]);
 
 export const AWS_CONFIRMATION_CODE_MIN_LENGTH = 6;
 export const AWS_CONFIRMATION_CODE_MAX_LENGTH = 10;
