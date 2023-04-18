@@ -35,7 +35,8 @@ import {
 } from 'src/utils/Validators';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import FormSelectGroupWithFeedback from 'src/components/utils/FormSelectGroupWithFeedback';
-import { type PropsWithToastMessaging } from 'src/components/utils/ToasterProps';
+import { useDispatch } from 'react-redux';
+import { ToastMsg, toasterActions } from 'src/store/Store';
 
 interface FormValidityState {
   usernameValid: boolean;
@@ -60,11 +61,13 @@ const NOT_AVAILABLE = 'N/A';
 
 const TOAST_TITLE_SIGNUP_SUCCESSFUL = 'Sign Up';
 const TOAST_TITLE_SIGNUP_FAILURE = 'Sign Up Error';
+const TOAST_TITLE_LOGIN_FAILURE = 'Authentication Error';
 const TOAST_MESSAGE_VERIFICATION_CODE_SENT = 'Verification code was sent to your email address.';
 
-const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
+const RegisterPage: React.FC = () => {
   const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -96,7 +99,11 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        props.onSendToastMsgHandler(cilWarning, 'Authentication Error', err.message);
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message),
+          ),
+        );
       });
   };
 
@@ -184,15 +191,23 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
         .then((username: string) => {
           setUsername(username);
           setPassword(registrationRequest.password);
-          props.onSendToastMsgHandler(
-            cilEnvelopeClosed,
-            TOAST_TITLE_SIGNUP_SUCCESSFUL,
-            TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(
+                cilEnvelopeClosed,
+                TOAST_TITLE_SIGNUP_SUCCESSFUL,
+                TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+              ),
+            ),
           );
           openAccountConfirmationModal();
         })
         .catch((err: Error) => {
-          props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_SIGNUP_FAILURE, err.message);
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(cilWarning, TOAST_TITLE_SIGNUP_FAILURE, err.message),
+            ),
+          );
         });
     }
   };
@@ -338,7 +353,6 @@ const RegisterPage: React.FC<PropsWithToastMessaging> = (props) => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
-        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
     </Fragment>
   );

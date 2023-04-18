@@ -1,11 +1,13 @@
-import React, { type ReactElement, Suspense, useRef, useState } from 'react';
+import React, { type ReactElement, Suspense, useRef, useState, useEffect } from 'react';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import './scss/style.scss';
 import ProtectedRoute from './components/security/ProtectedRoute';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AuthService from './auth/AuthService';
 import { CToaster } from '@coreui/react';
-import buildToast from './components/utils/Toast';
+import buildToast from './components/utils/Toaster';
+import { type ToastMsg } from './store/ToasterSlice';
+import { toasterActions, type RootState } from './store/Store';
 
 // Containers
 const MainLayout = React.lazy(async () => await import('./layout/MainLayout'));
@@ -20,14 +22,17 @@ const App: React.FC = () => {
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
   const [toast, addToast] = useState<ReactElement | undefined>();
   const toaster = useRef<HTMLDivElement | null>(null);
+  const toastMessages: ToastMsg[] = useSelector((state: RootState) => state.toaster.toasts);
+  const dispatch = useDispatch();
 
-  const sendToastMessageHandler = (
-    icon: string | string[],
-    title: string,
-    message: string,
-  ): void => {
-    addToast(buildToast(icon, title, message));
-  };
+  useEffect(() => {
+    if (toastMessages.length > 0) {
+      for (const toastMsg of toastMessages) {
+        addToast(buildToast(toastMsg));
+        dispatch(toasterActions.removeMessage());
+      }
+    }
+  }, [toastMessages]);
 
   if (!isLoading && isAuthenticated === null) {
     setLoading(true);
@@ -50,20 +55,14 @@ const App: React.FC = () => {
       <Suspense fallback={loading}>
         <CToaster ref={toaster} push={toast} placement="top-end" />
         <Routes>
-          <Route
-            path="/login"
-            element={<LoginPage onSendToastMsgHandler={sendToastMessageHandler} />}
-          />
-          <Route
-            path="/register"
-            element={<RegisterPage onSendToastMsgHandler={sendToastMessageHandler} />}
-          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/404" element={<Page404 />} />
           <Route
             path="*"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <MainLayout onSendToastMsgHandler={sendToastMessageHandler} />
+                <MainLayout />
               </ProtectedRoute>
             }
           />

@@ -16,12 +16,13 @@ import AccountConfirmationPage from './AccountConfirmationPage';
 import { UserNotConfirmedError } from 'src/auth/errors/AuthenticationErrors';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
-import { type PropsWithToastMessaging } from 'src/components/utils/ToasterProps';
+import { ToastMsg, toasterActions } from 'src/store/Store';
+import { useDispatch } from 'react-redux';
 
 const TOAST_TITLE_LOGIN_FAILURE = 'Authentication Error';
 const TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS = 'Missing credentials!';
 
-const LoginPage: React.FC<PropsWithToastMessaging> = (props) => {
+const LoginPage: React.FC = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
   const passwordRef: RefObject<HTMLInputElement> = useRef(null);
   const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
@@ -29,6 +30,7 @@ const LoginPage: React.FC<PropsWithToastMessaging> = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const openAccountConfirmationModal = (): void => {
     setAccountConfirmationModalVisible(true);
@@ -58,7 +60,11 @@ const LoginPage: React.FC<PropsWithToastMessaging> = (props) => {
       })
       .catch((err: Error) => {
         setAccountConfirmationModalVisible(false);
-        props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message),
+          ),
+        );
       });
   };
 
@@ -70,10 +76,14 @@ const LoginPage: React.FC<PropsWithToastMessaging> = (props) => {
     event.preventDefault();
 
     if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
-      props.onSendToastMsgHandler(
-        cilWarning,
-        TOAST_TITLE_LOGIN_FAILURE,
-        TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS,
+      dispatch(
+        toasterActions.addMessage(
+          new ToastMsg(
+            cilWarning,
+            TOAST_TITLE_LOGIN_FAILURE,
+            TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS,
+          ),
+        ),
       );
       return;
     }
@@ -92,7 +102,11 @@ const LoginPage: React.FC<PropsWithToastMessaging> = (props) => {
           setPassword(pass);
           openAccountConfirmationModal();
         } else {
-          props.onSendToastMsgHandler(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message);
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(cilWarning, TOAST_TITLE_LOGIN_FAILURE, err.message),
+            ),
+          );
         }
       });
   };
@@ -161,13 +175,11 @@ const LoginPage: React.FC<PropsWithToastMessaging> = (props) => {
         username={username}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
-        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
       <ForgotPasswordPage
         visible={forgotPasswordModalVisible}
         onCloseHandler={closeForgotPasswordFormHandler}
         onConfirmHandler={confirmForgotPasswordHandler}
-        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
     </Fragment>
   );

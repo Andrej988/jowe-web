@@ -20,7 +20,6 @@ import avatar_male from '../../assets/images/avatars/anonymous-male.jpg';
 import avatar_female from '../../assets/images/avatars/anonymous-female.jpg';
 import DeleteAccountPage from 'src/views/pages/auth/DeleteAccountPage';
 import ChangePasswordPage from 'src/views/pages/auth/ChangePasswordPage';
-import { type PropsWithToastMessaging } from '../utils/ToasterProps';
 
 const getAvatar = (): string => {
   const gender = AuthService.getInstance().getUserData().gender;
@@ -31,7 +30,7 @@ const getAvatar = (): string => {
   }
 };
 
-const AppProfileDropdown: React.FC<PropsWithToastMessaging> = (props) => {
+const AppProfileDropdown: React.FC = () => {
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] = useState(false);
   const navigate = useNavigate();
@@ -115,7 +114,6 @@ const AppProfileDropdown: React.FC<PropsWithToastMessaging> = (props) => {
         visible={changePasswordModalVisible}
         onCloseHandler={closeChangePasswordModalHandler}
         onConfirmHandler={confirmPasswordChangeHandler}
-        onSendToastMsgHandler={props.onSendToastMsgHandler}
       />
     </Fragment>
   );
