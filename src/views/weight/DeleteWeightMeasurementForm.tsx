@@ -12,7 +12,7 @@ interface Props extends PropsWithChildren {
   measurement: Measurement | undefined;
 }
 
-const DeleteMeasurementForm: React.FC<Props> = (props) => {
+const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
   return (
     <Modal
       title="Delete a Measurement"
@@ -49,4 +49,4 @@ const DeleteMeasurementForm: React.FC<Props> = (props) => {
   );
 };
 
-export default DeleteMeasurementForm;
+export default DeleteWeightMeasurementForm;

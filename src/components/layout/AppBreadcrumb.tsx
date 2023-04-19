@@ -39,7 +39,7 @@ const AppBreadcrumb: React.FC = () => {
 
   return (
     <CBreadcrumb className="m-0 ms-2">
-      <CBreadcrumbItem>Weight Tracker</CBreadcrumbItem>
+      <CBreadcrumbItem>Health Tracker</CBreadcrumbItem>
       {breadcrumbs.map((breadcrumb, index) => {
         return (
           <CBreadcrumbItem

@@ -1,6 +1,6 @@
 {
-  "short_name": "Weight-Tracker",
-  "name": "Weight-Tracker",
+  "short_name": "Health-Tracker",
+  "name": "Health-Tracker",
   "icons": [
     {
       "src": "./assets/img/favicon.png",

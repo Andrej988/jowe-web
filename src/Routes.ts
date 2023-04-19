@@ -1,16 +1,19 @@
 import React from 'react';
-import Charts from './views/charts/Charts';
-import Measurements from './views/measurements/Measurements';
+import WeightChartsForm from './views/weight/WeightChartsForm';
+import WeightMeasurementsForm from './views/weight/WeightMeasurementsForm';
 
-const Dashboard = React.lazy(async () => await import('./views/dashboard/MainDashboard'));
+const WeightOverviewForm = React.lazy(
+  async () => await import('./views/weight/WeightOverviewForm'),
+);
 const Page404 = React.lazy(async () => await import('./views/pages/Page404'));
 
 const Routes = [
-  { path: '/', name: 'Dashboard' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/measurements', name: 'Measurements', element: Measurements },
-  { path: '/charts', name: 'Charts', element: Charts },
-  { path: '*', name: 'Dashboard', element: Page404 },
+  { path: '/', name: 'Overview', element: WeightOverviewForm },
+  { path: '/overview', name: 'Overview', element: WeightOverviewForm },
+  { path: '/weight/overview', name: 'Overview', element: WeightOverviewForm },
+  { path: '/weight/measurements', name: 'Measurements', element: WeightMeasurementsForm },
+  { path: '/weight/charts', name: 'Charts', element: WeightChartsForm },
+  { path: '*', name: 'Overview', element: Page404 },
 ];
 
 export default Routes;

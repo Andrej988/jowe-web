@@ -18,8 +18,8 @@ import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../utils/DateUtils';
 import type { SimpleMeasurements } from 'src/model/Measurement';
 import styles from './WeightMeasurementsDetailedChart.module.css';
-import AddMeasurementForm from 'src/views/measurements/AddMeasurementForm';
-import SetTargetWeightForm from 'src/views/measurements/SetTargetWeightForm';
+import AddMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
+import SetTargetWeightForm from 'src/views/weight/SetTargetWeightForm';
 
 const filterMeasurements = (
   measurements: SimpleMeasurements,

@@ -20,9 +20,9 @@ import { cilPencil, cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
 import { getLocalDateString } from '../../utils/DateUtils';
 import type { Measurement } from 'src/model/Measurement';
-import AddMeasurementForm from 'src/views/measurements/AddMeasurementForm';
-import MeasurementDetailsForm from 'src/views/measurements/MeasurementDetailsForm';
-import DeleteMeasurementForm from 'src/views/measurements/DeleteMeasurementForm';
+import AddWeightMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
+import WeightMeasurementDetailsForm from 'src/views/weight/WeightMeasurementDetailsForm';
+import DeleteWeightMeasurementForm from 'src/views/weight/DeleteWeightMeasurementForm';
 
 interface Props {
   title: string;
@@ -30,7 +30,7 @@ interface Props {
   showDeleteButton: boolean;
 }
 
-const MeasurementHistory: React.FC<Props> = (props) => {
+const WeightMeasurementHistory: React.FC<Props> = (props) => {
   const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
   const [measurementDetailsModalVisible, setMeasurmentDetailsModalVisibility] = useState(false);
   const [deleteMeasurementModalVisible, setDeleteMeasurementModalVisibility] = useState(false);
@@ -165,17 +165,17 @@ const MeasurementHistory: React.FC<Props> = (props) => {
         </CCol>
       </CRow>
 
-      <AddMeasurementForm
+      <AddWeightMeasurementForm
         visible={addMeasurementsModalVisible}
         onCloseHandler={closeAddMeasurementFormHandler}
         onSaveHandler={addMeasurementHandler}
       />
-      <MeasurementDetailsForm
+      <WeightMeasurementDetailsForm
         measurement={currentMeasurement}
         visible={measurementDetailsModalVisible}
         onCloseHandler={closeMeasurementDetailsModalHandler}
       />
-      <DeleteMeasurementForm
+      <DeleteWeightMeasurementForm
         measurement={currentMeasurement}
         visible={deleteMeasurementModalVisible}
         onCloseHandler={closeDeleteMeasurementModalHandler}
@@ -185,4 +185,4 @@ const MeasurementHistory: React.FC<Props> = (props) => {
   );
 };
 
-export default MeasurementHistory;
+export default WeightMeasurementHistory;

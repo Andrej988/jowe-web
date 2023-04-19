@@ -37,7 +37,7 @@ const AppHeader: React.FC = () => {
         <CHeaderNav className="d-none d-md-flex me-auto">
           <CNavItem>
             <CNavLink to="/" component={NavLink}>
-              Weight Tracker
+              Health Tracker
             </CNavLink>
           </CNavItem>
         </CHeaderNav>

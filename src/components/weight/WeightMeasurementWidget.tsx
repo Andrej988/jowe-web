@@ -15,7 +15,7 @@ interface Props {
   measurements: SimpleMeasurements;
 }
 
-const MeasurementWidget: React.FC<Props> = (props) => {
+const WeightMeasurementWidget: React.FC<Props> = (props) => {
   const measurementsSortedByDate = props.measurements.slice();
   const latestMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 1];
   const secondToLastMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 2];
@@ -92,4 +92,4 @@ const MeasurementWidget: React.FC<Props> = (props) => {
   );
 };
 
-export default MeasurementWidget;
+export default WeightMeasurementWidget;

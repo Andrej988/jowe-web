@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-import MeasurementChart from 'src/components/measurements/MeasurementChart';
-import WeightMeasurementsDetailedChart from 'src/components/measurements/WeightMeasurementsDetailedChart';
+import WeightMeasurementChart from 'src/components/weight/WeightMeasurementChart';
+import WeightMeasurementsDetailedChart from 'src/components/weight/WeightMeasurementsDetailedChart';
 
 import { getTestMeasurements } from 'src/model/TestMeasurements';
 // TODO: Remove??
@@ -14,7 +14,7 @@ const measurementsSortedByLatestDate = sampleData.measurements
   .slice()
   .sort((a: any, b: any) => b.date - a.date);
 
-const MainDashboard: React.FC = () => {
+const WeightChartsForm: React.FC = () => {
   // TODO: Remove??
   /* console.log('accesstoken', AuthService.getAccessToken());
   const config = {
@@ -48,7 +48,7 @@ const MainDashboard: React.FC = () => {
             };
           })}
       />
-      <MeasurementChart
+      <WeightMeasurementChart
         title="Body Fat"
         label="Body Fat %"
         measurements={measurementsSortedByLatestDate
@@ -62,7 +62,7 @@ const MainDashboard: React.FC = () => {
             };
           })}
       />
-      <MeasurementChart
+      <WeightMeasurementChart
         title="Body Water"
         label="Body Water %"
         measurements={measurementsSortedByLatestDate
@@ -76,7 +76,7 @@ const MainDashboard: React.FC = () => {
             };
           })}
       />
-      <MeasurementChart
+      <WeightMeasurementChart
         title="Muscle Mass"
         label="Muscle Mass %"
         measurements={measurementsSortedByLatestDate
@@ -90,7 +90,7 @@ const MainDashboard: React.FC = () => {
             };
           })}
       />
-      <MeasurementChart
+      <WeightMeasurementChart
         title="Bone Mass"
         label="Bone Mass %"
         measurements={measurementsSortedByLatestDate
@@ -104,7 +104,7 @@ const MainDashboard: React.FC = () => {
             };
           })}
       />
-      <MeasurementChart
+      <WeightMeasurementChart
         title="Energy Expenditure"
         label="Energy Expenditure"
         measurements={measurementsSortedByLatestDate
@@ -122,4 +122,4 @@ const MainDashboard: React.FC = () => {
   );
 };
 
-export default MainDashboard;
+export default WeightChartsForm;

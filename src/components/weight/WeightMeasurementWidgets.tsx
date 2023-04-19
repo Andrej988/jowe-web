@@ -1,13 +1,13 @@
 import React from 'react';
 import { CRow } from '@coreui/react';
-import MeasurementWidget from './MeasurementWidget';
+import MeasurementWidget from './WeightMeasurementWidget';
 import type { Measurement } from 'src/model/Measurement';
 
 interface Props {
   measurements: Measurement[];
 }
 
-const MeasurementWidgets: React.FC<Props> = (props) => {
+const WeightMeasurementWidgets: React.FC<Props> = (props) => {
   const measurementsSortedByDate = props.measurements.slice().reverse();
 
   return (
@@ -64,4 +64,4 @@ const MeasurementWidgets: React.FC<Props> = (props) => {
   );
 };
 
-export default MeasurementWidgets;
+export default WeightMeasurementWidgets;

@@ -1,11 +1,11 @@
 {
-  "name": "weight-tracker-web",
+  "name": "health-tracker-web",
   "version": "1.0.0",
-  "description": "Weight-Tracker",
+  "description": "health-Tracker",
   "homepage": ".",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Andrej988/weight-tracker-web.git"
+    "url": "git@github.com:Andrej988/health-tracker-web.git"
   },
   "license": "",
   "author": "Andrej988",
