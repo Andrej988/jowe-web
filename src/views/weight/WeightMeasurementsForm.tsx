@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import MeasurementHistory from 'src/components/measurements/MeasurementHistory';
+import WeightMeasurementHistory from 'src/components/weight/WeightMeasurementHistory';
 
 import { getTestMeasurements } from 'src/model/TestMeasurements';
 
@@ -14,7 +14,7 @@ const measurementsSortedByLatestDate = sampleData.measurements
   .slice()
   .sort((a: any, b: any) => b.date - a.date);
 
-const MainDashboard: React.FC = () => {
+const WeightMeasurementsForm: React.FC = () => {
   // TODO: Remove??
   /* console.log('accesstoken', AuthService.getAccessToken());
   const config = {
@@ -34,7 +34,7 @@ const MainDashboard: React.FC = () => {
 
   return (
     <Fragment>
-      <MeasurementHistory
+      <WeightMeasurementHistory
         title="History of Measurements"
         measurements={measurementsSortedByLatestDate.slice()}
         showDeleteButton={true}
@@ -43,4 +43,4 @@ const MainDashboard: React.FC = () => {
   );
 };
 
-export default MainDashboard;
+export default WeightMeasurementsForm;

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
-import MeasurementChart from 'src/components/measurements/WeightMeasurementsDetailedChart';
-import MeasurementHistory from 'src/components/measurements/MeasurementHistory';
-import MeasurementWidgets from 'src/components/measurements/MeasurementWidgets';
+import WeightMeasurementChart from 'src/components/weight/WeightMeasurementsDetailedChart';
+import WeightMeasurementHistory from 'src/components/weight/WeightMeasurementHistory';
+import WeightMeasurementWidgets from 'src/components/weight/WeightMeasurementWidgets';
 
 import { getTestMeasurements } from 'src/model/TestMeasurements';
 // TODO: Remove??
@@ -15,7 +15,7 @@ const measurementsSortedByLatestDate = sampleData.measurements
   .slice()
   .sort((a: any, b: any) => b.date - a.date);
 
-const MainDashboard: React.FC = () => {
+const WeightOverviewForm: React.FC = () => {
   // TODO: Remove??
   /* console.log('accesstoken', AuthService.getAccessToken());
   const config = {
@@ -35,8 +35,8 @@ const MainDashboard: React.FC = () => {
 
   return (
     <Fragment>
-      <MeasurementWidgets measurements={measurementsSortedByLatestDate.slice(0, 10)} />
-      <MeasurementChart
+      <WeightMeasurementWidgets measurements={measurementsSortedByLatestDate.slice(0, 10)} />
+      <WeightMeasurementChart
         title="Weight"
         targetWeight={100}
         measurements={measurementsSortedByLatestDate
@@ -50,7 +50,7 @@ const MainDashboard: React.FC = () => {
             };
           })}
       />
-      <MeasurementHistory
+      <WeightMeasurementHistory
         title="Latest Measurements (5)"
         measurements={measurementsSortedByLatestDate.slice(0, 5)}
         showDeleteButton={false}
@@ -59,4 +59,4 @@ const MainDashboard: React.FC = () => {
   );
 };
 
-export default MainDashboard;
+export default WeightOverviewForm;

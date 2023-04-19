@@ -9,7 +9,7 @@ interface Props extends PropsWithChildren {
   onSaveHandler: () => void;
 }
 
-const AddMeasurementForm: React.FC<Props> = (props) => {
+const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   return (
     <Modal
       title="Add Measurement"
@@ -159,4 +159,4 @@ const AddMeasurementForm: React.FC<Props> = (props) => {
   );
 };
 
-export default AddMeasurementForm;
+export default AddWeightMeasurementForm;

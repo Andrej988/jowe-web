@@ -35,7 +35,7 @@ interface Props {
   measurements: SimpleMeasurements;
 }
 
-const MeasurementChart: React.FC<Props> = (props) => {
+const WeightMeasurementChart: React.FC<Props> = (props) => {
   const [timeframe, setTimeframe] = useState(TIMEFRAME_ALL);
   const [measurements, setMeasurements] = useState(props.measurements);
 
@@ -134,4 +134,4 @@ const MeasurementChart: React.FC<Props> = (props) => {
   );
 };
 
-export default MeasurementChart;
+export default WeightMeasurementChart;
