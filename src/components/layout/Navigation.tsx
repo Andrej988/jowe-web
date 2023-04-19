@@ -4,9 +4,9 @@ import {
   cilPencil,
   cilSpreadsheet,
   cilChartLine,
-  cilSpeedometer,
   cilBalanceScale,
   cilBike,
+  cilHospital,
 } from '@coreui/icons';
 import { CNavItem, CNavTitle } from '@coreui/react';
 
@@ -15,7 +15,7 @@ const Navigation = [
     component: CNavItem,
     name: 'Overview',
     to: '/',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,
@@ -24,7 +24,7 @@ const Navigation = [
   {
     component: CNavItem,
     name: 'Overview',
-    to: '/weight/overview',
+    to: '/weight',
     icon: <CIcon icon={cilBalanceScale} customClassName="nav-icon" />,
   },
   {
@@ -48,7 +48,7 @@ const Navigation = [
     name: 'Overview',
     to: '/blood-pressure/overview',
     disabled: true,
-    icon: <CIcon icon={cilSpreadsheet} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilHospital} customClassName="nav-icon" />,
     badge: {
       color: 'warning',
       text: 'SOON',

@@ -5,6 +5,7 @@ import Routes from '../../Routes';
 import type { RouteType } from '../../Routes';
 
 import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react';
+import { CBreadcrumbItemModified } from './breadcrumbs/CBreadcrumbItemModified';
 
 interface Breadcrumb {
   pathname: string;
@@ -42,12 +43,12 @@ const AppBreadcrumb: React.FC = () => {
       <CBreadcrumbItem>Health Tracker</CBreadcrumbItem>
       {breadcrumbs.map((breadcrumb, index) => {
         return (
-          <CBreadcrumbItem
+          <CBreadcrumbItemModified
             {...(breadcrumb.active ? { active: true } : { href: breadcrumb.pathname })}
             key={index}
           >
             {breadcrumb.name}
-          </CBreadcrumbItem>
+          </CBreadcrumbItemModified>
         );
       })}
     </CBreadcrumb>
