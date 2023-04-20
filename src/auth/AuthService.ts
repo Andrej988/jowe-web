@@ -133,6 +133,7 @@ export default class AuthService {
     store.dispatch(authActions.signOut());
     if (this.refreshTokenTimer !== undefined) {
       clearTimeout(this.refreshTokenTimer);
+      this.refreshTokenTimer = undefined;
     }
   }
 
