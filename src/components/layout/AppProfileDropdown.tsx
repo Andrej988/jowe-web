@@ -10,7 +10,7 @@ import {
 } from '@coreui/react';
 import { cilLockLocked, cilSettings, cilTrash } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
-import AuthService from 'src/auth/AuthService';
+import AuthService from 'src/services/auth/AuthService';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from 'src/store/Store';

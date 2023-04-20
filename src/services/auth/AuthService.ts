@@ -1,4 +1,4 @@
-import store, { authActions } from '../store/Store';
+import store, { authActions } from '../../store/Store';
 import type { AuthenticatedUserSession } from './model/AuthenticatedUserSession';
 import type { AuthenticatedUser } from './model/AuthenticatedUser';
 import CognitoAuthService from './provider/CognitoAuthService';

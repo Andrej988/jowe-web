@@ -11,9 +11,9 @@ import {
 } from '@coreui/react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthService from 'src/auth/AuthService';
+import AuthService from 'src/services/auth/AuthService';
 import AccountConfirmationPage from './AccountConfirmationPage';
-import { UserNotConfirmedError } from 'src/auth/errors/AuthenticationErrors';
+import { UserNotConfirmedError } from 'src/services/auth/errors/AuthenticationErrors';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import { ToastMsg, toasterActions } from 'src/store/Store';
