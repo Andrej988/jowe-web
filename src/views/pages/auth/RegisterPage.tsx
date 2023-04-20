@@ -59,10 +59,8 @@ const INITIAL_FORM_VALIDITY_STATE: FormValidityState = {
 const allowSignUp = ALLOW_SIGN_UP;
 const NOT_AVAILABLE = 'N/A';
 
-const TOAST_TITLE_SIGNUP_SUCCESSFUL = 'Sign Up';
 const TOAST_TITLE_SIGNUP_FAILURE = 'Sign Up Error';
 const TOAST_TITLE_LOGIN_FAILURE = 'Authentication Error';
-const TOAST_MESSAGE_VERIFICATION_CODE_SENT = 'Verification code was sent to your email address.';
 
 const RegisterPage: React.FC = () => {
   const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
@@ -191,15 +189,6 @@ const RegisterPage: React.FC = () => {
         .then((username: string) => {
           setUsername(username);
           setPassword(registrationRequest.password);
-          dispatch(
-            toasterActions.addMessage(
-              new ToastMsg(
-                cilEnvelopeClosed,
-                TOAST_TITLE_SIGNUP_SUCCESSFUL,
-                TOAST_MESSAGE_VERIFICATION_CODE_SENT,
-              ),
-            ),
-          );
           openAccountConfirmationModal();
         })
         .catch((err: Error) => {
@@ -351,6 +340,7 @@ const RegisterPage: React.FC = () => {
       <AccountConfirmationPage
         visible={accountConfirmationModalVisible}
         username={username}
+        sendToastVerificationCodeSent={true}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
       />
