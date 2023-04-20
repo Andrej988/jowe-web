@@ -24,6 +24,7 @@ interface Props extends PropsWithChildren {
   inputRef?: React.Ref<HTMLInputElement>;
   minLength?: number;
   maxLength?: number;
+  pattern?: string;
   showValidIndicator?: boolean;
   passwordValidationResults?: PasswordValidationResult;
 }
@@ -50,6 +51,7 @@ const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
           ref={props.inputRef}
           minLength={props.minLength}
           maxLength={props.maxLength}
+          pattern={props.pattern}
           valid={
             props.showValidIndicator === true &&
             props.invalid === false &&
