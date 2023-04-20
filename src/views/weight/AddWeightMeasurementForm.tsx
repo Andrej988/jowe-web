@@ -25,10 +25,10 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
     >
       <CForm>
         <CRow>
-          <CCol sm={12}>
+          <CCol sm={12} lg={6}>
             <CFormInput
               // invalid={!isValid && isTouched}
-              type="text"
+              type="datetime-local"
               id="dateInput"
               label="Date"
               // pattern="[0-9]*"
@@ -40,9 +40,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               // onChange={onTargetWeightInputChangeHandler}
             />
           </CCol>
-        </CRow>
-        <CRow>
-          <CCol sm={12}>
+          <CCol sm={12} lg={6}>
             <CFormInput
               // invalid={!isValid && isTouched}
               type="text"
