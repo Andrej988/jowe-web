@@ -5,7 +5,7 @@ import AuthService from 'src/auth/AuthService';
 import { isValidConfirmationCodeLength } from 'src/utils/Validators';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
 import { CONFIRMATION_CODE_FEEDBACK } from 'src/config/CommonStrings';
-import { cilDialpad, cilWarning } from '@coreui/icons';
+import { cilDialpad, cilEnvelopeClosed, cilWarning } from '@coreui/icons';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import { useDispatch } from 'react-redux';
 import { ToastMsg, toasterActions } from 'src/store/Store';
@@ -13,6 +13,7 @@ import { ToastMsg, toasterActions } from 'src/store/Store';
 interface Props {
   visible: boolean;
   username: string;
+  sendToastVerificationCodeSent?: boolean;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
 }
@@ -22,7 +23,9 @@ const DEFAULT_VALUE_IS_VALID = false;
 const DEFAULT_VALUE = '';
 
 const INPUT_MESSAGE = `Account verification code was sent to your e-mail address.`;
+const TOAST_TITLE_ACCOUNT_CONFIRMATION_DEFAULT = 'Account Confirmation';
 const TOAST_TITLE_ACCOUNT_CONFIRMATION_FAILURE = 'Account Confirmation Error';
+const TOAST_MESSAGE_VERIFICATION_CODE_SENT = 'Verification code was sent to your email address.';
 
 const AccountConfirmationPage: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_VALUE_IS_VALIDATED);
@@ -41,6 +44,22 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     setIsValid(isValid);
     return isValid;
   };
+
+  useEffect(() => {
+    if (props.sendToastVerificationCodeSent === true && props.visible) {
+      setTimeout(() => {
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(
+              cilEnvelopeClosed,
+              TOAST_TITLE_ACCOUNT_CONFIRMATION_DEFAULT,
+              TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+            ),
+          ),
+        );
+      }, 500);
+    }
+  }, [props.visible]);
 
   useEffect(() => {
     if (isValidated) {
