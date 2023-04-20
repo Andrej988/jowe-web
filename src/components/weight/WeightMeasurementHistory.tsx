@@ -18,7 +18,7 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilPencil, cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
-import { getLocalDateString } from '../../utils/DateUtils';
+import { getLocalDateString } from '../../services/utils/DateUtils';
 import type { Measurement } from 'src/model/Measurement';
 import AddWeightMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
 import WeightMeasurementDetailsForm from 'src/views/weight/WeightMeasurementDetailsForm';

@@ -2,7 +2,7 @@ import { CForm, CFormFeedback } from '@coreui/react';
 import React, { useEffect, useState, type ChangeEvent } from 'react';
 import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/auth/AuthService';
-import { isValidConfirmationCodeLength } from 'src/utils/Validators';
+import { isValidConfirmationCodeLength } from 'src/services/utils/Validators';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
 import { CONFIRMATION_CODE_FEEDBACK } from 'src/config/CommonStrings';
 import { cilDialpad, cilEnvelopeClosed, cilWarning } from '@coreui/icons';

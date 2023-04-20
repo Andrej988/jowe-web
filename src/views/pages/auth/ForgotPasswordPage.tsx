@@ -13,7 +13,7 @@ import {
   isPasswordAccordingToPolicy,
   isValidConfirmationCodeLength,
   isValidEmail,
-} from 'src/utils/Validators';
+} from 'src/services/utils/Validators';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import {
   cilDialpad,

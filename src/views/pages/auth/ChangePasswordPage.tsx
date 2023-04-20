@@ -13,7 +13,7 @@ import {
   PASSWORD_POLICY_FEEDBACK,
 } from 'src/config/CommonStrings';
 import { ToastMsg, toasterActions } from 'src/store/Store';
-import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
+import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/services/utils/Validators';
 
 interface Props {
   visible: boolean;

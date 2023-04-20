@@ -3,8 +3,8 @@ import {
   AT_LEAST_ONE_LOWERCASE_CHAR_REGEX,
   AT_LEAST_ONE_UPPERCASE_CHAR_REGEX,
   AT_LEAST_ONE_SPECIAL_CHAR_REGEX,
-} from 'src/utils/Regex';
-import { isAtLeastXCharsLong } from 'src/utils/Validators';
+} from 'src/services/utils/Regex';
+import { isAtLeastXCharsLong } from 'src/services/utils/Validators';
 
 export enum PasswordPolicyDetail {
   AT_LEAST_1_NUMBER = 'at least one number',

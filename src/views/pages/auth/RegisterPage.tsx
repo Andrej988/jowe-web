@@ -32,7 +32,7 @@ import {
   isNotEmpty,
   isPasswordAccordingToPolicy,
   isValidEmail,
-} from 'src/utils/Validators';
+} from 'src/services/utils/Validators';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import FormSelectGroupWithFeedback from 'src/components/utils/FormSelectGroupWithFeedback';
 import { useDispatch } from 'react-redux';
