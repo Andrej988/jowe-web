@@ -1,4 +1,4 @@
-import store, { authActions } from '../store/Store';
+import store, { authActions } from '../../store/Store';
 import type { AuthenticatedUserSession } from './model/AuthenticatedUserSession';
 import type { AuthenticatedUser } from './model/AuthenticatedUser';
 import CognitoAuthService from './provider/CognitoAuthService';
@@ -36,6 +36,20 @@ export default class AuthService {
     return await new Promise<boolean>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .confirmAccount(username, confirmationCode)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err: Error) => {
+          console.error(err.message);
+          reject(err);
+        });
+    });
+  }
+
+  async resendSignupConfirmationCode(username: string): Promise<boolean> {
+    return await new Promise<boolean>((resolve, reject) => {
+      CognitoAuthService.getInstance()
+        .resendSignupConfirmationCode(username)
         .then(() => {
           resolve(true);
         })

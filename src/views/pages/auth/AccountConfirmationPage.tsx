@@ -1,8 +1,8 @@
 import { CForm, CFormFeedback } from '@coreui/react';
 import React, { useEffect, useState, type ChangeEvent } from 'react';
 import Modal from 'src/components/utils/Modal';
-import AuthService from 'src/auth/AuthService';
-import { isValidConfirmationCodeLength } from 'src/utils/Validators';
+import AuthService from 'src/services/auth/AuthService';
+import { isValidConfirmationCodeLength } from 'src/services/utils/Validators';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
 import { CONFIRMATION_CODE_FEEDBACK } from 'src/config/CommonStrings';
 import { cilDialpad, cilEnvelopeClosed, cilWarning } from '@coreui/icons';
@@ -27,7 +27,12 @@ const TOAST_TITLE_ACCOUNT_CONFIRMATION_DEFAULT = 'Account Confirmation';
 const TOAST_TITLE_ACCOUNT_CONFIRMATION_FAILURE = 'Account Confirmation Error';
 const TOAST_MESSAGE_VERIFICATION_CODE_SENT = 'Verification code was sent to your email address.';
 
+const RESEND_CONFIRMATION_CODE_LABEL = 'Resend Verification Code';
+const RESEND_CONFIRMATION_CODE_TIMEOUT = 59;
+
 const AccountConfirmationPage: React.FC<Props> = (props) => {
+  const [resendConfirmationTimeout, setResendConfirmationTimeout] = useState(0);
+
   const [isValidated, setIsValidated] = useState(DEFAULT_VALUE_IS_VALIDATED);
   const [isValid, setIsValid] = useState(DEFAULT_VALUE_IS_VALID);
   const [confirmationCode, setConfirmatioCode] = useState<string>(DEFAULT_VALUE);
@@ -45,19 +50,35 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     return isValid;
   };
 
+  const sendVerificationCodeSentToast = (): void => {
+    setTimeout(() => {
+      dispatch(
+        toasterActions.addMessage(
+          new ToastMsg(
+            cilEnvelopeClosed,
+            TOAST_TITLE_ACCOUNT_CONFIRMATION_DEFAULT,
+            TOAST_MESSAGE_VERIFICATION_CODE_SENT,
+          ),
+        ),
+      );
+    }, 500);
+  };
+
+  useEffect(() => {
+    if (resendConfirmationTimeout > 0) {
+      const interval = setInterval(() => {
+        setResendConfirmationTimeout(resendConfirmationTimeout - 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [resendConfirmationTimeout]);
+
   useEffect(() => {
     if (props.sendToastVerificationCodeSent === true && props.visible) {
-      setTimeout(() => {
-        dispatch(
-          toasterActions.addMessage(
-            new ToastMsg(
-              cilEnvelopeClosed,
-              TOAST_TITLE_ACCOUNT_CONFIRMATION_DEFAULT,
-              TOAST_MESSAGE_VERIFICATION_CODE_SENT,
-            ),
-          ),
-        );
-      }, 500);
+      sendVerificationCodeSentToast();
     }
   }, [props.visible]);
 
@@ -103,14 +124,37 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     }
   };
 
+  const onResendVerificationCode = (): void => {
+    AuthService.getInstance()
+      .resendSignupConfirmationCode(props.username)
+      .then(() => {
+        sendVerificationCodeSentToast();
+        setResendConfirmationTimeout(RESEND_CONFIRMATION_CODE_TIMEOUT);
+      })
+      .catch((err: Error) => {
+        console.error(err);
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(cilWarning, TOAST_TITLE_ACCOUNT_CONFIRMATION_FAILURE, err.message),
+          ),
+        );
+      });
+  };
+
   return (
     <Modal
       title="Account Confirmation"
       visible={props.visible}
-      primaryButtonText="Confirm"
-      primaryButtonHandler={onAccountConfirmation}
-      showSecondaryButton={false}
-      secondaryButtonHandler={onCloseFormHandler}
+      primaryButtonText={
+        resendConfirmationTimeout > 0
+          ? `${RESEND_CONFIRMATION_CODE_LABEL} (${resendConfirmationTimeout})`
+          : RESEND_CONFIRMATION_CODE_LABEL
+      }
+      primaryButtonDisabled={resendConfirmationTimeout > 0}
+      primaryButtonHandler={onResendVerificationCode}
+      showSecondaryButton={true}
+      secondaryButtonText="Confirm"
+      secondaryButtonHandler={onAccountConfirmation}
       onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm>

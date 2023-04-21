@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/react';
 import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
-import { toFormattedDateString } from '../../utils/DateUtils';
+import { toFormattedDateString } from '../../services/utils/DateUtils';
 import type { SimpleMeasurements } from 'src/model/Measurement';
 
 const TIMEFRAME_ALL = 'All';

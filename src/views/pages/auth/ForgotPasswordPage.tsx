@@ -1,6 +1,6 @@
 import { CForm } from '@coreui/react';
 import React, { useEffect, useState, type ChangeEvent } from 'react';
-import AuthService from 'src/auth/AuthService';
+import AuthService from 'src/services/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
 import {
@@ -13,7 +13,7 @@ import {
   isPasswordAccordingToPolicy,
   isValidConfirmationCodeLength,
   isValidEmail,
-} from 'src/utils/Validators';
+} from 'src/services/utils/Validators';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import {
   cilDialpad,

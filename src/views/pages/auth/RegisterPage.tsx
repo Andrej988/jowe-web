@@ -11,7 +11,7 @@ import {
 } from '@coreui/react';
 import { cilEnvelopeClosed, cilLockLocked, cilPeople, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthService from 'src/auth/AuthService';
+import AuthService from 'src/services/auth/AuthService';
 import {
   ALLOW_SIGN_UP,
   NAME_MAX_LENGTH,
@@ -26,13 +26,13 @@ import {
   USERNAME_FEEDBACK,
 } from 'src/config/CommonStrings';
 import AccountConfirmationPage from './AccountConfirmationPage';
-import { UserRegistrationRequest } from 'src/auth/model/UserRegistrationRequest';
+import { UserRegistrationRequest } from 'src/services/auth/model/UserRegistrationRequest';
 import {
   isCorrectLength,
   isNotEmpty,
   isPasswordAccordingToPolicy,
   isValidEmail,
-} from 'src/utils/Validators';
+} from 'src/services/utils/Validators';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import FormSelectGroupWithFeedback from 'src/components/utils/FormSelectGroupWithFeedback';
 import { useDispatch } from 'react-redux';

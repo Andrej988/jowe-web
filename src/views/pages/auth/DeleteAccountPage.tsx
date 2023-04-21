@@ -1,7 +1,7 @@
 import { cilTrash } from '@coreui/icons';
 import React from 'react';
 import type { PropsWithChildren } from 'react';
-import AuthService from 'src/auth/AuthService';
+import AuthService from 'src/services/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
 
 interface Props extends PropsWithChildren {

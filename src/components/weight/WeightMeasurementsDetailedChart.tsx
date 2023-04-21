@@ -15,7 +15,7 @@ import {
 } from '@coreui/react';
 import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
-import { toFormattedDateString } from '../../utils/DateUtils';
+import { toFormattedDateString } from '../../services/utils/DateUtils';
 import type { SimpleMeasurements } from 'src/model/Measurement';
 import styles from './WeightMeasurementsDetailedChart.module.css';
 import AddMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';

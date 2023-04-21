@@ -3,7 +3,7 @@ import { CForm } from '@coreui/react';
 import React, { useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import AuthService from 'src/auth/AuthService';
+import AuthService from 'src/services/auth/AuthService';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import Modal from 'src/components/utils/Modal';
 import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
@@ -13,7 +13,7 @@ import {
   PASSWORD_POLICY_FEEDBACK,
 } from 'src/config/CommonStrings';
 import { ToastMsg, toasterActions } from 'src/store/Store';
-import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/utils/Validators';
+import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/services/utils/Validators';
 
 interface Props {
   visible: boolean;

@@ -11,9 +11,9 @@ import {
 } from '@coreui/react';
 import { cilLockLocked, cilUser, cilWarning } from '@coreui/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthService from 'src/auth/AuthService';
+import AuthService from 'src/services/auth/AuthService';
 import AccountConfirmationPage from './AccountConfirmationPage';
-import { UserNotConfirmedError } from 'src/auth/errors/AuthenticationErrors';
+import { UserNotConfirmedError } from 'src/services/auth/errors/AuthenticationErrors';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import { ToastMsg, toasterActions } from 'src/store/Store';
@@ -25,6 +25,7 @@ const TOAST_MESSAGE_LOGIN_MISSING_CREDENTIALS = 'Missing credentials!';
 const LoginPage: React.FC = () => {
   const usernameRef: RefObject<HTMLInputElement> = useRef(null);
   const passwordRef: RefObject<HTMLInputElement> = useRef(null);
+  const [loginButtonDisabled, setLoginButtonDisabled] = useState(false);
   const [accountConfirmationModalVisible, setAccountConfirmationModalVisible] = useState(false);
   const [forgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false);
   const [username, setUsername] = useState('');
@@ -68,12 +69,19 @@ const LoginPage: React.FC = () => {
       });
   };
 
+  const delayedEnablingOfLoginButton = (delayInMillis: number): void => {
+    setTimeout(() => {
+      setLoginButtonDisabled(false);
+    }, delayInMillis);
+  };
+
   const confirmForgotPasswordHandler = (): void => {
     setForgotPasswordModalVisible(false);
   };
 
   const loginHandler = (event: React.ChangeEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    setLoginButtonDisabled(true);
 
     if (usernameRef.current?.value == null || passwordRef.current?.value == null) {
       dispatch(
@@ -85,6 +93,7 @@ const LoginPage: React.FC = () => {
           ),
         ),
       );
+      delayedEnablingOfLoginButton(500);
       return;
     }
 
@@ -108,6 +117,7 @@ const LoginPage: React.FC = () => {
             ),
           );
         }
+        delayedEnablingOfLoginButton(1000);
       });
   };
 
@@ -154,14 +164,28 @@ const LoginPage: React.FC = () => {
                       </p>
                       <CRow className="justify-content-end">
                         <CCol xs={6}>
-                          <CButton color="secondary" className="px-4 float-end" type="submit">
+                          <CButton
+                            color="secondary"
+                            className="px-4 float-end"
+                            type="submit"
+                            disabled={loginButtonDisabled}
+                            style={{
+                              ...(loginButtonDisabled
+                                ? { cursor: 'not-allowed', pointerEvents: 'auto' }
+                                : {}),
+                            }}
+                          >
                             Login
                           </CButton>
                         </CCol>
                       </CRow>
                     </CForm>
                     <p className="text-medium-emphasis">
-                      Create your Account <Link to={'/register'}>here</Link>.
+                      Create your Account{' '}
+                      <Link to={'/register'} style={{ color: 'rgba(44, 56, 74, 0.681)' }}>
+                        here
+                      </Link>
+                      .
                     </p>
                   </CCardBody>
                 </CCard>

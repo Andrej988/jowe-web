@@ -3,7 +3,7 @@ import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import './scss/style.scss';
 import ProtectedRoute from './components/security/ProtectedRoute';
 import { useDispatch, useSelector } from 'react-redux';
-import AuthService from './auth/AuthService';
+import AuthService from './services/auth/AuthService';
 import { CToaster } from '@coreui/react';
 import buildToast from './components/utils/Toaster';
 import { type ToastMsg } from './store/ToasterSlice';
