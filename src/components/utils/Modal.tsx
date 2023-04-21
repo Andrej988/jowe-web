@@ -17,11 +17,13 @@ interface Props extends PropsWithChildren {
   primaryButtonIcon?: string | string[];
   primaryButtonText: string;
   primaryButtonColor?: string;
+  primaryButtonDisabled?: boolean;
   primaryButtonHandler: () => void;
   showSecondaryButton: boolean;
   secondaryButtonIcon?: string | string[];
   secondaryButtonText?: string;
   secondaryButtonColor?: string;
+  secondaryButtonDisabled?: boolean;
   secondaryButtonHandler?: () => void;
   onCloseButtonHandler: () => void;
 }
@@ -44,7 +46,13 @@ const Modal: React.FC<Props> = (props) => {
         <CButton
           color={props.primaryButtonColor === undefined ? 'secondary' : props.primaryButtonColor}
           variant="outline"
+          disabled={props.primaryButtonDisabled}
           onClick={props.primaryButtonHandler}
+          style={{
+            ...(props.primaryButtonDisabled ?? false
+              ? { cursor: 'not-allowed', pointerEvents: 'auto' }
+              : {}),
+          }}
         >
           {props.primaryButtonIcon !== undefined && <CIcon icon={props.primaryButtonIcon} />}{' '}
           {props.primaryButtonText}
@@ -55,7 +63,13 @@ const Modal: React.FC<Props> = (props) => {
               props.secondaryButtonColor === undefined ? 'secondary' : props.secondaryButtonColor
             }
             variant="outline"
+            disabled={props.secondaryButtonDisabled}
             onClick={props.secondaryButtonHandler}
+            style={{
+              ...(props.secondaryButtonDisabled ?? false
+                ? { cursor: 'not-allowed', pointerEvents: 'auto' }
+                : {}),
+            }}
           >
             {props.secondaryButtonIcon !== undefined && <CIcon icon={props.secondaryButtonIcon} />}{' '}
             {props.secondaryButtonText}

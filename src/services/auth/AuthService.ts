@@ -46,6 +46,20 @@ export default class AuthService {
     });
   }
 
+  async resendSignupConfirmationCode(username: string): Promise<boolean> {
+    return await new Promise<boolean>((resolve, reject) => {
+      CognitoAuthService.getInstance()
+        .resendSignupConfirmationCode(username)
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err: Error) => {
+          console.error(err.message);
+          reject(err);
+        });
+    });
+  }
+
   private handleLogin(authenticationData: AuthenticatedUserSession): void {
     store.dispatch(
       authActions.signIn({

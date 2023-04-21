@@ -135,6 +135,19 @@ export default class CognitoAuthService {
     });
   }
 
+  async resendSignupConfirmationCode(username: string): Promise<boolean> {
+    const user = this.buildCognitoUser(username);
+
+    return await new Promise<boolean>((resolve, reject) => {
+      user.resendConfirmationCode((err) => {
+        if (err != null) {
+          reject(new AccountConfirmationError(this.parseErrorMsg(err)));
+        }
+        resolve(true);
+      });
+    });
+  }
+
   private buildCognitoUser(username: string): CognitoUser {
     return new CognitoUser({ Username: username, Pool: this.userPool });
   }
