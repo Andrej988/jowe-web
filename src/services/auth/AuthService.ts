@@ -12,7 +12,11 @@ import {
 
 export default class AuthService {
   private static readonly instance: AuthService = new AuthService();
+  private static readonly AUTO_LOGOUT_AFTER = 3600000; // 1 hour
+  public static readonly SHOW_SESSION_PROLONGATION_FORM = 30000; // 30 seconds before
+
   private refreshTokenTimer: NodeJS.Timeout | undefined;
+  private autoLogoutTimer: NodeJS.Timeout | undefined;
 
   public static getInstance(): AuthService {
     return this.instance;
@@ -60,14 +64,16 @@ export default class AuthService {
     });
   }
 
-  private handleLogin(authenticationData: AuthenticatedUserSession): void {
+  private handleLogin(authenticationData: AuthenticatedUserSession, autoLogoutTime?: number): void {
     store.dispatch(
       authActions.signIn({
         isAuthenticated: true,
         user: authenticationData.user,
         tokens: authenticationData.tokens,
+        autoLogoutTime,
       }),
     );
+
     if (
       authenticationData.tokens.refreshToken?.token != null &&
       authenticationData.tokens.accessToken?.expiration != null
@@ -107,7 +113,11 @@ export default class AuthService {
       CognitoAuthService.getInstance()
         .login(enteredUsername, enteredPassword)
         .then((authenticationData) => {
-          this.handleLogin(authenticationData);
+          this.handleLogin(authenticationData, Date.now() + AuthService.AUTO_LOGOUT_AFTER);
+          this.setAutoLogout();
+          return authenticationData;
+        })
+        .then((authenticationData) => {
           resolve(authenticationData);
         })
         .catch((err: Error) => {
@@ -127,7 +137,8 @@ export default class AuthService {
             console.debug('Access token expires on: ', expirationDate);
 
             if (Date.now() < userSession.tokens.accessToken?.expiration * 1000) {
-              this.handleLogin(userSession);
+              this.handleLogin(userSession, Date.now() + AuthService.AUTO_LOGOUT_AFTER);
+              this.setAutoLogout();
               resolve(true);
             } else {
               throw new UserSessionExpiredError('Session expired!');
@@ -143,12 +154,32 @@ export default class AuthService {
     });
   }
 
-  private handleLogout(): void {
-    store.dispatch(authActions.signOut());
+  private setAutoLogout(): void {
+    this.autoLogoutTimer = setTimeout(() => {
+      this.logout().catch((err) => {
+        console.error(err);
+      });
+    }, AuthService.AUTO_LOGOUT_AFTER);
+  }
+
+  private clearAutoLogoutTimer(): void {
+    if (this.autoLogoutTimer !== undefined) {
+      clearTimeout(this.autoLogoutTimer);
+      this.autoLogoutTimer = undefined;
+    }
+  }
+
+  private clearRefreshTokenTimer(): void {
     if (this.refreshTokenTimer !== undefined) {
       clearTimeout(this.refreshTokenTimer);
       this.refreshTokenTimer = undefined;
     }
+  }
+
+  private handleLogout(): void {
+    store.dispatch(authActions.signOut());
+    this.clearRefreshTokenTimer();
+    this.clearAutoLogoutTimer();
   }
 
   async logout(): Promise<void> {
@@ -227,5 +258,15 @@ export default class AuthService {
           reject(err);
         });
     });
+  }
+
+  extendUserSession(): void {
+    this.clearAutoLogoutTimer();
+    store.dispatch(
+      authActions.setNewAutoLogoutAt({
+        autoLogoutTime: Date.now() + AuthService.AUTO_LOGOUT_AFTER,
+      }),
+    );
+    this.setAutoLogout();
   }
 }
