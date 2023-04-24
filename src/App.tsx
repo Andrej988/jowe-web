@@ -8,6 +8,7 @@ import { CToaster } from '@coreui/react';
 import buildToast from './components/utils/Toaster';
 import { type ToastMsg } from './store/ToasterSlice';
 import { toasterActions, type RootState } from './store/Store';
+import AutoLogoutForm from './views/pages/auth/AutoLogoutForm';
 
 // Containers
 const MainLayout = React.lazy(async () => await import('./layout/MainLayout'));
@@ -18,12 +19,19 @@ const RegisterPage = React.lazy(async () => await import('./views/pages/auth/Reg
 const Page404 = React.lazy(async () => await import('./views/pages/Page404'));
 
 const App: React.FC = () => {
+  const [autoLogoutVisible, setAutoLogoutVisible] = useState(false);
+  const logoutTime = useSelector((state: any) => state.auth.autoLogoutAt);
+
   const [isLoading, setLoading] = useState(false);
   const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
   const [toast, addToast] = useState<ReactElement | undefined>();
   const toaster = useRef<HTMLDivElement | null>(null);
   const toastMessages: ToastMsg[] = useSelector((state: RootState) => state.toaster.toasts);
   const dispatch = useDispatch();
+
+  const closeAutoLogoutFormHandler = (): void => {
+    setAutoLogoutVisible(false);
+  };
 
   useEffect(() => {
     if (toastMessages.length > 0) {
@@ -33,6 +41,23 @@ const App: React.FC = () => {
       }
     }
   }, [toastMessages]);
+
+  useEffect(() => {
+    if (isAuthenticated === true && logoutTime > Date.now()) {
+      const showInMillis = logoutTime - Date.now() - AuthService.SHOW_SESSION_PROLONGATION_FORM;
+
+      const timerId = setTimeout(() => {
+        setAutoLogoutVisible(true);
+      }, showInMillis);
+
+      // Cleanup
+      return () => {
+        clearTimeout(timerId);
+      };
+    } else {
+      setAutoLogoutVisible(false);
+    }
+  }, [logoutTime, isAuthenticated]);
 
   if (!isLoading && isAuthenticated === null) {
     setLoading(true);
@@ -67,6 +92,7 @@ const App: React.FC = () => {
             }
           />
         </Routes>
+        <AutoLogoutForm visible={autoLogoutVisible} onCloseForm={closeAutoLogoutFormHandler} />
       </Suspense>
     </BrowserRouter>
   );

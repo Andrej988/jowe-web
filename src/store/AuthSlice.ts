@@ -6,21 +6,27 @@ const initialState = {
   isAuthenticated: null,
   user: new AuthenticatedUser(),
   tokens: new AuthTokens(),
+  autoLogoutAt: null,
 };
 
 const setAuthState = (
   state: any,
   isAuthenticated: boolean,
-  user: AuthenticatedUser | null,
-  tokens: AuthTokens | null,
+  user?: AuthenticatedUser,
+  tokens?: AuthTokens,
+  autoLogoutTime?: number,
 ): void => {
   state.isAuthenticated = isAuthenticated;
   if (isAuthenticated) {
     state.user = user;
     state.tokens = tokens;
+    if (state.autoLogoutAt === null) {
+      state.autoLogoutAt = autoLogoutTime;
+    }
   } else {
     state.user = null;
     state.tokens = new AuthTokens();
+    state.autoLogoutAt = null;
   }
 };
 
@@ -34,10 +40,14 @@ const authSlice = createSlice({
         action.payload.isAuthenticated,
         action.payload.user,
         action.payload.tokens,
+        action.payload.autoLogoutTime,
       );
     },
     signOut(state) {
-      setAuthState(state, false, null, null);
+      setAuthState(state, false);
+    },
+    setNewAutoLogoutAt(state, action) {
+      state.autoLogoutAt = action.payload.autoLogoutTime;
     },
   },
 });
