@@ -4,6 +4,7 @@ import {
   PASSWORD_POLICY,
 } from 'src/config/ServiceConfig';
 import { EMAIL_REGEX } from './Regex';
+import { type PasswordValidationResult } from '../auth/PasswordPolicy';
 
 export const isNotEmpty = (value: string): boolean => {
   return value.trim() !== '';
@@ -33,6 +34,6 @@ export const isValidConfirmationCodeLength = (confirmationCode: string): boolean
   );
 };
 
-export const isPasswordAccordingToPolicy = (password: string): boolean => {
+export const isPasswordAccordingToPolicy = (password: string): PasswordValidationResult => {
   return PASSWORD_POLICY.isPasswordAccordingToPolicy(password);
 };

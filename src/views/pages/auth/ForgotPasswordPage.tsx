@@ -24,6 +24,7 @@ import {
 } from '@coreui/icons';
 import { useDispatch } from 'react-redux';
 import { ToastMsg, toasterActions } from 'src/store/Store';
+import { type PasswordValidationResult } from 'src/services/auth/PasswordPolicy';
 
 interface Props {
   visible: boolean;
@@ -82,6 +83,9 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
+  const [passwordValidationResult, setPasswordValidationResult] = useState<
+    PasswordValidationResult | undefined
+  >(undefined);
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
@@ -126,7 +130,9 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
 
     if (formState === STATE_CODE_SENT) {
       confirmationCodeValid = isValidConfirmationCodeLength(confirmationCode);
-      newPasswordValid = isPasswordAccordingToPolicy(password);
+      const newPasswordValidationResult = isPasswordAccordingToPolicy(password);
+      setPasswordValidationResult(newPasswordValidationResult);
+      newPasswordValid = newPasswordValidationResult.result;
       confirmPasswordValid = isNotEmpty(passwordConfirmation) && passwordConfirmation === password;
     }
 
@@ -261,6 +267,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
           feedbackPaswordPolicy={true}
           invalid={isValidated && !formValidtyState.newPasswordValid}
           showValidIndicator={isValidated}
+          passwordValidationResults={passwordValidationResult}
         />
         <FormInputGroupWithFeedback
           icon={cilLockLocked}
