@@ -4,6 +4,7 @@ import React, { Fragment } from 'react';
 import type { PropsWithChildren } from 'react';
 import FormElementFeedback from './FormElementFeedback';
 import PasswordPolicyFeedback from './PasswordPolicyFeedback';
+import { type PasswordValidationResult } from 'src/services/auth/PasswordPolicy';
 
 interface Props extends PropsWithChildren {
   className?: string | undefined;
@@ -24,6 +25,7 @@ interface Props extends PropsWithChildren {
   minLength?: number;
   maxLength?: number;
   showValidIndicator?: boolean;
+  passwordValidationResults?: PasswordValidationResult;
 }
 
 const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
@@ -60,7 +62,10 @@ const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
         props.invalid != null &&
         props.invalid && <FormElementFeedback feedbackMsg={props.feedbackMsg} />}
       {props.feedbackPaswordPolicy === true && props.invalid != null && props.invalid && (
-        <PasswordPolicyFeedback invalid={true} />
+        <PasswordPolicyFeedback
+          invalid={true}
+          passwordValidationResults={props.passwordValidationResults}
+        />
       )}
     </Fragment>
   );

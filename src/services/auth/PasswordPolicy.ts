@@ -13,6 +13,13 @@ export enum PasswordPolicyDetail {
   AT_LEAST_1_SPECIAL_CHARACTER = 'at least one special character (!, @, #, $, %, ^, &, *, =, +, or -)',
 }
 
+export interface PasswordValidationResult {
+  result: boolean;
+  notEnoughChars: boolean;
+  // details: Record<PasswordPolicyDetail, boolean>;
+  detailValid: Map<PasswordPolicyDetail, boolean>;
+}
+
 export class PasswordPolicy {
   constructor(
     private readonly minNumOfChars: number,
@@ -27,18 +34,26 @@ export class PasswordPolicy {
     return this.details;
   }
 
-  isPasswordAccordingToPolicy(password: string): boolean {
+  isPasswordAccordingToPolicy(password: string): PasswordValidationResult {
+    const validationResult: PasswordValidationResult = {
+      result: true,
+      notEnoughChars: false,
+      detailValid: new Map(),
+    };
+
     if (!isAtLeastXCharsLong(password, this.minNumOfChars)) {
-      return false;
+      validationResult.result = false;
+      validationResult.notEnoughChars = true;
     }
 
     for (const policyDetail of this.details) {
       const isValid = this.validatePasswordPolicyDetail(password, policyDetail);
+      validationResult.detailValid.set(policyDetail, isValid);
       if (!isValid) {
-        return false;
+        validationResult.result = false;
       }
     }
-    return true;
+    return validationResult;
   }
 
   private validatePasswordPolicyDetail(value: string, policyDetail: PasswordPolicyDetail): boolean {

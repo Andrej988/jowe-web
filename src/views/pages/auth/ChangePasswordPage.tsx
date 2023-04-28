@@ -14,6 +14,7 @@ import {
 } from 'src/config/CommonStrings';
 import { ToastMsg, toasterActions } from 'src/store/Store';
 import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/services/utils/Validators';
+import { type PasswordValidationResult } from 'src/services/auth/PasswordPolicy';
 
 interface Props {
   visible: boolean;
@@ -43,6 +44,9 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
+  const [passwordValidationResult, setPasswordValidationResult] = useState<
+    PasswordValidationResult | undefined
+  >(undefined);
   const dispatch = useDispatch();
 
   const [currentPassword, setCurrentPassword] = useState('');
@@ -64,16 +68,17 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   const validateForm = (): boolean => {
     const currentPasswordValid = isNotEmpty(currentPassword);
     const newPasswordValid = isPasswordAccordingToPolicy(newPassword);
+    setPasswordValidationResult(newPasswordValid);
     const confirmPasswordValid = isNotEmpty(confirmPassword) && newPassword === confirmPassword;
 
     setIsValidated(true);
     setFormValidityState({
       currentPasswordValid,
-      newPasswordValid,
+      newPasswordValid: newPasswordValid.result,
       confirmPasswordMatch: confirmPasswordValid,
     });
 
-    return currentPasswordValid && newPasswordValid && confirmPasswordValid;
+    return currentPasswordValid && newPasswordValid.result && confirmPasswordValid;
   };
 
   useEffect(() => {
@@ -177,6 +182,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           required
           invalid={isValidated && !formValidtyState.newPasswordValid}
           showValidIndicator={isValidated}
+          passwordValidationResults={passwordValidationResult}
         />
         <FormInputGroupWithFeedback
           className="mt-3"

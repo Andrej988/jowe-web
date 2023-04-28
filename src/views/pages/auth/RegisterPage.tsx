@@ -37,6 +37,7 @@ import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithF
 import FormSelectGroupWithFeedback from 'src/components/utils/FormSelectGroupWithFeedback';
 import { useDispatch } from 'react-redux';
 import { ToastMsg, toasterActions } from 'src/store/Store';
+import { type PasswordValidationResult } from 'src/services/auth/PasswordPolicy';
 
 interface FormValidityState {
   usernameValid: boolean;
@@ -78,6 +79,10 @@ const RegisterPage: React.FC = () => {
   const [formValidityState, setFormValidityState] = useState<FormValidityState>(
     INITIAL_FORM_VALIDITY_STATE,
   );
+
+  const [passwordValidationResult, setPasswordValidationResult] = useState<
+    PasswordValidationResult | undefined
+  >(undefined);
 
   const openAccountConfirmationModal = (): void => {
     setAccountConfirmationModalVisible(true);
@@ -137,12 +142,13 @@ const RegisterPage: React.FC = () => {
     const confirmPasswordMatch = isNotEmpty(confirmPassword) && confirmPassword === password;
     const genderValid = gender !== NOT_AVAILABLE;
 
+    setPasswordValidationResult(passwordValid);
     setIsValidated(true);
     setFormValidityState({
       usernameValid,
       emailValid,
       nameValid,
-      passwordValid,
+      passwordValid: passwordValid.result,
       confirmPasswordMatch,
       genderValid,
     });
@@ -151,7 +157,7 @@ const RegisterPage: React.FC = () => {
       usernameValid &&
       nameValid &&
       emailValid &&
-      passwordValid &&
+      passwordValid.result &&
       confirmPasswordMatch &&
       genderValid
     );
@@ -275,6 +281,7 @@ const RegisterPage: React.FC = () => {
                         invalid={isValidated && !formValidityState.passwordValid}
                         feedbackPaswordPolicy={true}
                         showValidIndicator={isValidated}
+                        passwordValidationResults={passwordValidationResult}
                       />
                       <FormInputGroupWithFeedback
                         className="mt-3"
