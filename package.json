@@ -1,11 +1,11 @@
 {
-  "name": "health-tracker-web",
+  "name": "jowe-web",
   "version": "1.0.0",
-  "description": "health-Tracker",
+  "description": "JoWe (Journal for Wellness)",
   "homepage": ".",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Andrej988/health-tracker-web.git"
+    "url": "git@github.com:Andrej988/jowe-web.git"
   },
   "license": "",
   "author": "Andrej988",

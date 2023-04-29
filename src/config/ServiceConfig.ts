@@ -1,7 +1,7 @@
 import { PasswordPolicy, PasswordPolicyDetail } from 'src/services/auth/PasswordPolicy';
 import { CognitoConfig } from 'src/services/auth/provider/CognitoConfig';
 
-export const SERVICE_URL: string | undefined = process.env.REACT_APP_HEALTH_TRACKER_SERVICE_URL;
+export const SERVICE_URL: string | undefined = process.env.REACT_APP_BACKEND_SERVICE_URL;
 
 export const ALLOW_SIGN_UP: boolean =
   process.env.REACT_APP_ALLOW_SIGN_UP != null
