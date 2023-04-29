@@ -10,6 +10,23 @@ export const isNotEmpty = (value: string): boolean => {
   return value.trim() !== '';
 };
 
+export const isEmpty = (value: string): boolean => {
+  return !isNotEmpty(value);
+};
+
+export const isNumber = (value: string): boolean => {
+  const num = parseFloat(value);
+  return !isNaN(num);
+};
+
+export const isLargerThan = (value: number, boundary: number): boolean => {
+  return value > boundary;
+};
+
+export const isValidDateString = (value: string): boolean => {
+  return !isNaN(Date.parse(value));
+};
+
 export const isAtLeastXCharsLong = (value: string, numOfChars: number): boolean => {
   return value.trim().length >= numOfChars;
 };
@@ -36,4 +53,31 @@ export const isValidConfirmationCodeLength = (confirmationCode: string): boolean
 
 export const isPasswordAccordingToPolicy = (password: string): PasswordValidationResult => {
   return PASSWORD_POLICY.isPasswordAccordingToPolicy(password);
+};
+
+export const isValidPercentage = (value: number | undefined, optionalValue?: boolean): boolean => {
+  return (
+    (optionalValue === true && value === undefined) ||
+    (value !== undefined && value >= 0 && value <= 100)
+  );
+};
+
+export const isValidPercentageString = (
+  value: string | undefined,
+  optionalValue?: boolean,
+): boolean => {
+  if (value === undefined || isEmpty(value)) {
+    if (optionalValue === true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const num = parseFloat(value);
+  if (isNaN(num)) {
+    return false;
+  } else {
+    return isValidPercentage(num, optionalValue);
+  }
 };
