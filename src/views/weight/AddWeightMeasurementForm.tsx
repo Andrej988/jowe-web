@@ -12,7 +12,12 @@ import {
   cilSpreadsheet,
   cilWeightlifitng,
 } from '@coreui/icons';
-import { isEmpty, isNumber, isValidPercentageString } from 'src/services/utils/Validators';
+import {
+  isEmpty,
+  isNumber,
+  isValidDateString,
+  isValidPercentageString,
+} from 'src/services/utils/Validators';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -92,7 +97,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   };
 
   const validateForm = (): boolean => {
-    const dateValid = true;
+    const dateValid = isValidDateString(date);
     const noteValid = true;
     const weightValid = isNumber(weight);
     const bodyFatValid = isValidPercentageString(bodyFat, true);

@@ -19,6 +19,10 @@ export const isNumber = (value: string): boolean => {
   return !isNaN(num);
 };
 
+export const isValidDateString = (value: string): boolean => {
+  return !isNaN(Date.parse(value));
+};
+
 export const isAtLeastXCharsLong = (value: string, numOfChars: number): boolean => {
   return value.trim().length >= numOfChars;
 };
