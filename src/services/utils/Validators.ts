@@ -19,6 +19,10 @@ export const isNumber = (value: string): boolean => {
   return !isNaN(num);
 };
 
+export const isLargerThan = (value: number, boundary: number): boolean => {
+  return value > boundary;
+};
+
 export const isValidDateString = (value: string): boolean => {
   return !isNaN(Date.parse(value));
 };

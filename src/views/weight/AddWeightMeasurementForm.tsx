@@ -14,10 +14,16 @@ import {
 } from '@coreui/icons';
 import {
   isEmpty,
+  isLargerThan,
   isNumber,
   isValidDateString,
   isValidPercentageString,
 } from 'src/services/utils/Validators';
+import {
+  DATE_GENERIC_FEEDBACK,
+  STRICT_PERCENTAGE_VALUE_FEEDBACK,
+  WEIGHT_FEEDBACK,
+} from 'src/config/CommonStrings';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -99,7 +105,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   const validateForm = (): boolean => {
     const dateValid = isValidDateString(date);
     const noteValid = true;
-    const weightValid = isNumber(weight);
+    const weightValid = isNumber(weight) && isLargerThan(parseFloat(weight), 0);
     const bodyFatValid = isValidPercentageString(bodyFat, true);
     const waterValid = isValidPercentageString(water, true);
     const muscleMassValid = isValidPercentageString(muscleMass, true);
@@ -196,7 +202,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               id="date"
               icon={cilClock}
               type="datetime-local"
-              label="Date"
+              label="Date of Measurement"
               normalLabel={USE_NORMAL_LABELS}
               autoComplete="date"
               // pattern="[0-9]*"
@@ -207,6 +213,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               // text={INPUT_MESSAGE}
               onChange={onDateInputChangeHandler}
               invalid={isValidated && !formValidtyState.dateValid}
+              feedbackMsg={DATE_GENERIC_FEEDBACK}
             />
           </CCol>
 
@@ -232,7 +239,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
         <CRow>
           <CCol sm={12} lg={6}>
             <FormInputGroupWithFeedback
-              className="mt-3"
+              className="mt-2"
               id="weight"
               icon={cilBalanceScale}
               type="number"
@@ -247,11 +254,12 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               // text={INPUT_MESSAGE}
               onChange={onWeightInputChangeHandler}
               invalid={isValidated && !formValidtyState.weightValid}
+              feedbackMsg={WEIGHT_FEEDBACK}
             />
           </CCol>
           <CCol sm={12} lg={6}>
             <FormInputGroupWithFeedback
-              className="mt-3"
+              className="mt-2"
               id="bodyFat"
               icon={cilBurger}
               type="number"
@@ -268,13 +276,14 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               // text={INPUT_MESSAGE}
               onChange={onBodyFatInputChangeHandler}
               invalid={isValidated && !formValidtyState.bodyFatValid}
+              feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
             />
           </CCol>
         </CRow>
         <CRow>
           <CCol sm={12} lg={6}>
             <FormInputGroupWithFeedback
-              className="mt-3"
+              className="mt-2"
               id="water"
               icon={cilDrop}
               type="number"
@@ -291,11 +300,12 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               // text={INPUT_MESSAGE}
               onChange={onWaterInputChangeHandler}
               invalid={isValidated && !formValidtyState.waterValid}
+              feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
             />
           </CCol>
           <CCol sm={12} lg={6}>
             <FormInputGroupWithFeedback
-              className="mt-3"
+              className="mt-2"
               id="muscleMass"
               icon={cilWeightlifitng}
               type="number"
@@ -312,13 +322,14 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               // text={INPUT_MESSAGE}
               onChange={onMuscleMassInputChangeHandler}
               invalid={isValidated && !formValidtyState.muscleMassValid}
+              feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
             />
           </CCol>
         </CRow>
         <CRow>
           <CCol sm={12} lg={6}>
             <FormInputGroupWithFeedback
-              className="mt-3"
+              className="mt-2"
               id="boneMass"
               icon={cilSpreadsheet}
               type="number"
@@ -335,11 +346,12 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               // text={INPUT_MESSAGE}
               onChange={onBoneMassInputChangeHandler}
               invalid={isValidated && !formValidtyState.boneMassValid}
+              feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
             />
           </CCol>
           <CCol sm={12} lg={6}>
             <FormInputGroupWithFeedback
-              className="mt-3"
+              className="mt-2"
               id="eneryExpenditure"
               icon={cilBurn}
               type="number"
