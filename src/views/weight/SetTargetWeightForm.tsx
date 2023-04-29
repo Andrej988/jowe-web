@@ -1,6 +1,11 @@
 import { CForm, CFormInput } from '@coreui/react';
-import React, { useEffect, useState } from 'react';
-import type { ChangeEvent, PropsWithChildren } from 'react';
+import React, {
+  type FormEvent,
+  type ChangeEvent,
+  type PropsWithChildren,
+  useEffect,
+  useState,
+} from 'react';
 import Modal from 'src/components/utils/Modal';
 
 interface Props extends PropsWithChildren {
@@ -53,19 +58,28 @@ const SetTargetWeightForm: React.FC<Props> = (props) => {
     props.onCloseHandler();
   };
 
+  const onSetTargetWeightHandler = (): void => {
+    props.onSaveHandler();
+  };
+
+  const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onSetTargetWeightHandler();
+  };
+
   return (
     <Modal
       title="Set Target Weight"
       visible={props.visible}
       primaryButtonText="Save"
-      primaryButtonHandler={props.onSaveHandler}
+      primaryButtonHandler={onSetTargetWeightHandler}
       showSecondaryButton={true}
       secondaryButtonText="Cancel"
       secondaryButtonColor="danger"
       secondaryButtonHandler={onCloseFormHandler}
       onCloseButtonHandler={onCloseFormHandler}
     >
-      <CForm>
+      <CForm onSubmit={onSubmitHandler}>
         <CFormInput
           invalid={!isValid && isTouched}
           type="number"

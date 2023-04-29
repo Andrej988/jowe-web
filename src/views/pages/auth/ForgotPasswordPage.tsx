@@ -1,5 +1,5 @@
 import { CForm } from '@coreui/react';
-import React, { useEffect, useState, type ChangeEvent } from 'react';
+import React, { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import AuthService from 'src/services/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
 import { AWS_CONFIRMATION_CODE_MAX_LENGTH } from 'src/config/ServiceConfig';
@@ -212,6 +212,11 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
     }
   };
 
+  const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onConfirmHandler();
+  };
+
   return (
     <Modal
       title="Forgot Password"
@@ -224,7 +229,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
       secondaryButtonHandler={onCloseFormHandler}
       onCloseButtonHandler={onCloseFormHandler}
     >
-      <CForm>
+      <CForm onSubmit={onSubmitHandler}>
         <FormInputGroupWithFeedback
           icon={cilEnvelopeClosed}
           id="email"
