@@ -350,6 +350,7 @@ const RegisterPage: React.FC = () => {
         sendToastVerificationCodeSent={true}
         onCloseHandler={closeAccountConfirmationFormHandler}
         onSaveHandler={confirmAccountHandler}
+        initiallyDisableResendingCode={true}
       />
     </Fragment>
   );

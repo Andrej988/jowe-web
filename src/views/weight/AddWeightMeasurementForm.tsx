@@ -1,4 +1,10 @@
-import React, { type ChangeEvent, type PropsWithChildren, useState, useEffect } from 'react';
+import React, {
+  type ChangeEvent,
+  type PropsWithChildren,
+  useState,
+  useEffect,
+  type FormEvent,
+} from 'react';
 import { CCol, CForm, CRow } from '@coreui/react';
 import Modal from 'src/components/utils/Modal';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
@@ -182,6 +188,11 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
     clearFormWithSlightTimeout();
   };
 
+  const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onAddMeasurementHandler();
+  };
+
   return (
     <Modal
       title="Add Measurement"
@@ -195,7 +206,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
       secondaryButtonHandler={onCloseFormHandler}
       onCloseButtonHandler={onCloseFormHandler}
     >
-      <CForm>
+      <CForm onSubmit={onSubmitHandler}>
         <CRow>
           <CCol sm={12} lg={6}>
             <FormInputGroupWithFeedback

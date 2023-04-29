@@ -1,7 +1,6 @@
 import { cilLockLocked, cilSettings, cilWarning } from '@coreui/icons';
 import { CForm } from '@coreui/react';
-import React, { useEffect, useState } from 'react';
-import type { ChangeEvent } from 'react';
+import React, { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import AuthService from 'src/services/auth/AuthService';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
@@ -143,6 +142,11 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
     }
   };
 
+  const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onChangePasswordConfirmationHandler();
+  };
+
   return (
     <Modal
       title="Change Password"
@@ -155,7 +159,7 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
       secondaryButtonHandler={onCloseFormHandler}
       onCloseButtonHandler={onCloseFormHandler}
     >
-      <CForm>
+      <CForm onSubmit={onSubmitHandler}>
         <FormInputGroupWithFeedback
           icon={cilLockLocked}
           id="currentPassword"

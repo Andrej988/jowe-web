@@ -1,5 +1,5 @@
 import { CForm, CFormFeedback } from '@coreui/react';
-import React, { useEffect, useState, type ChangeEvent } from 'react';
+import React, { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/services/auth/AuthService';
 import { isValidConfirmationCodeLength } from 'src/services/utils/Validators';
@@ -14,6 +14,7 @@ interface Props {
   visible: boolean;
   username: string;
   sendToastVerificationCodeSent?: boolean;
+  initiallyDisableResendingCode?: boolean;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
 }
@@ -80,6 +81,10 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
     if (props.sendToastVerificationCodeSent === true && props.visible) {
       sendVerificationCodeSentToast();
     }
+
+    if (props.initiallyDisableResendingCode === true) {
+      setResendConfirmationTimeout(RESEND_CONFIRMATION_CODE_TIMEOUT);
+    }
   }, [props.visible]);
 
   useEffect(() => {
@@ -141,6 +146,11 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
       });
   };
 
+  const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onAccountConfirmation();
+  };
+
   return (
     <Modal
       title="Account Confirmation"
@@ -157,7 +167,7 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
       secondaryButtonHandler={onAccountConfirmation}
       onCloseButtonHandler={onCloseFormHandler}
     >
-      <CForm>
+      <CForm onSubmit={onSubmitHandler}>
         <FormInputGroupWithFeedback
           icon={cilDialpad}
           className="mt-3"
