@@ -14,6 +14,7 @@ interface Props {
   visible: boolean;
   username: string;
   sendToastVerificationCodeSent?: boolean;
+  initiallyDisableResendingCode?: boolean;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
 }
@@ -79,6 +80,10 @@ const AccountConfirmationPage: React.FC<Props> = (props) => {
   useEffect(() => {
     if (props.sendToastVerificationCodeSent === true && props.visible) {
       sendVerificationCodeSentToast();
+    }
+
+    if (props.initiallyDisableResendingCode === true) {
+      setResendConfirmationTimeout(RESEND_CONFIRMATION_CODE_TIMEOUT);
     }
   }, [props.visible]);
 
