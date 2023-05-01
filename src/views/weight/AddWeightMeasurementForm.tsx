@@ -30,6 +30,8 @@ import {
   STRICT_PERCENTAGE_VALUE_FEEDBACK,
   WEIGHT_FEEDBACK,
 } from 'src/config/CommonStrings';
+import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
+import { tryParseFloat, tryParseFloatStrict } from 'src/services/utils/Parsers';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -159,6 +161,31 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
     const isFormValid = validateForm();
 
     if (isFormValid) {
+      const weightValue = tryParseFloatStrict(weight);
+      const bodyFatValue = tryParseFloat(bodyFat);
+      const waterValue = tryParseFloat(water);
+      const muscleMassValue = tryParseFloat(muscleMass);
+      const boneMassValue = tryParseFloat(boneMass);
+      const energyExpenditureValue = tryParseFloat(energyExpenditure);
+
+      WeightMeasurementsService.getInstance()
+        .addMeasurement(
+          date,
+          note,
+          weightValue,
+          bodyFatValue,
+          waterValue,
+          muscleMassValue,
+          boneMassValue,
+          energyExpenditureValue,
+        )
+        .then((res) => {
+          console.log('done1');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
       props.onSaveHandler();
       clearFormWithSlightTimeout();
     }
@@ -216,12 +243,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               label="Date of Measurement"
               normalLabel={USE_NORMAL_LABELS}
               autoComplete="date"
-              // pattern="[0-9]*"
               value={date}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
-              // maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onDateInputChangeHandler}
               invalid={isValidated && !formValidtyState.dateValid}
               feedbackMsg={DATE_GENERIC_FEEDBACK}
@@ -236,12 +258,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               label="Note (optional)"
               normalLabel={USE_NORMAL_LABELS}
               autoComplete="note"
-              // pattern="[0-9]*"
               value={note}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
-              // maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onNoteInputChangeHandler}
               invalid={isValidated && !formValidtyState.noteValid}
             />
@@ -259,10 +276,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               autoComplete="weight"
               pattern="[0-9]*"
               value={weight}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
               maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onWeightInputChangeHandler}
               invalid={isValidated && !formValidtyState.weightValid}
               feedbackMsg={WEIGHT_FEEDBACK}
@@ -281,10 +295,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               min={0}
               max={100}
               value={bodyFat}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
               maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onBodyFatInputChangeHandler}
               invalid={isValidated && !formValidtyState.bodyFatValid}
               feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
@@ -305,10 +316,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               min={0}
               max={100}
               value={water}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
               maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onWaterInputChangeHandler}
               invalid={isValidated && !formValidtyState.waterValid}
               feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
@@ -327,10 +335,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               min={0}
               max={100}
               value={muscleMass}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
               maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onMuscleMassInputChangeHandler}
               invalid={isValidated && !formValidtyState.muscleMassValid}
               feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
@@ -351,10 +356,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               min={0}
               max={100}
               value={boneMass}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
               maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onBoneMassInputChangeHandler}
               invalid={isValidated && !formValidtyState.boneMassValid}
               feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
@@ -373,10 +375,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               min={0}
               max={100}
               value={energyExpenditure}
-              // min={MIN_TARGET_VALUE}
-              // max={MAX_TARGET_VALUE}
               maxLength={3}
-              // text={INPUT_MESSAGE}
               onChange={onEnergyExpenditureInputChangeHandler}
               invalid={isValidated && !formValidtyState.energyExpenditureValid}
             />
