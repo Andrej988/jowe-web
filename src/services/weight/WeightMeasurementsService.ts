@@ -30,6 +30,7 @@ export default class WeightMeasurementsService {
   private buildConfigWithAuthHeader(): AxiosRequestConfig<any> {
     return {
       headers: {
+        'Content-Type': 'application/json',
         Authorization: this.tokenRetrievalService.getAccessToken(),
       },
     };
@@ -46,15 +47,17 @@ export default class WeightMeasurementsService {
     energyExpenditure?: number,
   ): AddMeasurementRequestDto {
     return {
-      date,
-      note,
-      measurements: {
-        weight,
-        bodyFatPercentage,
-        waterPercentage,
-        muscleMassPercentage,
-        bonePercentage,
-        energyExpenditure,
+      measurement: {
+        date,
+        note,
+        measurements: {
+          weight,
+          bodyFatPercentage,
+          waterPercentage,
+          muscleMassPercentage,
+          bonePercentage,
+          energyExpenditure,
+        },
       },
     };
   }
@@ -108,22 +111,24 @@ export default class WeightMeasurementsService {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
-    const measurementDto = this.buildAddMeasurementRequestDto(
-      date,
-      note,
-      weight,
-      bodyFatPercentage,
-      waterPercentage,
-      muscleMassPercentage,
-      bonePercentage,
-      energyExpenditure,
+    const requestBody = JSON.stringify(
+      this.buildAddMeasurementRequestDto(
+        date,
+        note,
+        weight,
+        bodyFatPercentage,
+        waterPercentage,
+        muscleMassPercentage,
+        bonePercentage,
+        energyExpenditure,
+      ),
     );
 
-    console.log('measurement should be used', measurementDto);
+    console.log('measurement should be used', requestBody);
 
     return await new Promise((resolve, reject) => {
       axios
-        .get(serviceUrl, config)
+        .post(serviceUrl, requestBody, config)
         .then((response) => {
           console.log('Success', response);
           resolve(true);

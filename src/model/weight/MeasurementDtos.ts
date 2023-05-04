@@ -7,8 +7,12 @@ export interface MeasurementValsDto {
   energyExpenditure?: number;
 }
 
-export interface AddMeasurementRequestDto {
+export interface MeasurementRequestDto {
   date: string;
   note: string;
   measurements: MeasurementValsDto;
+}
+
+export interface AddMeasurementRequestDto {
+  measurement: MeasurementRequestDto;
 }
