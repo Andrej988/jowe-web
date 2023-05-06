@@ -1,42 +1,37 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import WeightMeasurementHistory from 'src/components/weight/WeightMeasurementHistory';
 
-import { getTestMeasurements } from 'src/model/TestMeasurements';
-
-// TODO: Remove??
-/* import AuthService from 'src/security/AuthService';
-import { SERVICE_URL } from 'src/config/ServiceConfig';
-import axios from 'axios'; */
-
-const sampleData = getTestMeasurements();
-
-const measurementsSortedByLatestDate = sampleData.measurements
-  .slice()
-  .sort((a: any, b: any) => b.date - a.date);
+import type { Measurement } from 'src/model/weight/Measurement';
+import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 
 const WeightMeasurementsForm: React.FC = () => {
-  // TODO: Remove??
-  /* console.log('accesstoken', AuthService.getAccessToken());
-  const config = {
-    headers: {
-      Authorization: AuthService.getAccessToken(),
-    },
-  };
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const isFetched: boolean = useSelector((state: any) => state.weight.isFetched);
+  const measurementsState = useSelector((state: any) => state.weight.measurements);
 
-  axios
-    .get(SERVICE_URL, config)
-    .then((response) => {
-      console.log('Success', response);
-    })
-    .catch((err) => {
-      console.log('failed', err);
-    }); */
+  useEffect(() => {
+    setMeasurements(measurementsState.slice().sort((a: any, b: any) => b.date - a.date));
+  }, [measurementsState]);
+
+  useEffect(() => {
+    if (!isFetched) {
+      WeightMeasurementsService.getInstance()
+        .retrieveMeasurements()
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [isFetched]);
 
   return (
     <Fragment>
       <WeightMeasurementHistory
         title="History of Measurements"
-        measurements={measurementsSortedByLatestDate.slice()}
+        measurements={measurements.slice()}
         showDeleteButton={true}
       />
     </Fragment>

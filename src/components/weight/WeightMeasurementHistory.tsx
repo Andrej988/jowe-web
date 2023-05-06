@@ -108,22 +108,34 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
                         {item.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.weight} kg
+                        {item.measurements.weight !== undefined
+                          ? `${item.measurements.weight} kg`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.bodyFatPercentage} %
+                        {item.measurements.bodyFatPercentage !== undefined
+                          ? `${item.measurements.bodyFatPercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.waterPercentage} %
+                        {item.measurements.waterPercentage !== undefined
+                          ? `${item.measurements.waterPercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.muscleMassPercentage} %
+                        {item.measurements.muscleMassPercentage !== undefined
+                          ? `${item.measurements.muscleMassPercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.bonePercentage} %
+                        {item.measurements.bonePercentage !== undefined
+                          ? `${item.measurements.bonePercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.energyExpenditure} kcal
+                        {item.measurements.energyExpenditure !== undefined
+                          ? `${item.measurements.energyExpenditure} kcal`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CButton

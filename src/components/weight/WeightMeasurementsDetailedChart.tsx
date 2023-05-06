@@ -53,7 +53,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   const [targetWeightModalVisible, setTargetWeightModalVisibility] = useState(false);
 
   const latestMeasurement = props.measurements[props.measurements.length - 1];
-  const latestWeight = latestMeasurement.measurement;
+  const latestWeight = latestMeasurement !== undefined ? latestMeasurement.measurement : 0;
   const targetWeight = props.targetWeight;
   const targetArr = Array(props.measurements.length).fill(props.targetWeight);
   const targetDiff = Math.round((1 - latestWeight / targetWeight) * -100 * 100) / 100;

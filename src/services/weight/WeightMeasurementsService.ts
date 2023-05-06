@@ -3,7 +3,12 @@ import AccessTokenRetrievalService, {
   type AccessTokenRetrieval,
 } from '../auth/AccessTokenRetrievalService';
 import axios, { type AxiosRequestConfig } from 'axios';
-import { type AddMeasurementRequestDto } from 'src/model/weight/MeasurementDtos';
+import type {
+  AddMeasurementRequestDto,
+  MeasurementResponseDto,
+} from 'src/model/weight/MeasurementDtos';
+import type { Measurement, Measurements } from 'src/model/weight/Measurement';
+import store, { weightActions } from 'src/store/Store';
 
 export default class WeightMeasurementsService {
   private static readonly instance: WeightMeasurementsService = new WeightMeasurementsService();
@@ -37,7 +42,7 @@ export default class WeightMeasurementsService {
   }
 
   private buildAddMeasurementRequestDto(
-    date: string,
+    dateInstant: number,
     note: string,
     weight: number,
     bodyFatPercentage?: number,
@@ -48,7 +53,7 @@ export default class WeightMeasurementsService {
   ): AddMeasurementRequestDto {
     return {
       measurement: {
-        date,
+        date: dateInstant,
         note,
         measurements: {
           weight,
@@ -62,25 +67,57 @@ export default class WeightMeasurementsService {
     };
   }
 
-  async getMeasurements(): Promise<boolean> {
+  private buildMeasurementFromResponseDto(measurementDto: MeasurementResponseDto): Measurement {
+    return {
+      userId: measurementDto.userId,
+      measurementId: measurementDto.measurementId,
+      date: new Date(measurementDto.date),
+      timestamp: measurementDto.timestamp,
+      note: measurementDto.note,
+      measurements: {
+        weight: measurementDto.measurements.weight,
+        bodyFatPercentage: measurementDto.measurements.bodyFatPercentage,
+        waterPercentage: measurementDto.measurements.waterPercentage,
+        muscleMassPercentage: measurementDto.measurements.muscleMassPercentage,
+        bonePercentage: measurementDto.measurements.bonePercentage,
+        energyExpenditure: measurementDto.measurements.energyExpenditure,
+      },
+    };
+  }
+
+  private buildMeasurementsFromResponseDto(
+    measurementsDto: MeasurementResponseDto[],
+  ): Measurements {
+    const measurements: Measurements = {
+      measurements: [],
+    };
+
+    measurementsDto.forEach((measurement) => {
+      measurements.measurements.push(this.buildMeasurementFromResponseDto(measurement));
+    });
+
+    return measurements;
+  }
+
+  async retrieveMeasurements(): Promise<void> {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
-    return await new Promise((resolve, reject) => {
+    await new Promise((_resolve, reject) => {
       axios
         .get(serviceUrl, config)
         .then((response) => {
-          console.log('Success', response);
-          resolve(true);
+          const measurements = this.buildMeasurementsFromResponseDto(response.data.measurements);
+          store.dispatch(weightActions.setMeasurements(measurements.measurements));
         })
         .catch((err) => {
-          console.log('failed', err);
+          console.error('failed retrieving weight measurements', err);
           reject(err);
         });
     });
   }
 
-  async getMeasurement(measurementId: string): Promise<boolean> {
+  async retrieveMeasurement(measurementId: string): Promise<boolean> {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
@@ -99,7 +136,7 @@ export default class WeightMeasurementsService {
   }
 
   async addMeasurement(
-    date: string,
+    dateInstant: number,
     note: string,
     weight: number,
     bodyFatPercentage?: number,
@@ -113,7 +150,7 @@ export default class WeightMeasurementsService {
 
     const requestBody = JSON.stringify(
       this.buildAddMeasurementRequestDto(
-        date,
+        dateInstant,
         note,
         weight,
         bodyFatPercentage,

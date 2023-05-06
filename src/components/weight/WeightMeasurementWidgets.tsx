@@ -26,39 +26,48 @@ const WeightMeasurementWidgets: React.FC<Props> = (props) => {
         title="Body Fat"
         unit="%"
         pointStyle="--cui-warning"
-        measurements={measurementsSortedByDate.slice().map((x) => {
-          return {
-            id: x.measurementId,
-            date: x.date,
-            measurement: x.measurements.bodyFatPercentage,
-          };
-        })}
+        measurements={measurementsSortedByDate
+          .slice()
+          .filter((x) => x.measurements.bodyFatPercentage !== undefined)
+          .map((x) => {
+            return {
+              id: x.measurementId,
+              date: x.date,
+              measurement: Number(x.measurements.bodyFatPercentage),
+            };
+          })}
       />
       <MeasurementWidget
         color="success"
         title="Muscle Mass"
         unit="%"
         pointStyle="--cui-success"
-        measurements={measurementsSortedByDate.slice().map((x) => {
-          return {
-            id: x.measurementId,
-            date: x.date,
-            measurement: x.measurements.muscleMassPercentage,
-          };
-        })}
+        measurements={measurementsSortedByDate
+          .slice()
+          .filter((x) => x.measurements.muscleMassPercentage !== undefined)
+          .map((x) => {
+            return {
+              id: x.measurementId,
+              date: x.date,
+              measurement: Number(x.measurements.muscleMassPercentage),
+            };
+          })}
       />
       <MeasurementWidget
         color="danger"
         title="Energy Expenditure"
         unit="kcal"
         pointStyle="--cui-danger"
-        measurements={measurementsSortedByDate.slice().map((x) => {
-          return {
-            id: x.measurementId,
-            date: x.date,
-            measurement: x.measurements.energyExpenditure,
-          };
-        })}
+        measurements={measurementsSortedByDate
+          .slice()
+          .filter((x) => x.measurements.energyExpenditure !== undefined)
+          .map((x) => {
+            return {
+              id: x.measurementId,
+              date: x.date,
+              measurement: Number(x.measurements.energyExpenditure),
+            };
+          })}
       />
     </CRow>
   );

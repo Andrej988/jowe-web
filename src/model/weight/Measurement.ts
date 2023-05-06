@@ -1,10 +1,10 @@
 export interface MeasurementDetails {
   weight: number;
-  bodyFatPercentage: number;
-  waterPercentage: number;
-  muscleMassPercentage: number;
-  bonePercentage: number;
-  energyExpenditure: number;
+  bodyFatPercentage?: number;
+  waterPercentage?: number;
+  muscleMassPercentage?: number;
+  bonePercentage?: number;
+  energyExpenditure?: number;
 }
 
 export interface Measurement {
@@ -12,7 +12,7 @@ export interface Measurement {
   measurementId: string;
   timestamp: number;
   date: Date;
-  comment: string;
+  note?: string;
   measurements: MeasurementDetails;
 }
 

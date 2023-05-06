@@ -8,11 +8,24 @@ export interface MeasurementValsDto {
 }
 
 export interface MeasurementRequestDto {
-  date: string;
-  note: string;
+  date: number;
+  note?: string;
   measurements: MeasurementValsDto;
 }
 
 export interface AddMeasurementRequestDto {
   measurement: MeasurementRequestDto;
+}
+
+export interface MeasurementResponseDto {
+  userId: string;
+  measurementId: string;
+  date: number;
+  timestamp: number;
+  note?: string;
+  measurements: MeasurementValsDto;
+}
+
+export interface MeasurementsResponseDto {
+  measurement: MeasurementResponseDto[];
 }

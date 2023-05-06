@@ -170,7 +170,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
 
       WeightMeasurementsService.getInstance()
         .addMeasurement(
-          date,
+          Date.parse(date),
           note,
           weightValue,
           bodyFatValue,

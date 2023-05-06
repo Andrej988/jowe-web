@@ -5,7 +5,7 @@ import { CChartLine } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons';
 import { toFormattedDateString } from '../../services/utils/DateUtils';
-import type { SimpleMeasurements } from 'src/model/weight/Measurement';
+import type { SimpleMeasurement, SimpleMeasurements } from 'src/model/weight/Measurement';
 
 interface Props {
   title: string;
@@ -15,17 +15,28 @@ interface Props {
   measurements: SimpleMeasurements;
 }
 
-const WeightMeasurementWidget: React.FC<Props> = (props) => {
-  const measurementsSortedByDate = props.measurements.slice();
-  const latestMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 1];
-  const secondToLastMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 2];
+const calculateDiffPercentage = (
+  latestMeasurement: SimpleMeasurement,
+  secondToLastMeasurement: SimpleMeasurement,
+): number => {
+  if (latestMeasurement === undefined || secondToLastMeasurement === undefined) {
+    return 0;
+  }
 
-  const diffPercentage =
+  return (
     Math.round(
       ((1 - latestMeasurement.measurement / secondToLastMeasurement.measurement) * -100 +
         Number.EPSILON) *
         100,
-    ) / 100;
+    ) / 100
+  );
+};
+
+const WeightMeasurementWidget: React.FC<Props> = (props) => {
+  const measurementsSortedByDate = props.measurements.slice();
+  const latestMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 1];
+  const secondToLastMeasurement = measurementsSortedByDate[measurementsSortedByDate.length - 2];
+  const diffPercentage = calculateDiffPercentage(latestMeasurement, secondToLastMeasurement);
 
   return (
     <CCol sm={6} lg={3}>
@@ -34,7 +45,7 @@ const WeightMeasurementWidget: React.FC<Props> = (props) => {
         color={props.color}
         value={
           <>
-            {latestMeasurement.measurement} {props.unit}{' '}
+            {latestMeasurement !== undefined ? latestMeasurement.measurement : 0} {props.unit}{' '}
             <span className="fs-6 fw-normal">
               ({diffPercentage}% <CIcon icon={diffPercentage < 0 ? cilArrowBottom : cilArrowTop} />)
             </span>

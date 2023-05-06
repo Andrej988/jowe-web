@@ -26,7 +26,7 @@ const WeightMeasurementDetailsForm: React.FC<Props> = (props) => {
           <br />
           Date: {toFormattedDateTimeString(props.measurement?.date)}
           <br />
-          Note: {props.measurement?.comment}
+          Note: {props.measurement?.note}
         </p>
         Measurements:
         <ul>
