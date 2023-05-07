@@ -118,6 +118,7 @@ export default class WeightMeasurementsService {
   }
 
   async retrieveMeasurement(measurementId: string): Promise<boolean> {
+    // TODO: Fix
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
@@ -144,7 +145,7 @@ export default class WeightMeasurementsService {
     muscleMassPercentage?: number,
     bonePercentage?: number,
     energyExpenditure?: number,
-  ): Promise<boolean> {
+  ): Promise<void> {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
@@ -163,15 +164,14 @@ export default class WeightMeasurementsService {
 
     console.log('measurement should be used', requestBody);
 
-    return await new Promise((resolve, reject) => {
+    await new Promise((_resolve, reject) => {
       axios
         .post(serviceUrl, requestBody, config)
         .then((response) => {
           console.log('Success', response);
-          resolve(true);
         })
         .catch((err) => {
-          console.log('failed', err);
+          console.error('Adding weight measurement failed', err);
           reject(err);
         });
     });
