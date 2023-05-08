@@ -1,5 +1,5 @@
 import CIcon from '@coreui/icons-react';
-import { CInputGroup, CInputGroupText, CFormInput, CFormLabel, CButton } from '@coreui/react';
+import { CInputGroup, CInputGroupText, CFormInput, CFormLabel } from '@coreui/react';
 import React, { Fragment, useEffect, useState } from 'react';
 import type { PropsWithChildren } from 'react';
 import FormElementFeedback from './FormElementFeedback';
@@ -32,11 +32,13 @@ interface Props extends PropsWithChildren {
   showValidIndicator?: boolean;
   passwordValidationResults?: PasswordValidationResult;
   normalLabel?: boolean;
+  showPasswordToggle?: boolean;
 }
 
 const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
   const [inputType, setInputType] = useState<string>(props.type);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const showPasswordToggleButton = props.type === 'password' && props.showPasswordToggle !== false;
 
   const toggleShowPasswordHandler = (): void => {
     setShowPassword(!showPassword);
@@ -81,17 +83,15 @@ const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
               props.invalid === false &&
               (props.disabled === false || props.disabled === undefined)
             }
+            style={showPasswordToggleButton ? { borderRight: 'none' } : undefined}
           />
-          {props.type === 'password' && (
-            <CButton
-              type="button"
-              color="secondary"
-              variant="outline"
-              id="showPasswordBtn"
-              onClick={toggleShowPasswordHandler}
-            >
-              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-            </CButton>
+          {showPasswordToggleButton && (
+            <CInputGroupText style={{ backgroundColor: 'white', borderLeft: 'none' }}>
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                onClick={toggleShowPasswordHandler}
+              />
+            </CInputGroupText>
           )}
         </CInputGroup>
         {props.feedbackPaswordPolicy !== true &&
