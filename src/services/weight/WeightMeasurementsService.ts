@@ -9,7 +9,7 @@ import type {
 } from 'src/model/weight/MeasurementDtos';
 import type { Measurement, Measurements } from 'src/model/weight/Measurement';
 import store, { weightActions } from 'src/store/Store';
-import { AddMeasurementError } from './WeightMeasurementErrors';
+import { AddMeasurementError, DeleteMeasurementError } from './WeightMeasurementErrors';
 
 export default class WeightMeasurementsService {
   private static readonly instance: WeightMeasurementsService = new WeightMeasurementsService();
@@ -118,25 +118,6 @@ export default class WeightMeasurementsService {
     });
   }
 
-  async retrieveMeasurement(measurementId: string): Promise<boolean> {
-    // TODO: Fix
-    const serviceUrl = this.getServiceURL();
-    const config = this.buildConfigWithAuthHeader();
-
-    return await new Promise((resolve, reject) => {
-      axios
-        .get(serviceUrl, config)
-        .then((response) => {
-          console.log('Success', response);
-          resolve(true);
-        })
-        .catch((err) => {
-          console.log('failed', err);
-          reject(err);
-        });
-    });
-  }
-
   async addMeasurement(
     dateInstant: number,
     note: string,
@@ -176,25 +157,29 @@ export default class WeightMeasurementsService {
         })
         .catch((err) => {
           console.error('error', err);
-          reject(new AddMeasurementError('Error during insertion of weight measurement!'));
+          reject(
+            new AddMeasurementError('Error during insertion of weight measurement!', err.stack),
+          );
         });
     });
   }
 
   async deleteMeasurement(measurementId: string): Promise<boolean> {
-    const serviceUrl = this.getServiceURL();
+    const serviceUrl = this.getServiceURL() + `/${measurementId}`;
     const config = this.buildConfigWithAuthHeader();
 
     return await new Promise((resolve, reject) => {
       axios
-        .get(serviceUrl, config)
+        .delete(serviceUrl, config)
         .then((response) => {
-          console.log('Success', response);
+          store.dispatch(weightActions.removeMeasurement(measurementId));
           resolve(true);
         })
         .catch((err) => {
-          console.log('failed', err);
-          reject(err);
+          console.error('error', err);
+          reject(
+            new DeleteMeasurementError('Error during deletion of weight measurement!', err.stack),
+          );
         });
     });
   }

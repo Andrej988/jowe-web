@@ -66,8 +66,8 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   energyExpenditureValid: false,
 };
 
-const TOAST_TITLE_ADD_MEASUREMENT_DEFAULT = 'Add Measurements';
-const TOAST_TITLE_ADD_MEASUREMENT_ERROR = 'Add Measurements Error';
+const TOAST_TITLE_ADD_MEASUREMENT_DEFAULT = 'Add Measurement';
+const TOAST_TITLE_ADD_MEASUREMENT_ERROR = 'Add Measurement Error';
 const TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL = 'Measurement was added successfully.';
 
 const AddWeightMeasurementForm: React.FC<Props> = (props) => {

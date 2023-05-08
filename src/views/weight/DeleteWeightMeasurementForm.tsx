@@ -1,9 +1,12 @@
-import { cilTrash } from '@coreui/icons';
+import { cilBalanceScale, cilTrash, cilWarning } from '@coreui/icons';
 import React from 'react';
 import type { PropsWithChildren } from 'react';
+import { useDispatch } from 'react-redux';
 import Modal from 'src/components/utils/Modal';
 import type { Measurement } from 'src/model/weight/Measurement';
 import { toFormattedDateTimeString } from 'src/services/utils/DateUtils';
+import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
+import { ToastMsg, toasterActions } from 'src/store/Store';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -12,7 +15,40 @@ interface Props extends PropsWithChildren {
   measurement: Measurement | undefined;
 }
 
+const TOAST_TITLE_DELETE_MEASUREMENT_DEFAULT = 'Delete Measurement';
+const TOAST_TITLE_DELETE_MEASUREMENT_ERROR = 'Delete Measurement Error';
+const TOAST_MESSAGE_DELETE_MEASUREMENT_SUCCESSFUL = 'Measurement was deleted successfully.';
+
 const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
+  const dispatch = useDispatch();
+
+  const onDeleteMeasurementHandler = (): void => {
+    if (props.measurement?.measurementId !== undefined) {
+      WeightMeasurementsService.getInstance()
+        .deleteMeasurement(props.measurement?.measurementId)
+        .then((x) => {
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(
+                cilBalanceScale,
+                TOAST_TITLE_DELETE_MEASUREMENT_DEFAULT,
+                TOAST_MESSAGE_DELETE_MEASUREMENT_SUCCESSFUL,
+              ),
+            ),
+          );
+          props.onDeleteHandler();
+        })
+        .catch((err) => {
+          console.log(err);
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(cilWarning, TOAST_TITLE_DELETE_MEASUREMENT_ERROR, err.message),
+            ),
+          );
+        });
+    }
+  };
+
   return (
     <Modal
       title="Delete a Measurement"
@@ -20,7 +56,7 @@ const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
       primaryButtonIcon={cilTrash}
       primaryButtonColor="danger"
       primaryButtonText="Delete"
-      primaryButtonHandler={props.onDeleteHandler}
+      primaryButtonHandler={onDeleteMeasurementHandler}
       showSecondaryButton={true}
       secondaryButtonText="Cancel"
       secondaryButtonHandler={props.onCloseHandler}

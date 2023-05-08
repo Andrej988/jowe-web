@@ -59,8 +59,6 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
   };
 
   const deleteMeasurementHandler = (): void => {
-    console.log('deleting a measurement');
-    console.log('current measurement id', currentMeasurement?.measurementId);
     setDeleteMeasurementModalVisibility(false);
   };
 

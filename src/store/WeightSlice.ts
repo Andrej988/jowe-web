@@ -12,6 +12,11 @@ const addMeasurement = (state: any, measurement: Measurement): void => {
   state.measurements = newMeasurements;
 };
 
+const removeMeasurement = (state: any, measurementId: string): void => {
+  const newMeasurements = [...state.measurements];
+  state.measurements = newMeasurements.filter((x) => x.measurementId !== measurementId);
+};
+
 const weightSlice = createSlice({
   name: 'weight',
   initialState,
@@ -22,6 +27,9 @@ const weightSlice = createSlice({
     },
     addMeasurement(state, action) {
       addMeasurement(state, action.payload);
+    },
+    removeMeasurement(state, action) {
+      removeMeasurement(state, action.payload);
     },
     resetState(state) {
       state.measurements = [];
