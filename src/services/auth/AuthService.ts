@@ -5,7 +5,7 @@ import CognitoAuthService from './provider/CognitoAuthService';
 import type { UserRegistrationRequest } from './model/UserRegistrationRequest';
 import {
   AuthenticationError,
-  ForgotPasswordFlowException,
+  ForgotPasswordFlowError,
   UserNotAuthenticatedError,
   UserSessionExpiredError,
 } from './errors/AuthenticationErrors';
@@ -228,7 +228,7 @@ export default class AuthService {
           resolve();
         })
         .catch((err) => {
-          reject(new ForgotPasswordFlowException(err.message));
+          reject(new ForgotPasswordFlowError(err.message));
         });
     });
   }
@@ -245,7 +245,7 @@ export default class AuthService {
           resolve();
         })
         .catch((err) => {
-          reject(new ForgotPasswordFlowException(err.message));
+          reject(new ForgotPasswordFlowError(err.message));
         });
     });
   }
