@@ -201,6 +201,7 @@ export default class AuthService {
         })
         .then(() => {
           // TODO: Implement deletion of all user data from dynamo DB!!!
+          ClearReduxStateService.getInstance().clearReduxState();
           resolve(true);
         })
         .catch((err) => {
@@ -219,7 +220,7 @@ export default class AuthService {
     return store.getState().auth.user;
   }
 
-  async initForgotPasswordFlos(username: string): Promise<void> {
+  async initForgotPasswordFlow(username: string): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .initForgotPasswordFlow(username)

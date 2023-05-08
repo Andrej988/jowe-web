@@ -170,7 +170,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
     if (isFormValid) {
       if (formState === STATE_INIT) {
         AuthService.getInstance()
-          .initForgotPasswordFlos(email)
+          .initForgotPasswordFlow(email)
           .then(() => {
             dispatch(
               toasterActions.addMessage(
@@ -184,7 +184,7 @@ const ForgotPasswordPage: React.FC<Props> = (props) => {
             setFormState(STATE_CODE_SENT);
             setIsValidated(false);
           })
-          .catch((err) => {
+          .catch((err: any) => {
             console.log(err);
             dispatch(
               toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_FAILURE, err.message)),
