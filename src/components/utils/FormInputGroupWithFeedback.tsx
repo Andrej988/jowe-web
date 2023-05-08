@@ -1,10 +1,12 @@
 import CIcon from '@coreui/icons-react';
-import { CInputGroup, CInputGroupText, CFormInput, CFormLabel } from '@coreui/react';
-import React, { Fragment } from 'react';
+import { CInputGroup, CInputGroupText, CFormInput, CFormLabel, CButton } from '@coreui/react';
+import React, { Fragment, useEffect, useState } from 'react';
 import type { PropsWithChildren } from 'react';
 import FormElementFeedback from './FormElementFeedback';
 import PasswordPolicyFeedback from './PasswordPolicyFeedback';
 import { type PasswordValidationResult } from 'src/services/auth/PasswordPolicy';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 interface Props extends PropsWithChildren {
   className?: string | undefined;
@@ -33,6 +35,21 @@ interface Props extends PropsWithChildren {
 }
 
 const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
+  const [inputType, setInputType] = useState<string>(props.type);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const toggleShowPasswordHandler = (): void => {
+    setShowPassword(!showPassword);
+  };
+
+  useEffect(() => {
+    if (props.type === 'password' && showPassword) {
+      setInputType('text');
+    } else {
+      setInputType(props.type);
+    }
+  }, [showPassword]);
+
   return (
     <Fragment>
       <div className={props.className}>
@@ -43,7 +60,7 @@ const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
           </CInputGroupText>
           <CFormInput
             id={props.id}
-            type={props.type}
+            type={inputType}
             floatingLabel={props.normalLabel === true ? undefined : props.label}
             placeholder={props.normalLabel === true ? undefined : props.label}
             invalid={props.invalid}
@@ -65,6 +82,17 @@ const FormInputGroupWithFeedback: React.FC<Props> = (props) => {
               (props.disabled === false || props.disabled === undefined)
             }
           />
+          {props.type === 'password' && (
+            <CButton
+              type="button"
+              color="secondary"
+              variant="outline"
+              id="showPasswordBtn"
+              onClick={toggleShowPasswordHandler}
+            >
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+            </CButton>
+          )}
         </CInputGroup>
         {props.feedbackPaswordPolicy !== true &&
           props.feedbackMsg != null &&
