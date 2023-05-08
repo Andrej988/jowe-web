@@ -9,6 +9,7 @@ import type {
 } from 'src/model/weight/MeasurementDtos';
 import type { Measurement, Measurements } from 'src/model/weight/Measurement';
 import store, { weightActions } from 'src/store/Store';
+import { AddMeasurementError } from './WeightMeasurementErrors';
 
 export default class WeightMeasurementsService {
   private static readonly instance: WeightMeasurementsService = new WeightMeasurementsService();
@@ -145,7 +146,7 @@ export default class WeightMeasurementsService {
     muscleMassPercentage?: number,
     bonePercentage?: number,
     energyExpenditure?: number,
-  ): Promise<void> {
+  ): Promise<Measurement> {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
@@ -164,17 +165,18 @@ export default class WeightMeasurementsService {
 
     console.log('measurement should be used', requestBody);
 
-    await new Promise((_resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       axios
         .post(serviceUrl, requestBody, config)
         .then((response) => {
           console.log('Success', response);
           const measurement = this.buildMeasurementFromResponseDto(response.data.measurement);
           store.dispatch(weightActions.addMeasurement(measurement));
+          resolve(measurement);
         })
         .catch((err) => {
-          console.error('Adding weight measurement failed', err);
-          reject(err);
+          console.error('error', err);
+          reject(new AddMeasurementError('Error during insertion of weight measurement!'));
         });
     });
   }

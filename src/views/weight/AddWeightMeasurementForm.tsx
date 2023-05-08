@@ -16,6 +16,7 @@ import {
   cilDrop,
   cilNotes,
   cilSpreadsheet,
+  cilWarning,
   cilWeightlifitng,
 } from '@coreui/icons';
 import {
@@ -32,6 +33,8 @@ import {
 } from 'src/config/CommonStrings';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 import { tryParseFloat, tryParseFloatStrict } from 'src/services/utils/Parsers';
+import { useDispatch } from 'react-redux';
+import { ToastMsg, toasterActions } from 'src/store/Store';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -63,6 +66,10 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   energyExpenditureValid: false,
 };
 
+const TOAST_TITLE_ADD_MEASUREMENT_DEFAULT = 'Add Measurements';
+const TOAST_TITLE_ADD_MEASUREMENT_ERROR = 'Add Measurements Error';
+const TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL = 'Measurement was added successfully.';
+
 const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
@@ -77,6 +84,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   const [muscleMass, setMuscleMass] = useState<string>('');
   const [boneMass, setBoneMass] = useState<string>('');
   const [energyExpenditure, setEnergyExpenditure] = useState<string>('');
+  const dispatch = useDispatch();
 
   const onDateInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setDate(event.target.value);
@@ -179,11 +187,24 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
           boneMassValue,
           energyExpenditureValue,
         )
-        .then((res) => {
-          console.log('done1');
+        .then(() => {
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(
+                cilBalanceScale,
+                TOAST_TITLE_ADD_MEASUREMENT_DEFAULT,
+                TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL,
+              ),
+            ),
+          );
         })
         .catch((err) => {
           console.error(err);
+          dispatch(
+            toasterActions.addMessage(
+              new ToastMsg(cilWarning, TOAST_TITLE_ADD_MEASUREMENT_ERROR, err.message),
+            ),
+          );
         });
 
       props.onSaveHandler();
