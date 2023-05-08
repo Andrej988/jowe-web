@@ -9,6 +9,7 @@ import {
   UserNotAuthenticatedError,
   UserSessionExpiredError,
 } from './errors/AuthenticationErrors';
+import ClearReduxStateService from '../store/ClearReduxStateService';
 
 export default class AuthService {
   private static readonly instance: AuthService = new AuthService();
@@ -178,6 +179,7 @@ export default class AuthService {
 
   private handleLogout(): void {
     store.dispatch(authActions.signOut());
+    ClearReduxStateService.getInstance().clearReduxState();
     this.clearRefreshTokenTimer();
     this.clearAutoLogoutTimer();
   }

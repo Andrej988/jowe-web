@@ -23,6 +23,10 @@ const weightSlice = createSlice({
     addMeasurement(state, action) {
       addMeasurement(state, action.payload);
     },
+    resetState(state) {
+      state.measurements = [];
+      state.isFetched = false;
+    },
   },
 });
 
