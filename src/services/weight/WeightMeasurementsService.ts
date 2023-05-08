@@ -169,6 +169,8 @@ export default class WeightMeasurementsService {
         .post(serviceUrl, requestBody, config)
         .then((response) => {
           console.log('Success', response);
+          const measurement = this.buildMeasurementFromResponseDto(response.data.measurement);
+          store.dispatch(weightActions.addMeasurement(measurement));
         })
         .catch((err) => {
           console.error('Adding weight measurement failed', err);
