@@ -55,8 +55,6 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
   };
 
   const addMeasurementHandler = (): void => {
-    console.log('adding measurement');
-    // TODO: Implement
     setAddMeasurementsModalVisibility(false);
   };
 

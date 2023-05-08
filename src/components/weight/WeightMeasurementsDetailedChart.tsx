@@ -69,8 +69,6 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   };
 
   const addMeasurement = (): void => {
-    console.log('adding measurement');
-    // TODO: Implement
     setAddMeasurementsModalVisibility(false);
   };
 
