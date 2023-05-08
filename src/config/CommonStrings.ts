@@ -1,11 +1,14 @@
-import { NAME_MAX_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from './ServiceConfig';
+import {
+  NAME_MAX_LENGTH,
+  PASSWORD_POLICY,
+  USERNAME_MAX_LENGTH,
+  USERNAME_MIN_LENGTH,
+} from './ServiceConfig';
 
 export const CONFIRMATION_CODE_FEEDBACK =
   'Please enter a valid verification code received via email.';
 
-export const CURRENT_PASSWORD_MISSING = 'Please provide current password.';
-export const PASSWORD_POLICY_FEEDBACK =
-  'Please check if password is according to the password policy below';
+export const CURRENT_PASSWORD_MISSING = `Current password should be provided and must be at least ${PASSWORD_POLICY.minNumberOfChars} characters long.`;
 export const PASSWORD_CONFIRMATION_FEEDBACK = 'Passwords do not match.';
 
 export const NAME_FEEDBACK = `Name is mandatory and should not exceed ${NAME_MAX_LENGTH} characters.`;
