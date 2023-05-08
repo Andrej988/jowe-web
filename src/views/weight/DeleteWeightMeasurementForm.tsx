@@ -19,6 +19,8 @@ const TOAST_TITLE_DELETE_MEASUREMENT_DEFAULT = 'Delete Measurement';
 const TOAST_TITLE_DELETE_MEASUREMENT_ERROR = 'Delete Measurement Error';
 const TOAST_MESSAGE_DELETE_MEASUREMENT_SUCCESSFUL = 'Measurement was deleted successfully.';
 
+const DETAIL_NOT_AVAILABLE_STRING = '/';
+
 const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
 
@@ -69,16 +71,49 @@ const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
           <br />
           Date: {toFormattedDateTimeString(props.measurement?.date)}
           <br />
-          Note: {props.measurement?.note}
+          Note:{' '}
+          {props.measurement?.note !== undefined
+            ? props.measurement?.note
+            : DETAIL_NOT_AVAILABLE_STRING}
         </p>
         Measurements:
         <ul>
-          <li>Weight: {props.measurement?.measurements.weight} kg</li>
-          <li>Body Fat: {props.measurement?.measurements.bodyFatPercentage} %</li>
-          <li>Body Water: {props.measurement?.measurements.waterPercentage} %</li>
-          <li>Muscle Mass: {props.measurement?.measurements.muscleMassPercentage} %</li>
-          <li>Bone Mass: {props.measurement?.measurements.bonePercentage} %</li>
-          <li>Energy Expenditure: {props.measurement?.measurements.energyExpenditure} kcal</li>
+          <li>
+            Weight:{' '}
+            {props.measurement?.measurements.weight !== undefined
+              ? `${props.measurement?.measurements.weight} kg`
+              : DETAIL_NOT_AVAILABLE_STRING}
+          </li>
+          <li>
+            Body Fat:{' '}
+            {props.measurement?.measurements.bodyFatPercentage !== undefined
+              ? `${props.measurement?.measurements.bodyFatPercentage} %`
+              : DETAIL_NOT_AVAILABLE_STRING}
+          </li>
+          <li>
+            Body Water:{' '}
+            {props.measurement?.measurements.waterPercentage !== undefined
+              ? `${props.measurement?.measurements.waterPercentage} %`
+              : DETAIL_NOT_AVAILABLE_STRING}
+          </li>
+          <li>
+            Muscle Mass:{' '}
+            {props.measurement?.measurements.muscleMassPercentage !== undefined
+              ? `${props.measurement?.measurements.muscleMassPercentage} %`
+              : DETAIL_NOT_AVAILABLE_STRING}
+          </li>
+          <li>
+            Bone Mass:{' '}
+            {props.measurement?.measurements.bonePercentage !== undefined
+              ? `${props.measurement?.measurements.bonePercentage} %`
+              : DETAIL_NOT_AVAILABLE_STRING}
+          </li>
+          <li>
+            Energy Expenditure:{' '}
+            {props.measurement?.measurements.energyExpenditure !== undefined
+              ? `${props.measurement?.measurements.energyExpenditure} kcal`
+              : DETAIL_NOT_AVAILABLE_STRING}
+          </li>
         </ul>
       </div>
     </Modal>
