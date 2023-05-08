@@ -1,123 +1,159 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import WeightMeasurementChart from 'src/components/weight/WeightMeasurementChart';
 import WeightMeasurementsDetailedChart from 'src/components/weight/WeightMeasurementsDetailedChart';
 
-import { getTestMeasurements } from 'src/model/TestMeasurements';
-// TODO: Remove??
-/* import AuthService from 'src/security/AuthService';
-import { SERVICE_URL } from 'src/config/ServiceConfig';
-import axios from 'axios'; */
-
-const sampleData = getTestMeasurements();
-
-const measurementsSortedByLatestDate = sampleData.measurements
-  .slice()
-  .sort((a: any, b: any) => b.date - a.date);
+import type { Measurement, SimpleMeasurements } from 'src/model/weight/Measurement';
+import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 
 const WeightChartsForm: React.FC = () => {
-  // TODO: Remove??
-  /* console.log('accesstoken', AuthService.getAccessToken());
-  const config = {
-    headers: {
-      Authorization: AuthService.getAccessToken(),
-    },
-  };
+  const [weightMeasurements, setWeightMeasurements] = useState<SimpleMeasurements>([]);
+  const [bodyFatMeasurements, setBodyFatMeasurements] = useState<SimpleMeasurements>([]);
+  const [waterMeasurements, setWaterMeasurements] = useState<SimpleMeasurements>([]);
+  const [muscleMassMeasurements, setMuscleMassMeasurements] = useState<SimpleMeasurements>([]);
+  const [boneMassMeasurements, setBoneMassMeasurements] = useState<SimpleMeasurements>([]);
+  const [energyMeasurements, setEnergyMeasurements] = useState<SimpleMeasurements>([]);
 
-  axios
-    .get(SERVICE_URL, config)
-    .then((response) => {
-      console.log('Success', response);
-    })
-    .catch((err) => {
-      console.log('failed', err);
-    }); */
+  const isFetched: boolean = useSelector((state: any) => state.weight.isFetched);
+  const measurementsState = useSelector((state: any) => state.weight.measurements);
+
+  useEffect(() => {
+    const measurements: Measurement[] = measurementsState
+      .slice()
+      .sort((a: any, b: any) => b.date - a.date)
+      .reverse();
+
+    setWeightMeasurements(
+      measurements.slice().map((x) => {
+        return {
+          id: x.measurementId,
+          date: x.date,
+          measurement: x.measurements.weight,
+        };
+      }),
+    );
+
+    setBodyFatMeasurements(
+      measurements
+        .slice()
+        .filter((x) => x.measurements.bodyFatPercentage !== undefined)
+        .map((x) => {
+          return {
+            id: x.measurementId,
+            date: x.date,
+            measurement: Number(x.measurements.bodyFatPercentage),
+          };
+        }),
+    );
+
+    setWaterMeasurements(
+      measurements
+        .slice()
+        .filter((x) => x.measurements.waterPercentage !== undefined)
+        .map((x) => {
+          return {
+            id: x.measurementId,
+            date: x.date,
+            measurement: Number(x.measurements.waterPercentage),
+          };
+        }),
+    );
+
+    setMuscleMassMeasurements(
+      measurements
+        .slice()
+        .filter((x) => x.measurements.muscleMassPercentage !== undefined)
+        .map((x) => {
+          return {
+            id: x.measurementId,
+            date: x.date,
+            measurement: Number(x.measurements.muscleMassPercentage),
+          };
+        }),
+    );
+
+    setBoneMassMeasurements(
+      measurements
+        .slice()
+        .filter((x) => x.measurements.bonePercentage !== undefined)
+        .map((x) => {
+          return {
+            id: x.measurementId,
+            date: x.date,
+            measurement: Number(x.measurements.bonePercentage),
+          };
+        }),
+    );
+
+    setEnergyMeasurements(
+      measurements
+        .slice()
+        .filter((x) => x.measurements.energyExpenditure !== undefined)
+        .map((x) => {
+          return {
+            id: x.measurementId,
+            date: x.date,
+            measurement: Number(x.measurements.energyExpenditure),
+          };
+        }),
+    );
+  }, [measurementsState]);
+
+  useEffect(() => {
+    if (!isFetched) {
+      WeightMeasurementsService.getInstance()
+        .retrieveMeasurements()
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [isFetched]);
 
   return (
     <Fragment>
       <WeightMeasurementsDetailedChart
         title="Weight"
         targetWeight={100}
-        measurements={measurementsSortedByLatestDate
-          .slice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.weight,
-            };
-          })}
+        measurements={weightMeasurements}
       />
-      <WeightMeasurementChart
-        title="Body Fat"
-        label="Body Fat %"
-        measurements={measurementsSortedByLatestDate
-          .slice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.bodyFatPercentage,
-            };
-          })}
-      />
-      <WeightMeasurementChart
-        title="Body Water"
-        label="Body Water %"
-        measurements={measurementsSortedByLatestDate
-          .slice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.waterPercentage,
-            };
-          })}
-      />
-      <WeightMeasurementChart
-        title="Muscle Mass"
-        label="Muscle Mass %"
-        measurements={measurementsSortedByLatestDate
-          .slice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.muscleMassPercentage,
-            };
-          })}
-      />
-      <WeightMeasurementChart
-        title="Bone Mass"
-        label="Bone Mass %"
-        measurements={measurementsSortedByLatestDate
-          .slice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.bonePercentage,
-            };
-          })}
-      />
-      <WeightMeasurementChart
-        title="Energy Expenditure"
-        label="Energy Expenditure"
-        measurements={measurementsSortedByLatestDate
-          .slice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.energyExpenditure,
-            };
-          })}
-      />
+      {bodyFatMeasurements.length > 0 && (
+        <WeightMeasurementChart
+          title="Body Fat"
+          label="Body Fat %"
+          measurements={bodyFatMeasurements}
+        />
+      )}
+      {waterMeasurements.length > 0 && (
+        <WeightMeasurementChart
+          title="Body Water"
+          label="Body Water %"
+          measurements={waterMeasurements}
+        />
+      )}
+      {muscleMassMeasurements.length > 0 && (
+        <WeightMeasurementChart
+          title="Muscle Mass"
+          label="Muscle Mass %"
+          measurements={muscleMassMeasurements}
+        />
+      )}
+      {boneMassMeasurements.length > 0 && (
+        <WeightMeasurementChart
+          title="Bone Mass"
+          label="Bone Mass %"
+          measurements={boneMassMeasurements}
+        />
+      )}
+      {energyMeasurements.length > 0 && (
+        <WeightMeasurementChart
+          title="Energy Expenditure"
+          label="Energy Expenditure"
+          measurements={energyMeasurements}
+        />
+      )}
     </Fragment>
   );
 };

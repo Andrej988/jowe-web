@@ -6,14 +6,15 @@ import AuthService from 'src/services/auth/AuthService';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import Modal from 'src/components/utils/Modal';
 import PasswordPolicyFeedback from 'src/components/utils/PasswordPolicyFeedback';
-import {
-  CURRENT_PASSWORD_MISSING,
-  PASSWORD_CONFIRMATION_FEEDBACK,
-  PASSWORD_POLICY_FEEDBACK,
-} from 'src/config/CommonStrings';
+import { CURRENT_PASSWORD_MISSING, PASSWORD_CONFIRMATION_FEEDBACK } from 'src/config/CommonStrings';
 import { ToastMsg, toasterActions } from 'src/store/Store';
-import { isNotEmpty, isPasswordAccordingToPolicy } from 'src/services/utils/Validators';
+import {
+  isAtLeastXCharsLong,
+  isNotEmpty,
+  isPasswordAccordingToPolicy,
+} from 'src/services/utils/Validators';
 import { type PasswordValidationResult } from 'src/services/auth/PasswordPolicy';
+import { PASSWORD_POLICY } from 'src/config/ServiceConfig';
 
 interface Props {
   visible: boolean;
@@ -65,7 +66,9 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
   };
 
   const validateForm = (): boolean => {
-    const currentPasswordValid = isNotEmpty(currentPassword);
+    const currentPasswordValid =
+      isNotEmpty(currentPassword) &&
+      isAtLeastXCharsLong(currentPassword, PASSWORD_POLICY.minNumberOfChars);
     const newPasswordValid = isPasswordAccordingToPolicy(newPassword);
     setPasswordValidationResult(newPasswordValid);
     const confirmPasswordValid = isNotEmpty(confirmPassword) && newPassword === confirmPassword;
@@ -182,7 +185,8 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           autoComplete="new-password"
           value={newPassword}
           onChange={onNewPasswordInputChangeHandler}
-          feedbackMsg={PASSWORD_POLICY_FEEDBACK}
+          // feedbackMsg={PASSWORD_POLICY_FEEDBACK}
+          feedbackPaswordPolicy={true}
           required
           invalid={isValidated && !formValidtyState.newPasswordValid}
           showValidIndicator={isValidated}

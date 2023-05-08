@@ -5,10 +5,11 @@ import CognitoAuthService from './provider/CognitoAuthService';
 import type { UserRegistrationRequest } from './model/UserRegistrationRequest';
 import {
   AuthenticationError,
-  ForgotPasswordFlowException,
+  ForgotPasswordFlowError,
   UserNotAuthenticatedError,
   UserSessionExpiredError,
 } from './errors/AuthenticationErrors';
+import ClearReduxStateService from '../store/ClearReduxStateService';
 
 export default class AuthService {
   private static readonly instance: AuthService = new AuthService();
@@ -178,6 +179,7 @@ export default class AuthService {
 
   private handleLogout(): void {
     store.dispatch(authActions.signOut());
+    ClearReduxStateService.getInstance().clearReduxState();
     this.clearRefreshTokenTimer();
     this.clearAutoLogoutTimer();
   }
@@ -199,6 +201,7 @@ export default class AuthService {
         })
         .then(() => {
           // TODO: Implement deletion of all user data from dynamo DB!!!
+          ClearReduxStateService.getInstance().clearReduxState();
           resolve(true);
         })
         .catch((err) => {
@@ -217,7 +220,7 @@ export default class AuthService {
     return store.getState().auth.user;
   }
 
-  async initForgotPasswordFlos(username: string): Promise<void> {
+  async initForgotPasswordFlow(username: string): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .initForgotPasswordFlow(username)
@@ -225,7 +228,7 @@ export default class AuthService {
           resolve();
         })
         .catch((err) => {
-          reject(new ForgotPasswordFlowException(err.message));
+          reject(new ForgotPasswordFlowError(err.message));
         });
     });
   }
@@ -242,7 +245,7 @@ export default class AuthService {
           resolve();
         })
         .catch((err) => {
-          reject(new ForgotPasswordFlowException(err.message));
+          reject(new ForgotPasswordFlowError(err.message));
         });
     });
   }

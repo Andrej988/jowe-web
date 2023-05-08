@@ -19,7 +19,7 @@ import CIcon from '@coreui/icons-react';
 import { cilPencil, cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
 import { getLocalDateString } from '../../services/utils/DateUtils';
-import type { Measurement } from 'src/model/Measurement';
+import type { Measurement } from 'src/model/weight/Measurement';
 import AddWeightMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
 import WeightMeasurementDetailsForm from 'src/views/weight/WeightMeasurementDetailsForm';
 import DeleteWeightMeasurementForm from 'src/views/weight/DeleteWeightMeasurementForm';
@@ -55,14 +55,10 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
   };
 
   const addMeasurementHandler = (): void => {
-    console.log('adding measurement');
-    // TODO: Implement
     setAddMeasurementsModalVisibility(false);
   };
 
   const deleteMeasurementHandler = (): void => {
-    console.log('deleting a measurement');
-    console.log('current measurement id', currentMeasurement?.measurementId);
     setDeleteMeasurementModalVisibility(false);
   };
 
@@ -108,22 +104,34 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
                         {item.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.weight} kg
+                        {item.measurements.weight !== undefined
+                          ? `${item.measurements.weight} kg`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.bodyFatPercentage} %
+                        {item.measurements.bodyFatPercentage !== undefined
+                          ? `${item.measurements.bodyFatPercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.waterPercentage} %
+                        {item.measurements.waterPercentage !== undefined
+                          ? `${item.measurements.waterPercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.muscleMassPercentage} %
+                        {item.measurements.muscleMassPercentage !== undefined
+                          ? `${item.measurements.muscleMassPercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.bonePercentage} %
+                        {item.measurements.bonePercentage !== undefined
+                          ? `${item.measurements.bonePercentage} %`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        {item.measurements.energyExpenditure} kcal
+                        {item.measurements.energyExpenditure !== undefined
+                          ? `${item.measurements.energyExpenditure} kcal`
+                          : '/'}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CButton
