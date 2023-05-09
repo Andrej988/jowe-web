@@ -23,7 +23,7 @@
     "@coreui/coreui": "^4.2.6",
     "@coreui/icons": "^3.0.1",
     "@coreui/icons-react": "^2.1.0",
-    "@coreui/react": "^4.7.0",
+    "@coreui/react": "^4.8.0",
     "@coreui/react-chartjs": "^2.1.2",
     "@coreui/utils": "^2.0.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
