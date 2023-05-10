@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 import WeightMeasurementChart from 'src/components/weight/WeightMeasurementChart';
 import WeightMeasurementsDetailedChart from 'src/components/weight/WeightMeasurementsDetailedChart';
 
-import type { Measurement, SimpleMeasurements } from 'src/model/weight/Measurement';
+import type { Measurement, SimpleMeasurements } from 'src/model/weight/Measurements';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 
 const WeightChartsForm: React.FC = () => {
-  const [weightMeasurements, setWeightMeasurements] = useState<SimpleMeasurements>([]);
   const [bodyFatMeasurements, setBodyFatMeasurements] = useState<SimpleMeasurements>([]);
   const [waterMeasurements, setWaterMeasurements] = useState<SimpleMeasurements>([]);
   const [muscleMassMeasurements, setMuscleMassMeasurements] = useState<SimpleMeasurements>([]);
@@ -22,16 +21,6 @@ const WeightChartsForm: React.FC = () => {
       .slice()
       .sort((a: any, b: any) => b.date - a.date)
       .reverse();
-
-    setWeightMeasurements(
-      measurements.slice().map((x) => {
-        return {
-          id: x.measurementId,
-          date: x.date,
-          measurement: x.measurements.weight,
-        };
-      }),
-    );
 
     setBodyFatMeasurements(
       measurements
@@ -114,11 +103,7 @@ const WeightChartsForm: React.FC = () => {
 
   return (
     <Fragment>
-      <WeightMeasurementsDetailedChart
-        title="Weight"
-        targetWeight={100}
-        measurements={weightMeasurements}
-      />
+      <WeightMeasurementsDetailedChart title="Weight" />
       {bodyFatMeasurements.length > 1 && (
         <WeightMeasurementChart
           title="Body Fat"

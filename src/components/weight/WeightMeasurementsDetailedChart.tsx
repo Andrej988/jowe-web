@@ -16,10 +16,16 @@ import {
 import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../services/utils/DateUtils';
-import type { SimpleMeasurements } from 'src/model/weight/Measurement';
+import type {
+  Measurement,
+  SimpleMeasurement,
+  SimpleMeasurements,
+} from 'src/model/weight/Measurements';
 import styles from './WeightMeasurementsDetailedChart.module.css';
 import AddMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
 import SetTargetWeightForm from 'src/views/weight/SetTargetWeightForm';
+import { useSelector } from 'react-redux';
+import { type TargetWeight } from 'src/model/weight/TargetWeights';
 
 const filterMeasurements = (
   measurements: SimpleMeasurements,
@@ -42,22 +48,58 @@ const filterMeasurements = (
 interface Props {
   title: string;
   subtitle?: string;
-  measurements: SimpleMeasurements;
-  targetWeight: number;
 }
 
 const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
+  const measurementsRedux: Measurement[] = useSelector((state: any) => state.weight.measurements);
+  const targetWeightsRedux: TargetWeight[] = useSelector(
+    (state: any) => state.weight.targetWeights,
+  );
+
   const [timeframe, setTimeframe] = useState('All');
-  const [measurements, setMeasurements] = useState(props.measurements);
+  const [measurements, setMeasurements] = useState<SimpleMeasurements>([]);
   const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
   const [targetWeightModalVisible, setTargetWeightModalVisibility] = useState(false);
 
-  const latestMeasurement = props.measurements[props.measurements.length - 1];
+  const [latestMeasurement, setLatestMeasurement] = useState<SimpleMeasurement | undefined>(
+    undefined,
+  );
+  const [targetWeight, setTargetWeight] = useState<number>(0);
+
   const latestWeight = latestMeasurement !== undefined ? latestMeasurement.measurement : 0;
-  const targetWeight = props.targetWeight;
-  const targetArr = Array(props.measurements.length).fill(props.targetWeight);
   const targetDiff = Math.round((1 - latestWeight / targetWeight) * -100 * 100) / 100;
   const targetReach = Math.round((targetWeight - latestWeight) * 100) / 100;
+
+  useEffect(() => {
+    const sortedMeasurements: Measurement[] =
+      measurementsRedux.length > 0
+        ? measurementsRedux.slice().sort((a: any, b: any) => a.date - b.date)
+        : measurementsRedux;
+
+    const sortedSimpleMeasurements = sortedMeasurements.slice().map((x) => {
+      return {
+        id: x.measurementId,
+        date: x.date,
+        measurement: x.measurements.weight,
+      };
+    });
+
+    const sortedAndFilteredMeasurements = filterMeasurements(sortedSimpleMeasurements, timeframe);
+
+    setMeasurements(sortedAndFilteredMeasurements);
+    setLatestMeasurement(sortedSimpleMeasurements[sortedSimpleMeasurements.length - 1]);
+  }, [measurementsRedux, timeframe]);
+
+  useEffect(() => {
+    let target = 0;
+    if (targetWeightsRedux.length > 0) {
+      const latestTargetWeight = targetWeightsRedux.reduce((a, b) => {
+        return a.timestamp > b.timestamp ? a : b;
+      });
+      target = latestTargetWeight.targetWeight;
+    }
+    setTargetWeight(target);
+  }, [targetWeightsRedux]);
 
   const openAddMeasurementModal = (): void => {
     console.log('Add Measurement clicked');
@@ -81,7 +123,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
     setTargetWeightModalVisibility(false);
   };
 
-  const setTargetWeight = (): void => {
+  const setTargetWeightHandler = (): void => {
     console.log('setting target weight');
     // TODO: Implement
     setTargetWeightModalVisibility(false);
@@ -90,11 +132,6 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   const onTimeframeChangeHandler = (value: string): void => {
     setTimeframe(value);
   };
-
-  useEffect(() => {
-    const newMeasurements = filterMeasurements(props.measurements, timeframe);
-    setMeasurements(newMeasurements);
-  }, [props.measurements, timeframe]);
 
   return (
     <>
@@ -162,7 +199,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
                   pointRadius: 0,
                   borderWidth: 1,
                   borderDash: [8, 5],
-                  data: targetArr,
+                  data: Array(measurements.length).fill(targetWeight),
                 },
               ],
             }}
@@ -222,7 +259,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
             </CCol>
             <CCol className="mb-sm-2 mb-0" key={4}>
               <div className="text-medium-emphasis">Total Measurements</div>
-              <strong>{props.measurements.length}</strong>
+              <strong>{measurements.length}</strong>
             </CCol>
           </CRow>
         </CCardFooter>
@@ -235,7 +272,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
       <SetTargetWeightForm
         visible={targetWeightModalVisible}
         onCloseHandler={closeSetTargetWeightForm}
-        onSaveHandler={setTargetWeight}
+        onSaveHandler={setTargetWeightHandler}
       />
     </>
   );

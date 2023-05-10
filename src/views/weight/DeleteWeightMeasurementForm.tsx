@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import type { PropsWithChildren } from 'react';
 import { useDispatch } from 'react-redux';
 import Modal from 'src/components/utils/Modal';
-import type { Measurement } from 'src/model/weight/Measurement';
+import type { Measurement } from 'src/model/weight/Measurements';
 import { toFormattedDateTimeString } from 'src/services/utils/DateUtils';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 import { ToastMsg, toasterActions } from 'src/store/Store';

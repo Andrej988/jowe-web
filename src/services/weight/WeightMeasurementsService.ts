@@ -7,7 +7,7 @@ import type {
   AddMeasurementRequestDto,
   MeasurementResponseDto,
 } from 'src/model/weight/MeasurementDtos';
-import type { Measurement, Measurements } from 'src/model/weight/Measurement';
+import type { Measurement, Measurements } from 'src/model/weight/Measurements';
 import store, { weightActions } from 'src/store/Store';
 import {
   AddMeasurementError,
@@ -97,9 +97,11 @@ export default class WeightMeasurementsService {
       measurements: [],
     };
 
-    measurementsDto.forEach((measurement) => {
-      measurements.measurements.push(this.buildMeasurementFromResponseDto(measurement));
-    });
+    if (measurementsDto.length > 0) {
+      measurementsDto.forEach((measurement) => {
+        measurements.measurements.push(this.buildMeasurementFromResponseDto(measurement));
+      });
+    }
 
     return measurements;
   }
@@ -207,7 +209,7 @@ export default class WeightMeasurementsService {
           console.error('Error while deleting measurement', err);
           if (err.response !== undefined) {
             console.error(
-              'Error while inserting measurement',
+              'Error while deleting measurement',
               err.response.data.errorMsg !== undefined
                 ? err.response.data.errorMsg
                 : err.response.data !== undefined

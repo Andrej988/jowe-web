@@ -4,7 +4,7 @@ import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/rea
 import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../services/utils/DateUtils';
-import type { SimpleMeasurements } from 'src/model/weight/Measurement';
+import type { SimpleMeasurements } from 'src/model/weight/Measurements';
 
 const TIMEFRAME_ALL = 'All';
 const TIMEFRAME_YEAR = 'Year';
