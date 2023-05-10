@@ -164,13 +164,10 @@ export default class WeightMeasurementsService {
       ),
     );
 
-    console.log('measurement should be used', requestBody);
-
     return await new Promise((resolve, reject) => {
       axios
         .post(serviceUrl, requestBody, config)
         .then((response) => {
-          console.log('Success', response);
           const measurement = this.buildMeasurementFromResponseDto(response.data.measurement);
           store.dispatch(weightActions.addMeasurement(measurement));
           resolve(measurement);
