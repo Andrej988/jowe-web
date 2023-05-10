@@ -34,7 +34,7 @@ export default class WeightMeasurementsService {
     if (this.SERVICE_URL === undefined) {
       throw Error('Missing service URL configuration!');
     }
-    return `${this.SERVICE_URL}/measurements`;
+    return `${this.SERVICE_URL}/weight/measurements`;
   }
 
   private buildConfigWithAuthHeader(): AxiosRequestConfig<any> {
