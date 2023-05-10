@@ -1,5 +1,5 @@
 import { cilBalanceScale, cilTrash, cilWarning } from '@coreui/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import type { PropsWithChildren } from 'react';
 import { useDispatch } from 'react-redux';
 import Modal from 'src/components/utils/Modal';
@@ -22,10 +22,12 @@ const TOAST_MESSAGE_DELETE_MEASUREMENT_SUCCESSFUL = 'Measurement was deleted suc
 const DETAIL_NOT_AVAILABLE_STRING = '/';
 
 const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
+  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] = useState(false);
   const dispatch = useDispatch();
 
   const onDeleteMeasurementHandler = (): void => {
     if (props.measurement?.measurementId !== undefined) {
+      setIsDeleteButtonDisabled(true);
       WeightMeasurementsService.getInstance()
         .deleteMeasurement(props.measurement?.measurementId)
         .then((x) => {
@@ -38,6 +40,7 @@ const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
               ),
             ),
           );
+          setIsDeleteButtonDisabled(false);
           props.onDeleteHandler();
         })
         .catch((err) => {
@@ -47,6 +50,7 @@ const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
               new ToastMsg(cilWarning, TOAST_TITLE_DELETE_MEASUREMENT_ERROR, err.message),
             ),
           );
+          setIsDeleteButtonDisabled(false);
         });
     }
   };
@@ -59,6 +63,7 @@ const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
       primaryButtonColor="danger"
       primaryButtonText="Delete"
       primaryButtonHandler={onDeleteMeasurementHandler}
+      primaryButtonDisabled={isDeleteButtonDisabled}
       showSecondaryButton={true}
       secondaryButtonText="Cancel"
       secondaryButtonHandler={props.onCloseHandler}
