@@ -13,3 +13,11 @@ export class DeleteMeasurementError extends Error {
     this.stack = stack;
   }
 }
+
+export class MeasurementsRetrievalError extends Error {
+  constructor(message: string, stack: string | undefined = undefined) {
+    super(message);
+    this.name = 'MeasurementsRetrievalError';
+    this.stack = stack;
+  }
+}

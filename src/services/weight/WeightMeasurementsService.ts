@@ -9,7 +9,11 @@ import type {
 } from 'src/model/weight/MeasurementDtos';
 import type { Measurement, Measurements } from 'src/model/weight/Measurement';
 import store, { weightActions } from 'src/store/Store';
-import { AddMeasurementError, DeleteMeasurementError } from './WeightMeasurementErrors';
+import {
+  AddMeasurementError,
+  DeleteMeasurementError,
+  MeasurementsRetrievalError,
+} from './WeightMeasurementErrors';
 
 export default class WeightMeasurementsService {
   private static readonly instance: WeightMeasurementsService = new WeightMeasurementsService();
@@ -112,8 +116,24 @@ export default class WeightMeasurementsService {
           store.dispatch(weightActions.setMeasurements(measurements.measurements));
         })
         .catch((err) => {
-          console.error('failed retrieving weight measurements', err);
-          reject(err);
+          console.error('Error while retrieving measurements', err);
+          if (err.response !== undefined) {
+            console.error(
+              'Error while inserting measurement',
+              err.response.data.errorMsg !== undefined
+                ? err.response.data.errorMsg
+                : err.response.data !== undefined
+                ? err.response.data
+                : err.response,
+            );
+          }
+
+          reject(
+            new MeasurementsRetrievalError(
+              'Error during retrieval of weight measurements!',
+              err.stack,
+            ),
+          );
         });
     });
   }
@@ -156,7 +176,18 @@ export default class WeightMeasurementsService {
           resolve(measurement);
         })
         .catch((err) => {
-          console.error('error', err);
+          console.error('Error while inserting measurement', err);
+          if (err.response !== undefined) {
+            console.error(
+              'Error while inserting measurement',
+              err.response.data.errorMsg !== undefined
+                ? err.response.data.errorMsg
+                : err.response.data !== undefined
+                ? err.response.data
+                : err.response,
+            );
+          }
+
           reject(
             new AddMeasurementError('Error during insertion of weight measurement!', err.stack),
           );
@@ -171,12 +202,23 @@ export default class WeightMeasurementsService {
     return await new Promise((resolve, reject) => {
       axios
         .delete(serviceUrl, config)
-        .then((response) => {
+        .then(() => {
           store.dispatch(weightActions.removeMeasurement(measurementId));
           resolve(true);
         })
         .catch((err) => {
-          console.error('error', err);
+          console.error('Error while deleting measurement', err);
+          if (err.response !== undefined) {
+            console.error(
+              'Error while inserting measurement',
+              err.response.data.errorMsg !== undefined
+                ? err.response.data.errorMsg
+                : err.response.data !== undefined
+                ? err.response.data
+                : err.response,
+            );
+          }
+
           reject(
             new DeleteMeasurementError('Error during deletion of weight measurement!', err.stack),
           );
