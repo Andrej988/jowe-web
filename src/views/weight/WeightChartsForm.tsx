@@ -119,35 +119,35 @@ const WeightChartsForm: React.FC = () => {
         targetWeight={100}
         measurements={weightMeasurements}
       />
-      {bodyFatMeasurements.length > 0 && (
+      {bodyFatMeasurements.length > 1 && (
         <WeightMeasurementChart
           title="Body Fat"
           label="Body Fat %"
           measurements={bodyFatMeasurements}
         />
       )}
-      {waterMeasurements.length > 0 && (
+      {waterMeasurements.length > 1 && (
         <WeightMeasurementChart
           title="Body Water"
           label="Body Water %"
           measurements={waterMeasurements}
         />
       )}
-      {muscleMassMeasurements.length > 0 && (
+      {muscleMassMeasurements.length > 1 && (
         <WeightMeasurementChart
           title="Muscle Mass"
           label="Muscle Mass %"
           measurements={muscleMassMeasurements}
         />
       )}
-      {boneMassMeasurements.length > 0 && (
+      {boneMassMeasurements.length > 1 && (
         <WeightMeasurementChart
           title="Bone Mass"
           label="Bone Mass %"
           measurements={boneMassMeasurements}
         />
       )}
-      {energyMeasurements.length > 0 && (
+      {energyMeasurements.length > 1 && (
         <WeightMeasurementChart
           title="Energy Expenditure"
           label="Energy Expenditure"
