@@ -185,7 +185,6 @@ const ChangePasswordPage: React.FC<Props> = (props) => {
           autoComplete="new-password"
           value={newPassword}
           onChange={onNewPasswordInputChangeHandler}
-          // feedbackMsg={PASSWORD_POLICY_FEEDBACK}
           feedbackPaswordPolicy={true}
           required
           invalid={isValidated && !formValidtyState.newPasswordValid}

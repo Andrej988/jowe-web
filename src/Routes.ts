@@ -10,9 +10,9 @@ const Page404 = React.lazy(async () => await import('./views/pages/Page404'));
 const Routes = [
   { path: '/', name: 'Overview', element: WeightOverviewForm },
   { path: '/overview', name: 'Overview', element: WeightOverviewForm },
-  { path: '/weight', name: 'Weight', element: WeightOverviewForm },
-  { path: '/weight/measurements', name: 'Measurements', element: WeightMeasurementsForm },
-  { path: '/weight/charts', name: 'Charts', element: WeightChartsForm },
+  { path: '/weight/overview', name: 'Weight Overview', element: WeightOverviewForm },
+  { path: '/weight/measurements', name: 'Weight Measurements', element: WeightMeasurementsForm },
+  { path: '/weight/charts', name: 'Weight Charts', element: WeightChartsForm },
   { path: '*', name: 'Overview', element: Page404 },
 ];
 

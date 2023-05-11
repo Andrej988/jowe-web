@@ -5,11 +5,19 @@ import WeightMeasurementWidgets from 'src/components/weight/WeightMeasurementWid
 
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 import { useSelector } from 'react-redux';
-import { type Measurement } from 'src/model/weight/Measurement';
+import { type Measurement } from 'src/model/weight/Measurements';
+import WeightTargetsService from 'src/services/weight/WeightTargetsService';
 
 const WeightOverviewForm: React.FC = () => {
+  const isAuthenticated: boolean = useSelector((state: any) => state.auth.isAuthenticated);
+
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
-  const isFetched: boolean = useSelector((state: any) => state.weight.isFetched);
+  const isFetchedMeasurements: boolean = useSelector(
+    (state: any) => state.weight.isFetchedMeasurements,
+  );
+  const isFetchedTargetWeights: boolean = useSelector(
+    (state: any) => state.weight.isFetchedTargetWeights,
+  );
   const measurementsRedux: Measurement[] = useSelector((state: any) => state.weight.measurements);
 
   useEffect(() => {
@@ -21,7 +29,7 @@ const WeightOverviewForm: React.FC = () => {
   }, [measurementsRedux]);
 
   useEffect(() => {
-    if (!isFetched) {
+    if (!isFetchedMeasurements && isAuthenticated) {
       WeightMeasurementsService.getInstance()
         .retrieveMeasurements()
         .catch((err) => {
@@ -29,7 +37,18 @@ const WeightOverviewForm: React.FC = () => {
           console.error(err);
         });
     }
-  }, [isFetched]);
+  }, [isFetchedMeasurements, isAuthenticated]);
+
+  useEffect(() => {
+    if (!isFetchedTargetWeights && isAuthenticated) {
+      WeightTargetsService.getInstance()
+        .retrieveTargetWeights()
+        .catch((err) => {
+          // TODO: Toast message?
+          console.error(err);
+        });
+    }
+  }, [isFetchedTargetWeights, isAuthenticated]);
 
   const getMeasurementsSlice = (maxElements?: number): Measurement[] => {
     if (measurements.length === 0) {
@@ -44,19 +63,7 @@ const WeightOverviewForm: React.FC = () => {
   return (
     <Fragment>
       <WeightMeasurementWidgets measurements={getMeasurementsSlice(10)} />
-      <WeightMeasurementChart
-        title="Weight"
-        targetWeight={100}
-        measurements={getMeasurementsSlice()
-          .reverse()
-          .map((x) => {
-            return {
-              id: x.measurementId,
-              date: x.date,
-              measurement: x.measurements.weight,
-            };
-          })}
-      />
+      <WeightMeasurementChart title="Weight" />
       <WeightMeasurementHistory
         title="Latest Measurements (5)"
         measurements={getMeasurementsSlice(5)}

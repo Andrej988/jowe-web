@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { type Measurement } from '../model/weight/Measurement';
+import { type Measurement } from '../model/weight/Measurements';
+import { type TargetWeight } from 'src/model/weight/TargetWeights';
 
 const initialState = {
   measurements: [],
-  isFetched: false,
+  isFetchedMeasurements: false,
+  targetWeights: [],
+  isFetchedTargetWeights: false,
 };
 
 const addMeasurement = (state: any, measurement: Measurement): void => {
@@ -17,13 +20,24 @@ const removeMeasurement = (state: any, measurementId: string): void => {
   state.measurements = newMeasurements.filter((x) => x.measurementId !== measurementId);
 };
 
+const addTargetWeight = (state: any, targetWeight: TargetWeight): void => {
+  const newTargetWeights = [...state.targetWeights];
+  newTargetWeights.push(targetWeight);
+  state.targetWeights = newTargetWeights;
+};
+
+const removeTargetWeight = (state: any, recordId: string): void => {
+  const newTargetWeights = [...state.targetWeights];
+  state.targetWeights = newTargetWeights.filter((x) => x.recordId !== recordId);
+};
+
 const weightSlice = createSlice({
   name: 'weight',
   initialState,
   reducers: {
     setMeasurements(state, action) {
       state.measurements = action.payload;
-      state.isFetched = true;
+      state.isFetchedMeasurements = true;
     },
     addMeasurement(state, action) {
       addMeasurement(state, action.payload);
@@ -31,9 +45,21 @@ const weightSlice = createSlice({
     removeMeasurement(state, action) {
       removeMeasurement(state, action.payload);
     },
+    setTargetWeights(state, action) {
+      state.targetWeights = action.payload;
+      state.isFetchedTargetWeights = true;
+    },
+    addTargetWeight(state, action) {
+      addTargetWeight(state, action.payload);
+    },
+    removeTargetWeight(state, action) {
+      removeTargetWeight(state, action.payload);
+    },
     resetState(state) {
       state.measurements = [];
-      state.isFetched = false;
+      state.isFetchedMeasurements = false;
+      state.targetWeights = [];
+      state.isFetchedTargetWeights = false;
     },
   },
 });

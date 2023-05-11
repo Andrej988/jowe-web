@@ -24,7 +24,7 @@ const Navigation = [
   {
     component: CNavItem,
     name: 'Overview',
-    to: '/weight',
+    to: '/weight/overview',
     icon: <CIcon icon={cilBalanceScale} customClassName="nav-icon" />,
   },
   {

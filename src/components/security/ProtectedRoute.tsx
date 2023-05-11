@@ -1,13 +1,17 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import type { PropsWithChildren } from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
-interface Props extends PropsWithChildren {
-  isAuthenticated: boolean;
-}
+const ProtectedRoute: React.FC<PropsWithChildren> = (props) => {
+  const isAuthenticatedRedux: boolean = useSelector((state: any) => state.auth.isAuthenticated);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(isAuthenticatedRedux);
 
-const ProtectedRoute: React.FC<Props> = (props) => {
-  if (!props.isAuthenticated) {
+  useEffect(() => {
+    setIsAuthenticated(isAuthenticatedRedux);
+  }, [isAuthenticatedRedux]);
+
+  if (!isAuthenticated) {
     return <Navigate replace to="/login" />;
   }
   return <Fragment>{props.children}</Fragment>;

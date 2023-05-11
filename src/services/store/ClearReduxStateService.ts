@@ -10,8 +10,6 @@ export default class ClearReduxStateService {
   }
 
   clearReduxState(): void {
-    console.log('clearing redux state');
     store.dispatch(weightActions.resetState());
-    console.log('redux state cleared');
   }
 }

@@ -19,7 +19,7 @@ import CIcon from '@coreui/icons-react';
 import { cilPencil, cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
 import { getLocalDateString } from '../../services/utils/DateUtils';
-import type { Measurement } from 'src/model/weight/Measurement';
+import type { Measurement } from 'src/model/weight/Measurements';
 import AddWeightMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
 import WeightMeasurementDetailsForm from 'src/views/weight/WeightMeasurementDetailsForm';
 import DeleteWeightMeasurementForm from 'src/views/weight/DeleteWeightMeasurementForm';
@@ -29,6 +29,8 @@ interface Props {
   measurements: Measurement[];
   showDeleteButton: boolean;
 }
+
+const MEASUREMENT_NOT_AVAILABLE_STRING = '-';
 
 const WeightMeasurementHistory: React.FC<Props> = (props) => {
   const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
@@ -106,32 +108,32 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
                       <CTableDataCell className="text-center">
                         {item.measurements.weight !== undefined
                           ? `${item.measurements.weight} kg`
-                          : '/'}
+                          : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         {item.measurements.bodyFatPercentage !== undefined
                           ? `${item.measurements.bodyFatPercentage} %`
-                          : '/'}
+                          : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         {item.measurements.waterPercentage !== undefined
                           ? `${item.measurements.waterPercentage} %`
-                          : '/'}
+                          : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         {item.measurements.muscleMassPercentage !== undefined
                           ? `${item.measurements.muscleMassPercentage} %`
-                          : '/'}
+                          : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         {item.measurements.bonePercentage !== undefined
                           ? `${item.measurements.bonePercentage} %`
-                          : '/'}
+                          : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         {item.measurements.energyExpenditure !== undefined
                           ? `${item.measurements.energyExpenditure} kcal`
-                          : '/'}
+                          : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
                         <CButton

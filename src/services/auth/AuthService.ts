@@ -179,9 +179,9 @@ export default class AuthService {
 
   private handleLogout(): void {
     store.dispatch(authActions.signOut());
-    ClearReduxStateService.getInstance().clearReduxState();
     this.clearRefreshTokenTimer();
     this.clearAutoLogoutTimer();
+    ClearReduxStateService.getInstance().clearReduxState();
   }
 
   async logout(): Promise<void> {

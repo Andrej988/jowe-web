@@ -22,8 +22,8 @@ import DeleteAccountPage from 'src/views/pages/auth/DeleteAccountPage';
 import ChangePasswordPage from 'src/views/pages/auth/ChangePasswordPage';
 
 const getAvatar = (): string => {
-  const gender = AuthService.getInstance().getUserData().gender;
-  if (gender != null && gender.toLocaleLowerCase() === 'female') {
+  const userData = AuthService.getInstance().getUserData();
+  if (userData?.gender != null && userData.gender.toLocaleLowerCase() === 'female') {
     return avatar_female;
   } else {
     return avatar_male;
@@ -36,10 +36,10 @@ const AppProfileDropdown: React.FC = () => {
   const navigate = useNavigate();
 
   const username: string = useSelector((state: RootState) =>
-    state.auth.user.username != null ? state.auth.user.username : '',
+    state.auth.user?.username != null ? state.auth.user.username : '',
   );
   const name: string = useSelector((state: RootState) =>
-    state.auth.user.name != null ? state.auth.user.name : '',
+    state.auth.user?.name != null ? state.auth.user.name : '',
   );
 
   const openDeleteAccountModalHandler = (): void => {

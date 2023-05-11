@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import WeightMeasurementHistory from 'src/components/weight/WeightMeasurementHistory';
 
-import type { Measurement } from 'src/model/weight/Measurement';
+import type { Measurement } from 'src/model/weight/Measurements';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 
 const WeightMeasurementsForm: React.FC = () => {

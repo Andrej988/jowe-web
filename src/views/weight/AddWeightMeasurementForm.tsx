@@ -70,8 +70,14 @@ const TOAST_TITLE_ADD_MEASUREMENT_DEFAULT = 'Add Measurement';
 const TOAST_TITLE_ADD_MEASUREMENT_ERROR = 'Add Measurement Error';
 const TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL = 'Measurement was added successfully.';
 
+const isDateInTheFuture = (dateString: string): boolean => {
+  const date = Date.parse(dateString);
+  return !isNaN(date) && date > Date.now();
+};
+
 const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
+  const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
@@ -119,7 +125,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   };
 
   const validateForm = (): boolean => {
-    const dateValid = isValidDateString(date);
+    const dateValid = isValidDateString(date) && !isDateInTheFuture(date);
     const noteValid = true;
     const weightValid = isNumber(weight) && isLargerThan(parseFloat(weight), 0);
     const bodyFatValid = isValidPercentageString(bodyFat, true);
@@ -169,6 +175,8 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
     const isFormValid = validateForm();
 
     if (isFormValid) {
+      setIsAddButtonDisabled(true);
+
       const weightValue = tryParseFloatStrict(weight);
       const bodyFatValue = tryParseFloat(bodyFat);
       const waterValue = tryParseFloat(water);
@@ -197,6 +205,8 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               ),
             ),
           );
+          props.onSaveHandler();
+          clearFormWithSlightTimeout();
         })
         .catch((err) => {
           console.error(err);
@@ -205,10 +215,8 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
               new ToastMsg(cilWarning, TOAST_TITLE_ADD_MEASUREMENT_ERROR, err.message),
             ),
           );
+          setIsAddButtonDisabled(false);
         });
-
-      props.onSaveHandler();
-      clearFormWithSlightTimeout();
     }
   };
 
@@ -223,6 +231,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
     setBoneMass('');
     setEnergyExpenditure('');
     setFormValidityState(DEFAULT_FORM_VALIDITY_STATE);
+    setIsAddButtonDisabled(false);
   };
 
   const clearFormWithSlightTimeout = (): void => {
@@ -248,6 +257,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
       size="lg"
       primaryButtonText="Save Measurement"
       primaryButtonHandler={onAddMeasurementHandler}
+      primaryButtonDisabled={isAddButtonDisabled}
       showSecondaryButton={true}
       secondaryButtonColor="danger"
       secondaryButtonText="Close"
