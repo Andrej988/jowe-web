@@ -71,15 +71,12 @@ export default class WeightTargetsService {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
-    console.log('called retrieval of target weights');
-
     await new Promise((_resolve, reject) => {
       axios
         .get(serviceUrl, config)
         .then((response) => {
-          console.log('response', response);
           const targetWeights = this.buildTargetWeightsFromResponseDto(response.data.targetWeights);
-          store.dispatch(weightActions.setTargetWeights(targetWeights));
+          store.dispatch(weightActions.setTargetWeights(targetWeights.targetWeights));
         })
         .catch((err) => {
           console.error('Error while retrieving target weights', err);

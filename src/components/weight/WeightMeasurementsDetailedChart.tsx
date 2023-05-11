@@ -115,7 +115,6 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   };
 
   const openSetTargetWeightModal = (): void => {
-    console.log('Set Target Weight clicked');
     setTargetWeightModalVisibility(true);
   };
 
@@ -124,8 +123,6 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   };
 
   const setTargetWeightHandler = (): void => {
-    console.log('setting target weight');
-    // TODO: Implement
     setTargetWeightModalVisibility(false);
   };
 
