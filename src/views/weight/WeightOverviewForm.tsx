@@ -9,6 +9,8 @@ import { type Measurement } from 'src/model/weight/Measurements';
 import WeightTargetsService from 'src/services/weight/WeightTargetsService';
 
 const WeightOverviewForm: React.FC = () => {
+  const isAuthenticated: boolean = useSelector((state: any) => state.auth.isAuthenticated);
+
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const isFetchedMeasurements: boolean = useSelector(
     (state: any) => state.weight.isFetchedMeasurements,
@@ -27,7 +29,7 @@ const WeightOverviewForm: React.FC = () => {
   }, [measurementsRedux]);
 
   useEffect(() => {
-    if (!isFetchedMeasurements) {
+    if (!isFetchedMeasurements && isAuthenticated) {
       WeightMeasurementsService.getInstance()
         .retrieveMeasurements()
         .catch((err) => {
@@ -35,10 +37,10 @@ const WeightOverviewForm: React.FC = () => {
           console.error(err);
         });
     }
-  }, [isFetchedMeasurements]);
+  }, [isFetchedMeasurements, isAuthenticated]);
 
   useEffect(() => {
-    if (!isFetchedTargetWeights) {
+    if (!isFetchedTargetWeights && isAuthenticated) {
       WeightTargetsService.getInstance()
         .retrieveTargetWeights()
         .catch((err) => {
@@ -46,7 +48,7 @@ const WeightOverviewForm: React.FC = () => {
           console.error(err);
         });
     }
-  }, [isFetchedTargetWeights]);
+  }, [isFetchedTargetWeights, isAuthenticated]);
 
   const getMeasurementsSlice = (maxElements?: number): Measurement[] => {
     if (measurements.length === 0) {

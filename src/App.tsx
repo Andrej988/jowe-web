@@ -86,7 +86,7 @@ const App: React.FC = () => {
           <Route
             path="*"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute>
                 <MainLayout />
               </ProtectedRoute>
             }
