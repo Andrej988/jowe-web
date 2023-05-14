@@ -45,7 +45,9 @@ const WeightMeasurementWidget: React.FC<Props> = (props) => {
         color={props.color}
         value={
           <>
-            {latestMeasurement !== undefined ? latestMeasurement.measurement : 0} {props.unit}{' '}
+            {latestMeasurement !== undefined
+              ? `${latestMeasurement.measurement} ${props.unit !== undefined ? props.unit : ''}`
+              : '-'}{' '}
             <span className="fs-6 fw-normal">
               ({diffPercentage}% <CIcon icon={diffPercentage < 0 ? cilArrowBottom : cilArrowTop} />)
             </span>

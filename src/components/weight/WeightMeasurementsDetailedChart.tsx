@@ -239,19 +239,25 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
           <CRow xs={{ cols: 1 }} md={{ cols: 5 }} className="text-center">
             <CCol className="mb-sm-2 mb-0" key={0}>
               <div className="text-medium-emphasis">Actual Weight</div>
-              <strong>{latestWeight} kg</strong>
+              <strong>{measurements.length > 0 ? `${latestWeight} kg` : '-'}</strong>
             </CCol>
             <CCol className="mb-sm-2 mb-0" key={1}>
               <div className="text-medium-emphasis">Target Weight</div>
-              <strong>{targetWeight} kg</strong>
+              <strong>{targetWeightsRedux.length > 0 ? `${targetWeight} kg` : '-'}</strong>
             </CCol>
             <CCol className="mb-sm-2 mb-0" key={2}>
               <div className="text-medium-emphasis">Target Diff</div>
-              <strong>{targetDiff}%</strong>
+              <strong>
+                {measurements.length > 0 && targetWeightsRedux.length > 0 ? `${targetDiff}%` : '-'}
+              </strong>
             </CCol>
             <CCol className="mb-sm-2 mb-0" key={3}>
               <div className="text-medium-emphasis">Target to Reach</div>
-              <strong>{targetReach} kg</strong>
+              <strong>
+                {measurements.length > 0 && targetWeightsRedux.length > 0
+                  ? `${targetReach} kg`
+                  : '-'}
+              </strong>
             </CCol>
             <CCol className="mb-sm-2 mb-0" key={4}>
               <div className="text-medium-emphasis">Total Measurements</div>
