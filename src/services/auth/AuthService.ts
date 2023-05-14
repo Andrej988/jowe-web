@@ -10,6 +10,7 @@ import {
   UserSessionExpiredError,
 } from './errors/AuthenticationErrors';
 import ClearReduxStateService from '../store/ClearReduxStateService';
+import AdminService from '../admin/AdminService';
 
 export default class AuthService {
   private static readonly instance: AuthService = new AuthService();
@@ -193,6 +194,11 @@ export default class AuthService {
   }
 
   async deleteUser(): Promise<boolean> {
+    await Promise.all([this.deleteUserData(), this.deleteUserAuth()]);
+    return await Promise.resolve(true);
+  }
+
+  private async deleteUserAuth(): Promise<boolean> {
     return await new Promise<boolean>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .deleteUser()
@@ -200,12 +206,25 @@ export default class AuthService {
           this.handleLogout();
         })
         .then(() => {
-          // TODO: Implement deletion of all user data from dynamo DB!!!
           ClearReduxStateService.getInstance().clearReduxState();
           resolve(true);
         })
         .catch((err) => {
           console.error(err.message);
+          reject(err);
+        });
+    });
+  }
+
+  private async deleteUserData(): Promise<boolean> {
+    return await new Promise<boolean>((resolve, reject) => {
+      AdminService.getInstance()
+        .deleteUserData()
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          console.log(err);
           reject(err);
         });
     });

@@ -102,7 +102,6 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   }, [targetWeightsRedux]);
 
   const openAddMeasurementModal = (): void => {
-    console.log('Add Measurement clicked');
     setAddMeasurementsModalVisibility(true);
   };
 
