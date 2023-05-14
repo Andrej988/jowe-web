@@ -75,6 +75,18 @@ const isDateInTheFuture = (dateString: string): boolean => {
   return !isNaN(date) && date > Date.now();
 };
 
+const getCurrentDate = (): string => {
+  const curDate = new Date();
+
+  const twoDigitValue = (val: number): string => {
+    return `0${val}`.slice(-2);
+  };
+  const hours = twoDigitValue(curDate.getHours());
+  const minutes = twoDigitValue(curDate.getMinutes());
+
+  return `${curDate.toLocaleDateString('en-CA')} ${hours}:${minutes}`;
+};
+
 const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
@@ -82,7 +94,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
     DEFAULT_FORM_VALIDITY_STATE,
   );
 
-  const [date, setDate] = useState<string>('');
+  const [date, setDate] = useState<string>(getCurrentDate());
   const [note, setNote] = useState<string>('');
   const [weight, setWeight] = useState<string>('');
   const [bodyFat, setBodyFat] = useState<string>('');
@@ -222,7 +234,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
 
   const clearForm = (): void => {
     setIsValidated(DEFAULT_IS_VALIDATED);
-    setDate('');
+    setDate(getCurrentDate());
     setNote('');
     setWeight('');
     setBodyFat('');

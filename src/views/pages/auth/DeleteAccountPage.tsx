@@ -1,5 +1,5 @@
 import { cilTrash } from '@coreui/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import type { PropsWithChildren } from 'react';
 import AuthService from 'src/services/auth/AuthService';
 import Modal from 'src/components/utils/Modal';
@@ -11,13 +11,25 @@ interface Props extends PropsWithChildren {
 }
 
 const DeleteAccountPage: React.FC<Props> = (props) => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   const onDeleteConfirmationHandler = (): void => {
+    setIsButtonDisabled(true);
     AuthService.getInstance()
       .deleteUser()
       .then(() => {
+        setIsButtonDisabled(false);
         props.onConfirmHandler();
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error(err);
+        setIsButtonDisabled(false);
+      });
+  };
+
+  const onCloseHandler = (): void => {
+    setIsButtonDisabled(false);
+    props.onCloseHandler();
   };
 
   return (
@@ -28,10 +40,11 @@ const DeleteAccountPage: React.FC<Props> = (props) => {
       primaryButtonText="Delete"
       primaryButtonHandler={onDeleteConfirmationHandler}
       primaryButtonColor="danger"
+      primaryButtonDisabled={isButtonDisabled}
       showSecondaryButton={true}
       secondaryButtonText="Cancel"
-      secondaryButtonHandler={props.onCloseHandler}
-      onCloseButtonHandler={props.onCloseHandler}
+      secondaryButtonHandler={onCloseHandler}
+      onCloseButtonHandler={onCloseHandler}
     >
       <div>
         <p>
