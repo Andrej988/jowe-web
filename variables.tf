@@ -12,9 +12,9 @@ variable "AWS_REGION" {
   type = string
 }
 
-#variable "AWS_CERTIFICATE_ARN" {
-#  type = string
-#}
+variable "AWS_CERTIFICATE_ARN" {
+  type = string
+}
 
 variable "domain_name" {
   type = string
