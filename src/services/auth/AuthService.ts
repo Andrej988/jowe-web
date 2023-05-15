@@ -6,6 +6,7 @@ import type { UserRegistrationRequest } from './model/UserRegistrationRequest';
 import {
   AuthenticationError,
   ForgotPasswordFlowError,
+  UserDeletionError,
   UserNotAuthenticatedError,
   UserSessionExpiredError,
 } from './errors/AuthenticationErrors';
@@ -194,8 +195,18 @@ export default class AuthService {
   }
 
   async deleteUser(): Promise<boolean> {
-    await Promise.all([this.deleteUserData(), this.deleteUserAuth()]);
-    return await Promise.resolve(true);
+    try {
+      const userData = await this.deleteUserData();
+      if (userData) {
+        await Promise.all([this.deleteUserAuth()]);
+        return await Promise.resolve(true);
+      } else {
+        return await Promise.reject(new UserDeletionError('Error during deletion of user'));
+      }
+    } catch (err) {
+      console.error(err);
+      return await Promise.reject(new UserDeletionError('Error during deletion of user'));
+    }
   }
 
   private async deleteUserAuth(): Promise<boolean> {
