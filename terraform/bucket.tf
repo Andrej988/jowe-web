@@ -8,22 +8,6 @@ resource "aws_s3_bucket" "jowe_web" {
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "jowe_web" {
-  bucket = aws_s3_bucket.jowe_web.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "index.html"
-  }
-
-  depends_on = [
-    aws_s3_bucket.jowe_web
-  ]
-}
-
 resource "aws_s3_bucket_ownership_controls" "jowe_web" {
   bucket = aws_s3_bucket.jowe_web.id
   rule {
@@ -40,8 +24,8 @@ resource "aws_s3_bucket_public_access_block" "jowe_web" {
 
   block_public_acls       = true
   block_public_policy     = true
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   depends_on = [
     aws_s3_bucket.jowe_web

@@ -1,5 +1,5 @@
 import React, { type ReactElement, Suspense, useRef, useState, useEffect } from 'react';
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import { Route, Routes, HashRouter } from 'react-router-dom';
 import './scss/style.scss';
 import ProtectedRoute from './components/security/ProtectedRoute';
 import { useDispatch, useSelector } from 'react-redux';
@@ -76,7 +76,7 @@ const App: React.FC = () => {
   );
 
   const content = (
-    <BrowserRouter>
+    <HashRouter>
       <Suspense fallback={loading}>
         <CToaster ref={toaster} push={toast} placement="top-end" />
         <Routes>
@@ -94,7 +94,7 @@ const App: React.FC = () => {
         </Routes>
         <AutoLogoutForm visible={autoLogoutVisible} onCloseForm={closeAutoLogoutFormHandler} />
       </Suspense>
-    </BrowserRouter>
+    </HashRouter>
   );
 
   return !isLoading ? content : loading;

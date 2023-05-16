@@ -40,12 +40,33 @@ resource "aws_cloudfront_distribution" "jowe_web" {
     }
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 300
-    default_ttl            = 3600
-    max_ttl                = 86400
+    min_ttl                = 1
+    default_ttl            = 1
+    max_ttl                = 1
   }
 
   price_class = "PriceClass_100"
+
+  custom_error_response {
+    error_code            = 400
+    error_caching_min_ttl = 0
+    response_page_path    = "/index.html"
+    response_code         = 200
+  }
+
+  custom_error_response {
+    error_code            = 403
+    error_caching_min_ttl = 0
+    response_page_path    = "/index.html"
+    response_code         = 200
+  }
+
+  custom_error_response {
+    error_code            = 404
+    error_caching_min_ttl = 0
+    response_page_path    = "/index.html"
+    response_code         = 200
+  }
 
   restrictions {
     geo_restriction {
