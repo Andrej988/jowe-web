@@ -11,8 +11,8 @@ module "template_files" {
 module "web" {
   source              = "./terraform/"
   AWS_CERTIFICATE_ARN = var.AWS_CERTIFICATE_ARN
-  domain_name         = var.domain_name
-  bucket_name         = var.bucket_name
+  DOMAIN_NAME         = var.DOMAIN_NAME
+  BUCKET_NAME         = var.BUCKET_NAME
   ENV                 = var.ENV
   app_name            = var.app_name
   project_name        = var.project_name

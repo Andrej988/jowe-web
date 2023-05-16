@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "jowe_web" {
-  bucket = var.bucket_name
+  bucket = var.BUCKET_NAME
 
   tags = {
     Name        = var.project_name

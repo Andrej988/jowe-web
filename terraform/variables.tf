@@ -1,6 +1,6 @@
 variable "AWS_CERTIFICATE_ARN" {}
-variable "domain_name" {}
-variable "bucket_name" {}
+variable "DOMAIN_NAME" {}
+variable "BUCKET_NAME" {}
 variable "ENV" {}
 variable "app_name" {}
 variable "project_name" {}

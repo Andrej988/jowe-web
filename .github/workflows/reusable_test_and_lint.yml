@@ -1,9 +1,9 @@
-name: Reusable CI
+name: Reusable Test & Lint
 
 on: workflow_call
 
 jobs:
-  reusable_ci:
+  reusable_test_and_lint:
     runs-on: ubuntu-latest
 
     strategy:
