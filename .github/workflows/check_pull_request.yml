@@ -11,7 +11,8 @@ permissions:
 jobs:
   npm_test_and_lint:
     uses: ./.github/workflows/reusable_test_and_lint.yml
+
   terraform_check_and_validate:
     uses: ./.github/workflows/reusable_terraform_check.yml
-    needs: npm_test_and_lint
+    needs: [npm_test_and_lint]
     secrets: inherit
