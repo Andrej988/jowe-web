@@ -1,4 +1,4 @@
-name: Check Pull Requests on main
+name: CI Pull Requests on main
 
 on:
   pull_request:
