@@ -1,0 +1,105 @@
+name: Reusable Terraform Check & Plan
+
+on: workflow_call
+
+jobs:
+  reusable_terraform_check:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      # Checks that all Terraform configuration files adhere to a canonical format
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -recursive
+        continue-on-error: true
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        id: init
+        if: steps.fmt.outcome != 'failure'
+        run: terraform init
+        continue-on-error: true
+
+      # Validates terraform configuration
+      - name: Terraform Validate
+        id: validate
+        if: steps.init.outcome != 'failure'
+        run: terraform validate -no-color
+        continue-on-error: true
+
+      # Setup NPM
+      - name: Install NodeJS
+        id: npm_setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      # Install NPM dependencies
+      - name: Install dependencies
+        id: npm_install
+        run: npm ci --legacy-peer-deps
+
+      # Build Resources for production
+      - name: Build for production
+        id: npm_build
+        run: npm run build
+
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request' && steps.validate.outcome != 'failure'
+        env:
+          TF_VAR_AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
+          TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
+          TF_VAR_DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          TF_VAR_BUCKET_NAME: ${{ vars.BUCKET_NAME }}
+          TF_VAR_ENV: ${{ vars.ENV }}
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+
+      # Update pull request
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: '${{ steps.plan.outputs.stdout }}'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`terraform\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      # Stops the workflow if terraform plan failed (stop after updating pull request)
+      - name: Terraform Plan Status
+        if: steps.fmt.outcome == 'failure' || steps.init.outcome == 'failure' || steps.validate.outcome == 'failure' || steps.plan.outcome == 'failure'
+        run: exit 1

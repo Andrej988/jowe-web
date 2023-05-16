@@ -1,5 +1,5 @@
 resource "aws_cloudfront_origin_access_identity" "jowe_web" {
-  comment = var.domain_name
+  comment = var.DOMAIN_NAME
 }
 
 resource "aws_cloudfront_distribution" "jowe_web" {
@@ -24,7 +24,7 @@ resource "aws_cloudfront_distribution" "jowe_web" {
   #  prefix          = "myprefix"
   #}
 
-  aliases = [var.domain_name]
+  aliases = [var.DOMAIN_NAME]
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]

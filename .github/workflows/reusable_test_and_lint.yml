@@ -3,7 +3,7 @@ name: Reusable Test & Lint
 on: workflow_call
 
 jobs:
-  reusable_continuous_integration:
+  reusable_test_and_lint:
     runs-on: ubuntu-latest
 
     strategy:

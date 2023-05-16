@@ -16,11 +16,11 @@ variable "AWS_CERTIFICATE_ARN" {
   type = string
 }
 
-variable "domain_name" {
+variable "DOMAIN_NAME" {
   type = string
 }
 
-variable "bucket_name" {
+variable "BUCKET_NAME" {
   type = string
 }
 
