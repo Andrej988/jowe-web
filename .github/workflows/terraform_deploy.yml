@@ -1,0 +1,60 @@
+name: Terraform Deploy
+
+on:
+  workflow_run:
+    workflows: ['Check Push on main']
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  terraform_deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Setup NPM
+      - name: Install NodeJS
+        id: npm_setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      # Install NPM dependencies
+      - name: Install dependencies
+        id: npm_install
+        run: npm ci --legacy-peer-deps
+
+      # Build resources for production
+      - name: Build for production
+        id: npm_build
+        run: npm run build
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      # On push to "main", build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          TF_VAR_AWS_CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
+          TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
+          TF_VAR_DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          TF_VAR_WEBSITE_DOMAIN: ${{ vars.WEBSITE_DOMAIN }}
+          TF_VAR_ENV: ${{ vars.ENV }}
+        run: terraform apply -auto-approve -input=false

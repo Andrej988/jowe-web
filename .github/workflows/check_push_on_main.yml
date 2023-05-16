@@ -1,4 +1,4 @@
-name: Test & Lint Push on main
+name: Check Push on main
 
 on:
   push:
@@ -25,5 +25,7 @@ jobs:
   #      run: echo '${{ toJSON(strategy) }}'
   #    - name: Dump matrix context
   #      run: echo '${{ toJSON(matrix) }}'
-  build_and_test:
+  npm_test_and_lint:
     uses: ./.github/workflows/reusable_test_and_lint.yml
+  terraform_check_and_validate:
+    uses: ./.github/workflows/reusable_terraform_check.yml
