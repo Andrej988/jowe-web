@@ -21,6 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Create env file
+        run: |
+          touch .env
+          echo REACT_APP_WEIGHT_TRACKER_SERVICE_URL=${{ vars.REACT_APP_WEIGHT_TRACKER_SERVICE_URL }} >> .env
+          echo REACT_APP_COGNITO_USER_POOL_ID=${{ vars.REACT_APP_COGNITO_USER_POOL_ID }} >> .env
+          echo REACT_APP_COGNITO_CLIENT_ID=${{ vars.REACT_APP_COGNITO_CLIENT_ID }} >> .env
+          echo REACT_APP_ALLOW_SIGN_UP=${{ vars.REACT_APP_ALLOW_SIGN_UP }} >> .env
+
       # Setup NPM
       - name: Install NodeJS
         id: npm_setup
