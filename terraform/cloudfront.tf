@@ -40,9 +40,9 @@ resource "aws_cloudfront_distribution" "jowe_web" {
     }
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 300
-    default_ttl            = 3600
-    max_ttl                = 7200
+    min_ttl                = 5
+    default_ttl            = 5
+    max_ttl                = 5
   }
 
   price_class = "PriceClass_100"
