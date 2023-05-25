@@ -42,7 +42,6 @@ jobs:
           echo REACT_APP_COGNITO_USER_POOL_ID=${{ vars.REACT_APP_COGNITO_USER_POOL_ID }} >> .env
           echo REACT_APP_COGNITO_CLIENT_ID=${{ vars.REACT_APP_COGNITO_CLIENT_ID }} >> .env
           echo REACT_APP_ALLOW_SIGN_UP=${{ vars.REACT_APP_ALLOW_SIGN_UP }} >> .env
-          cat .env
 
       # Build resources for production
       - name: Build for production
