@@ -5,6 +5,7 @@ import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../services/utils/DateUtils';
 import type { SimpleMeasurements } from 'src/model/weight/Measurements';
+import { getStyleString } from 'src/services/utils/Utils';
 
 const TIMEFRAME_ALL = 'All';
 const TIMEFRAME_YEAR = 'Year';
@@ -84,7 +85,7 @@ const WeightMeasurementChart: React.FC<Props> = (props) => {
               datasets: [
                 {
                   label: props.label,
-                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
+                  backgroundColor: hexToRgba(getStyleString('--cui-info'), 10),
                   borderColor: getStyle('--cui-info'),
                   pointBackgroundColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),

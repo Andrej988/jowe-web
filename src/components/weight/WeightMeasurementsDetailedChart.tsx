@@ -26,6 +26,7 @@ import AddMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
 import SetTargetWeightForm from 'src/views/weight/SetTargetWeightForm';
 import { useSelector } from 'react-redux';
 import { type TargetWeight } from 'src/model/weight/TargetWeights';
+import { getStyleString } from 'src/services/utils/Utils';
 
 const filterMeasurements = (
   measurements: SimpleMeasurements,
@@ -179,7 +180,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
               datasets: [
                 {
                   label: 'Actual weight',
-                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
+                  backgroundColor: hexToRgba(getStyleString('--cui-info'), 10),
                   borderColor: getStyle('--cui-info'),
                   pointBackgroundColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),
