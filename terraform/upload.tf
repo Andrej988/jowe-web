@@ -10,7 +10,7 @@ resource "aws_s3_object" "upload_webapp" {
   # rendering result or a static file on disk.
   source                 = each.value.source_path
   content                = each.value.content
-  server_side_encryption = "aws:kms"
+  server_side_encryption = "AES256"
 
   etag = filemd5(each.value.source_path)
 
