@@ -1,11 +1,6 @@
 module "template_files" {
   source = "hashicorp/dir/template"
-
   base_dir = "./build/"
-  #template_vars = {
-  #  # Pass in any values that you wish to use in your templates.
-  #  vpc_id = "vpc-abc123"
-  #}
 }
 
 module "web" {
