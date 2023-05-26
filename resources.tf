@@ -1,5 +1,5 @@
 module "template_files" {
-  source = "hashicorp/dir/template"
+  source   = "hashicorp/dir/template"
   base_dir = "./build/"
 }
 
