@@ -53,11 +53,11 @@ jobs:
       # Retrieve commit message
       - name: Retrieve head commit message to be used as release description
         id: retrieve_commit_msg
-        #uses: actions/github-script@v5
-        run: echo commit_message=${{ github.event.workflow_run.head_commit.message }} >> $GITHUB_OUTPUT
-        #with:
-        #  script: |
-        #    core.setOutput("commit_message", `${{ github.event.workflow_run.head_commit.message }}`);
+        uses: actions/github-script@v5
+        #run: echo commit_message=${{ github.event.workflow_run.head_commit.message }} >> $GITHUB_OUTPUT
+        with:
+          script: |
+            core.setOutput("commit_message", `${{ github.event.workflow_run.head_commit.message }}`);
 
       # Create a Github Release
       - name: Create Github Release
