@@ -33,3 +33,9 @@ jobs:
       - name: Raise patch version
         id: raise_version
         run: npm version patch --no-git-tag-version
+
+      # Commit and push new version
+      - name: Commit next version
+        run: |
+          git commit -am "Preparation for next version"
+          git push
