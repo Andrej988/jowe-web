@@ -1,0 +1,41 @@
+name: Release Prepare Next Version
+
+on:
+  workflow_run:
+    workflows: ['Deploy via Terraform']
+    branches: [main]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  github_release:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure git
+        run: |
+          git config --global committer.email "noreply@github.com"
+          git config --global committer.name "GitHub-Actions"
+          git config --global author.email "noreply@github.com"
+          git config --global author.name "GitHub-Actions"
+
+      # Raise patch version
+      - name: Raise patch version
+        id: raise_version
+        run: npm version patch --no-git-tag-version
+
+      # Commit and push new version
+      - name: Commit next version
+        run: |
+          git commit -am "Preparation for next version"
+          git push
