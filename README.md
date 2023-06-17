@@ -1,4 +1,6 @@
-[![CI](https://github.com/Andrej988/jowe-web/actions/workflows/ci.yml/badge.svg)](https://github.com/Andrej988/jowe-web/actions/workflows/ci.yml)
+[![CI](https://github.com/Andrej988/jowe-web/actions/workflows/ci_main.yml/badge.svg)](https://github.com/Andrej988/jowe-web/actions/workflows/ci_main.yml)
+[![CI](https://github.com/Andrej988/jowe-web/actions/workflows/release_github.yml/badge.svg)](https://github.com/Andrej988/jowe-web/actions/workflows/release_github.yml)
+[![CI](https://github.com/Andrej988/jowe-web/actions/workflows/deploy_terraform.yml/badge.svg)](https://github.com/Andrej988/jowe-web/actions/workflows/deploy_terraform.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # JoWe (Journal for Wellness) Web
