@@ -1,0 +1,50 @@
+name: Github Release
+
+on:
+  workflow_run:
+    workflows: ['CI main']
+    branches: [main]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  github_release:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure git
+        run: |
+          git config --global committer.email "noreply@github.com"
+          git config --global committer.name "GitHub-Actions"
+          git config --global author.email "noreply@github.com"
+          git config --global author.name "GitHub-Actions"
+
+      # Setup NPM
+      - name: Install NodeJS
+        id: npm_setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+          cache: 'npm'
+
+      # Retrieve current release version of the project
+      - name: Retrieve current version
+        run: echo ::set-output name=version::$(jq -r .version package.json)
+        id: retrieve_release_version
+
+      # Put current release version to outputs
+      - name: Put current release version to outputs
+        id: release_version_to_outputs
+        run: |
+          $RELEASE_VERSION=${{ steps.retrieve_release_version.outputs.version }}
+          echo release_version=$RELEASE_VERSION
