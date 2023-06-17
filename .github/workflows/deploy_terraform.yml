@@ -1,8 +1,8 @@
-name: Terraform Deploy
+name: Deploy via Terraform
 
 on:
   workflow_run:
-    workflows: ['Github Release']
+    workflows: ['Release on Github']
     branches: [main]
     types:
       - completed

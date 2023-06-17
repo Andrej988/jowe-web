@@ -1,4 +1,4 @@
-name: Github Release
+name: Release on Github
 
 on:
   workflow_run:
@@ -32,14 +32,6 @@ jobs:
           git config --global author.email "noreply@github.com"
           git config --global author.name "GitHub-Actions"
 
-      # Setup NPM
-      #- name: Install NodeJS
-      #  id: npm_setup
-      #  uses: actions/setup-node@v3
-      #  with:
-      #    node-version: latest
-      #    cache: 'npm'
-
       # Retrieve current release version of the project
       - name: Retrieve current version
         run: echo version=$(jq -r .version package.json) >> $GITHUB_OUTPUT
@@ -54,7 +46,6 @@ jobs:
       - name: Retrieve head commit message to be used as release description
         id: retrieve_commit_msg
         uses: actions/github-script@v5
-        #run: echo commit_message=${{ github.event.workflow_run.head_commit.message }} >> $GITHUB_OUTPUT
         with:
           script: |
             core.setOutput("commit_message", `${{ github.event.workflow_run.head_commit.message }}`);
