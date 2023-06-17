@@ -14,6 +14,9 @@ jobs:
   github_release:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      release_version: ${{ steps.release_version_to_outputs.outputs.release_version }}
+      commit_message: ${{ steps.retrieve_commit_msg.outputs.commit_message }}
     defaults:
       run:
         shell: bash
@@ -30,21 +33,42 @@ jobs:
           git config --global author.name "GitHub-Actions"
 
       # Setup NPM
-      - name: Install NodeJS
-        id: npm_setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: latest
-          cache: 'npm'
+      #- name: Install NodeJS
+      #  id: npm_setup
+      #  uses: actions/setup-node@v3
+      #  with:
+      #    node-version: latest
+      #    cache: 'npm'
 
       # Retrieve current release version of the project
       - name: Retrieve current version
-        run: echo ::set-output name=version::$(jq -r .version package.json)
+        run: echo version=$(jq -r .version package.json) >> $GITHUB_OUTPUT
         id: retrieve_release_version
 
-      # Put current release version to outputs
-      - name: Put current release version to outputs
+      # Output current release version
+      - name: Output current release version
         id: release_version_to_outputs
-        run: |
-          $RELEASE_VERSION=${{ steps.retrieve_release_version.outputs.version }}
-          echo release_version=$RELEASE_VERSION
+        run: echo release_version=${{ steps.retrieve_release_version.outputs.version }}
+
+      # Retrieve commit message
+      - name: Retrieve head commit message to be used as release description
+        id: retrieve_commit_msg
+        #uses: actions/github-script@v5
+        run: echo commit_message=${{ github.event.workflow_run.head_commit.message }} >> $GITHUB_OUTPUT
+        #with:
+        #  script: |
+        #    core.setOutput("commit_message", `${{ github.event.workflow_run.head_commit.message }}`);
+
+      # Create a Github Release
+      - name: Create Github Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: 'v${{ steps.retrieve_release_version.outputs.version }}'
+          release_name: Release "v${{ steps.retrieve_release_version.outputs.version }}"
+          #body: "Automatically created by GitHub Actions"
+          body: '${{ steps.retrieve_commit_msg.outputs.commit_message }}'
+          draft: false
+          prerelease: false
