@@ -14,7 +14,7 @@ resource "aws_cloudfront_distribution" "jowe_web" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "jowe-web"
+  comment             = var.ENV == "dev" ? "${var.project_name}-dev" : var.project_name
   default_root_object = "index.html"
 
   # Configure logging here if required
