@@ -78,13 +78,13 @@ const AppProfileDropdown: React.FC = () => {
 
   return (
     <Fragment>
-      <CDropdown alignment="end" variant="nav-item" popper={false}>
+      <CDropdown placement="bottom-end" alignment="end" variant="nav-item" popper={false}>
         <CDropdownToggle className="py-0" caret={false}>
           {username}
           <span> </span>
           <CAvatar src={getAvatar()} size="md" />
         </CDropdownToggle>
-        <CDropdownMenu className="pt-0" placement="bottom-end" style={{ right: '0', left: 'auto' }}>
+        <CDropdownMenu className="pt-0" style={{ right: '0', left: 'auto' }}>
           <CDropdownHeader className="bg-light fw-semibold py-2">
             {name != null ? name : username}
           </CDropdownHeader>
