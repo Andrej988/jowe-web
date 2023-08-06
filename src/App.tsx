@@ -63,7 +63,9 @@ const App: React.FC = () => {
     setLoading(true);
     AuthService.getInstance()
       .autoLogin()
-      .catch(() => {})
+      .catch((err) => {
+        console.error(err);
+      })
       .finally(() => {
         setLoading(false);
       });

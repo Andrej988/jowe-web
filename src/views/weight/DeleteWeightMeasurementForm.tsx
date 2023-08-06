@@ -30,7 +30,7 @@ const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
       setIsDeleteButtonDisabled(true);
       WeightMeasurementsService.getInstance()
         .deleteMeasurement(props.measurement?.measurementId)
-        .then((x) => {
+        .then(() => {
           dispatch(
             toasterActions.addMessage(
               new ToastMsg(

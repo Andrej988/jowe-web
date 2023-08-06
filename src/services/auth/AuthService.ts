@@ -254,7 +254,7 @@ export default class AuthService {
     await new Promise<void>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .initForgotPasswordFlow(username)
-        .then((res) => {
+        .then(() => {
           resolve();
         })
         .catch((err) => {
@@ -271,7 +271,7 @@ export default class AuthService {
     await new Promise<void>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .completeForgotPasswordFlow(username, verificationCode, newPassword)
-        .then((res) => {
+        .then(() => {
           resolve();
         })
         .catch((err) => {

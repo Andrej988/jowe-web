@@ -73,7 +73,9 @@ const AppProfileDropdown: React.FC = () => {
       .then(() => {
         navigate('/', { replace: true });
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (

@@ -4,9 +4,10 @@
     "es2021": true
   },
   "extends": [
+    "eslint:recommended",
     "plugin:react/recommended",
-    "standard-with-typescript",
-    "plugin:prettier/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/stylistic"
   ],
   "overrides": [],
   "settings": {
@@ -14,6 +15,7 @@
       "version": "detect"
     }
   },
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "tsconfig.json",
     "ecmaVersion": "latest",
@@ -22,9 +24,22 @@
       "jsx": true
     }
   },
-  "plugins": ["react", "react-hooks"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "@typescript-eslint", "no-null", "simple-import-sort"],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "/built/**",
+    "/tests/**",
+    "/lib/**",
+    "/src/lib/*.generated.d.ts",
+    "/scripts/**/*.js",
+    "/scripts/**/*.d.*",
+    "/internal/**",
+    "/coverage/**"
+  ],
   "rules": {
     "semi": [2, "always"],
-    "@typescript-eslint/semi": [2, "always"]
+    "@typescript-eslint/semi": [2, "always"],
+    "@typescript-eslint/no-explicit-any": "warn", //TODO: Has to be enabled and fixed
+    "@typescript-eslint/no-inferrable-types": "off"
   }
 }

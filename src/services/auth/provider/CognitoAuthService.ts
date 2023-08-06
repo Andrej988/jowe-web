@@ -205,7 +205,7 @@ export default class CognitoAuthService {
     await new Promise<void>((resolve, reject) => {
       if (user != null) {
         user.getSignInUserSession();
-        user.getSession((err: Error | null, userSession: CognitoUserSession | null) => {
+        user.getSession((err: Error | null) => {
           if (err == null) {
             user.globalSignOut({
               onSuccess() {
