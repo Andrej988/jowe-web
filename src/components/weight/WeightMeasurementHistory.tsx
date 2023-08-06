@@ -14,6 +14,7 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CTooltip,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilPencil, cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
@@ -23,6 +24,7 @@ import type { Measurement } from 'src/model/weight/Measurements';
 import AddWeightMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
 import WeightMeasurementDetailsForm from 'src/views/weight/WeightMeasurementDetailsForm';
 import DeleteWeightMeasurementForm from 'src/views/weight/DeleteWeightMeasurementForm';
+import { TOOLTIP_HIDE_DELAY, TOOLTIP_SHOW_DELAY } from 'src/config/UserInterfaceConfig';
 
 interface Props {
   title: string;
@@ -136,23 +138,53 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
                           : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CButton
-                          color="secondary"
-                          variant="outline"
-                          key={`info_ ${index}`}
-                          onClick={onInfoHandler.bind(null, item.measurementId)}
+                        <CTooltip
+                          content="Details of measurement"
+                          animation={true}
+                          delay={{ show: TOOLTIP_SHOW_DELAY, hide: TOOLTIP_HIDE_DELAY }}
                         >
-                          <CIcon icon={cilInfo} />
-                        </CButton>{' '}
-                        {props.showDeleteButton ? (
                           <CButton
-                            color="danger"
+                            color="secondary"
                             variant="outline"
-                            key={`delete_ ${index}`}
-                            onClick={onDeleteHandler.bind(null, item.measurementId)}
+                            key={`info_ ${index}`}
+                            onClick={onInfoHandler.bind(null, item.measurementId)}
                           >
-                            <CIcon icon={cilTrash} />
+                            <CIcon icon={cilInfo} />
                           </CButton>
+                        </CTooltip>{' '}
+                        {props.showDeleteButton ? (
+                          <CTooltip
+                            content="Edit measurement"
+                            animation={true}
+                            delay={{ show: TOOLTIP_SHOW_DELAY, hide: TOOLTIP_HIDE_DELAY }}
+                          >
+                            <CButton
+                              color="secondary"
+                              variant="outline"
+                              key={`edit_ ${index}`}
+                              onClick={onDeleteHandler.bind(null, item.measurementId)}
+                            >
+                              <CIcon icon={cilPencil} />
+                            </CButton>
+                          </CTooltip>
+                        ) : (
+                          ''
+                        )}{' '}
+                        {props.showDeleteButton ? (
+                          <CTooltip
+                            content="Delete measurement"
+                            animation={true}
+                            delay={{ show: TOOLTIP_SHOW_DELAY, hide: TOOLTIP_HIDE_DELAY }}
+                          >
+                            <CButton
+                              color="danger"
+                              variant="outline"
+                              key={`delete_ ${index}`}
+                              onClick={onDeleteHandler.bind(null, item.measurementId)}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
+                          </CTooltip>
                         ) : (
                           ''
                         )}
