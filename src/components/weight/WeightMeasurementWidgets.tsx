@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { CRow } from '@coreui/react';
 import MeasurementWidget from './WeightMeasurementWidget';
-import type { Measurement, SimpleMeasurements } from 'src/model/weight/Measurements';
+import type {
+  UIWeightMeasurement,
+  UISimpleWeightMeasurements,
+} from 'src/model/weight/UIWeightMeasurements';
 
 interface Props {
-  measurements: Measurement[];
+  measurements: UIWeightMeasurement[];
 }
 
 const WeightMeasurementWidgets: React.FC<Props> = (props) => {
-  const [weightMeasurmeents, setWeightMeasurements] = useState<SimpleMeasurements>([]);
-  const [bodyFatMeasurmeents, setBodyFatMeasurements] = useState<SimpleMeasurements>([]);
-  const [muscleMassMeasurmeents, setMuscleMassMeasurements] = useState<SimpleMeasurements>([]);
-  const [energyMeasurmeents, setEnergyMeasurements] = useState<SimpleMeasurements>([]);
+  const [weightMeasurmeents, setWeightMeasurements] = useState<UISimpleWeightMeasurements>([]);
+  const [bodyFatMeasurmeents, setBodyFatMeasurements] = useState<UISimpleWeightMeasurements>([]);
+  const [muscleMassMeasurmeents, setMuscleMassMeasurements] = useState<UISimpleWeightMeasurements>(
+    [],
+  );
+  const [energyMeasurmeents, setEnergyMeasurements] = useState<UISimpleWeightMeasurements>([]);
 
   useEffect(() => {
     const measurementsSortedByDate = props.measurements.slice().reverse();

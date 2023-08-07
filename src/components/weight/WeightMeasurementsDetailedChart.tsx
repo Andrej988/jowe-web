@@ -17,21 +17,21 @@ import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../services/utils/DateUtils';
 import type {
-  Measurement,
-  SimpleMeasurement,
-  SimpleMeasurements,
-} from 'src/model/weight/Measurements';
+  UIWeightMeasurement,
+  UISimpleWeightMeasurement,
+  UISimpleWeightMeasurements,
+} from 'src/model/weight/UIWeightMeasurements';
 import styles from './WeightMeasurementsDetailedChart.module.css';
-import AddMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
+import AddMeasurementForm from 'src/views/weight/AddEditWeightMeasurementForm';
 import SetTargetWeightForm from 'src/views/weight/SetTargetWeightForm';
 import { useSelector } from 'react-redux';
 import { type TargetWeight } from 'src/model/weight/TargetWeights';
 import { getStyleString } from 'src/services/utils/Utils';
 
 const filterMeasurements = (
-  measurements: SimpleMeasurements,
+  measurements: UISimpleWeightMeasurements,
   timeframe: string,
-): SimpleMeasurements => {
+): UISimpleWeightMeasurements => {
   if (timeframe === 'All') {
     return measurements.slice();
   } else {
@@ -52,17 +52,19 @@ interface Props {
 }
 
 const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
-  const measurementsRedux: Measurement[] = useSelector((state: any) => state.weight.measurements);
+  const measurementsRedux: UIWeightMeasurement[] = useSelector(
+    (state: any) => state.weight.measurements,
+  );
   const targetWeightsRedux: TargetWeight[] = useSelector(
     (state: any) => state.weight.targetWeights,
   );
 
   const [timeframe, setTimeframe] = useState('All');
-  const [measurements, setMeasurements] = useState<SimpleMeasurements>([]);
+  const [measurements, setMeasurements] = useState<UISimpleWeightMeasurements>([]);
   const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
   const [targetWeightModalVisible, setTargetWeightModalVisibility] = useState(false);
 
-  const [latestMeasurement, setLatestMeasurement] = useState<SimpleMeasurement | undefined>(
+  const [latestMeasurement, setLatestMeasurement] = useState<UISimpleWeightMeasurement | undefined>(
     undefined,
   );
   const [targetWeight, setTargetWeight] = useState<number>(0);
@@ -72,7 +74,7 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   const targetReach = Math.round((targetWeight - latestWeight) * 100) / 100;
 
   useEffect(() => {
-    const sortedMeasurements: Measurement[] =
+    const sortedMeasurements: UIWeightMeasurement[] =
       measurementsRedux.length > 0
         ? measurementsRedux.slice().sort((a: any, b: any) => a.date - b.date)
         : measurementsRedux;

@@ -1,4 +1,4 @@
-export interface MeasurementDetails {
+export interface UIWeightMeasurementDetails {
   weight: number;
   bodyFatPercentage?: number;
   waterPercentage?: number;
@@ -7,23 +7,23 @@ export interface MeasurementDetails {
   energyExpenditure?: number;
 }
 
-export interface Measurement {
+export interface UIWeightMeasurement {
   userId: string;
   measurementId: string;
   timestamp: number;
   date: Date;
   note?: string;
-  measurements: MeasurementDetails;
+  measurements: UIWeightMeasurementDetails;
 }
 
-export interface Measurements {
-  measurements: Measurement[];
+export interface UIWeightMeasurements {
+  measurements: UIWeightMeasurement[];
 }
 
-export interface SimpleMeasurement {
+export interface UISimpleWeightMeasurement {
   id: string;
   date: Date;
   measurement: number;
 }
 
-export type SimpleMeasurements = SimpleMeasurement[];
+export type UISimpleWeightMeasurements = UISimpleWeightMeasurement[];

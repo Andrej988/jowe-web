@@ -2,11 +2,11 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import WeightMeasurementHistory from 'src/components/weight/WeightMeasurementHistory';
 
-import type { Measurement } from 'src/model/weight/Measurements';
+import type { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 
 const WeightMeasurementsForm: React.FC = () => {
-  const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const [measurements, setMeasurements] = useState<UIWeightMeasurement[]>([]);
   const isFetched: boolean = useSelector((state: any) => state.weight.isFetched);
   const measurementsState = useSelector((state: any) => state.weight.measurements);
 

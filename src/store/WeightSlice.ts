@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { type Measurement } from '../model/weight/Measurements';
+import { type UIWeightMeasurement } from '../model/weight/UIWeightMeasurements';
 import { type TargetWeight } from 'src/model/weight/TargetWeights';
 
 const initialState = {
@@ -9,10 +9,17 @@ const initialState = {
   isFetchedTargetWeights: false,
 };
 
-const addMeasurement = (state: any, measurement: Measurement): void => {
+const addMeasurement = (state: any, measurement: UIWeightMeasurement): void => {
   const newMeasurements = [...state.measurements];
   newMeasurements.push(measurement);
   state.measurements = newMeasurements;
+};
+
+const updateMeasurement = (state: any, measurement: UIWeightMeasurement): void => {
+  const newMeasurements = [...state.measurements];
+  state.measurements = newMeasurements
+    .filter((x) => x.measurementId !== measurement.measurementId)
+    .push(measurement);
 };
 
 const removeMeasurement = (state: any, measurementId: string): void => {
@@ -41,6 +48,9 @@ const weightSlice = createSlice({
     },
     addMeasurement(state, action) {
       addMeasurement(state, action.payload);
+    },
+    updateMeasurement(state, action) {
+      updateMeasurement(state, action.payload);
     },
     removeMeasurement(state, action) {
       removeMeasurement(state, action.payload);

@@ -5,19 +5,22 @@ import { CChartLine } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
 import { cilArrowBottom, cilArrowTop } from '@coreui/icons';
 import { toFormattedDateString } from '../../services/utils/DateUtils';
-import type { SimpleMeasurement, SimpleMeasurements } from 'src/model/weight/Measurements';
+import type {
+  UISimpleWeightMeasurement,
+  UISimpleWeightMeasurements,
+} from 'src/model/weight/UIWeightMeasurements';
 
 interface Props {
   title: string;
   color: string;
   unit?: string;
   pointStyle: string;
-  measurements: SimpleMeasurements;
+  measurements: UISimpleWeightMeasurements;
 }
 
 const calculateDiffPercentage = (
-  latestMeasurement: SimpleMeasurement,
-  secondToLastMeasurement: SimpleMeasurement,
+  latestMeasurement: UISimpleWeightMeasurement,
+  secondToLastMeasurement: UISimpleWeightMeasurement,
 ): number => {
   if (latestMeasurement === undefined || secondToLastMeasurement === undefined) {
     return 0;

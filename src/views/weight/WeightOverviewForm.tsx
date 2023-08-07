@@ -5,23 +5,25 @@ import WeightMeasurementWidgets from 'src/components/weight/WeightMeasurementWid
 
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 import { useSelector } from 'react-redux';
-import { type Measurement } from 'src/model/weight/Measurements';
+import { type UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
 import WeightTargetsService from 'src/services/weight/WeightTargetsService';
 
 const WeightOverviewForm: React.FC = () => {
   const isAuthenticated: boolean = useSelector((state: any) => state.auth.isAuthenticated);
 
-  const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const [measurements, setMeasurements] = useState<UIWeightMeasurement[]>([]);
   const isFetchedMeasurements: boolean = useSelector(
     (state: any) => state.weight.isFetchedMeasurements,
   );
   const isFetchedTargetWeights: boolean = useSelector(
     (state: any) => state.weight.isFetchedTargetWeights,
   );
-  const measurementsRedux: Measurement[] = useSelector((state: any) => state.weight.measurements);
+  const measurementsRedux: UIWeightMeasurement[] = useSelector(
+    (state: any) => state.weight.measurements,
+  );
 
   useEffect(() => {
-    const measurements: Measurement[] =
+    const measurements: UIWeightMeasurement[] =
       measurementsRedux.length > 0
         ? measurementsRedux.slice().sort((a: any, b: any) => b.date - a.date)
         : measurementsRedux;
@@ -50,7 +52,7 @@ const WeightOverviewForm: React.FC = () => {
     }
   }, [isFetchedTargetWeights, isAuthenticated]);
 
-  const getMeasurementsSlice = (maxElements?: number): Measurement[] => {
+  const getMeasurementsSlice = (maxElements?: number): UIWeightMeasurement[] => {
     if (measurements.length === 0) {
       return measurements;
     } else {
