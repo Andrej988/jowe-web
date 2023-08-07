@@ -51,7 +51,6 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
 
   const openEditMeasurementModalHandler = (id: string): void => {
     setCurrentMeasurement(props.measurements.filter((x) => x.measurementId === id)[0]);
-    console.log(props.measurements.filter((x) => x.measurementId === id)[0]);
     setAddEditMeasurementsModalVisibility(true);
   };
 
