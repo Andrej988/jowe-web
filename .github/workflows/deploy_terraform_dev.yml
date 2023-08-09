@@ -2,7 +2,7 @@ name: Deploy on Development Environment
 
 on:
   workflow_run:
-    workflows: ['Release on Github']
+    workflows: ['CI main']
     branches: [main]
     types:
       - completed
