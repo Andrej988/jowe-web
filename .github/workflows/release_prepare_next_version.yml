@@ -2,7 +2,7 @@ name: Release Prepare Next Version
 
 on:
   workflow_run:
-    workflows: ['Deploy on Development Environment']
+    workflows: ['Release on Github']
     branches: [main]
     types:
       - completed
