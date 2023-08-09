@@ -16,10 +16,11 @@ const addMeasurement = (state: any, measurement: UIWeightMeasurement): void => {
 };
 
 const updateMeasurement = (state: any, measurement: UIWeightMeasurement): void => {
-  const newMeasurements = [...state.measurements];
-  state.measurements = newMeasurements
-    .filter((x) => x.measurementId !== measurement.measurementId)
-    .push(measurement);
+  const newMeasurements = [...state.measurements].filter(
+    (x) => x.measurementId !== measurement.measurementId,
+  );
+  newMeasurements.push(measurement);
+  state.measurements = newMeasurements;
 };
 
 const removeMeasurement = (state: any, measurementId: string): void => {

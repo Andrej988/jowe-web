@@ -123,7 +123,7 @@ export default class WeightMeasurementsService {
   async editMeasurement(
     measurementDto: EditWeightMeasurementRequestDto,
   ): Promise<UIWeightMeasurement> {
-    const serviceUrl = this.getServiceURL();
+    const serviceUrl = this.getServiceURL() + `/${measurementDto.measurement.measurementId}`;
     const config = this.buildConfigWithAuthHeader();
 
     const requestBody = JSON.stringify(measurementDto);
