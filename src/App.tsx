@@ -59,7 +59,7 @@ const App: React.FC = () => {
     }
   }, [logoutTime, isAuthenticated]);
 
-  if (!isLoading && isAuthenticated === null) {
+  if (!isLoading && isAuthenticated === undefined) {
     setLoading(true);
     AuthService.getInstance()
       .autoLogin()
