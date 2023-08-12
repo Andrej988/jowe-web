@@ -13,6 +13,7 @@ export interface UIWeightMeasurement {
   timestamp: number;
   date: Date;
   note?: string;
+  lastModified?: number;
   measurements: UIWeightMeasurementDetails;
 }
 

@@ -7,6 +7,7 @@ export interface TargetWeightResponseDto {
   recordId: string;
   timestamp: number;
   targetWeight: number;
+  lastModified?: number;
 }
 
 export interface TargetWeightsResponseDto {

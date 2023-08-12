@@ -4,6 +4,7 @@ export interface TargetWeight {
   timestamp: number;
   date: Date;
   targetWeight: number;
+  lastModified?: number;
 }
 
 export interface TargetWeights {

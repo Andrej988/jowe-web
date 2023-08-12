@@ -2,7 +2,10 @@ import React from 'react';
 import type { PropsWithChildren } from 'react';
 import Modal from 'src/components/utils/Modal';
 import type { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
-import { toFormattedDateTimeString } from 'src/services/utils/DateUtils';
+import {
+  toFormattedDateTimeString,
+  toFormattedDateTimeStringFromTimestamp,
+} from 'src/services/utils/DateUtils';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -32,6 +35,12 @@ const WeightMeasurementDetailsForm: React.FC<Props> = (props) => {
           {props.measurement?.note !== undefined
             ? props.measurement?.note
             : DETAIL_NOT_AVAILABLE_STRING}
+          <br />
+          Last modified:{' '}
+          {props.measurement?.lastModified !== undefined
+            ? toFormattedDateTimeStringFromTimestamp(props.measurement?.lastModified)
+            : DETAIL_NOT_AVAILABLE_STRING}{' '}
+          {}
         </p>
         Measurements:
         <ul>

@@ -31,6 +31,7 @@ export interface WeightMeasurementResponseDto {
   date: number;
   timestamp: number;
   note?: string;
+  lastModified?: number;
   measurements: WeightMeasurementValsDto;
 }
 

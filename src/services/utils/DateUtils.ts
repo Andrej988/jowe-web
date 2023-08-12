@@ -34,17 +34,25 @@ export const toFormattedDateTimeString = (
   date: Date | undefined,
   withSeconds: boolean = true,
 ): string => {
-  if (date === undefined) {
+  if (date) {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds();
+
+    let dateString = toFormattedDateString(date) + ' ' + hours + ':' + minutes;
+    if (withSeconds && seconds > 0) {
+      dateString = dateString + ':' + seconds.toString().padStart(2, '0');
+    }
+    return dateString;
+  } else {
     return '';
   }
+};
 
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const seconds = date.getSeconds();
-
-  let dateString = toFormattedDateString(date) + ' ' + hours + ':' + minutes;
-  if (withSeconds && seconds > 0) {
-    dateString = dateString + ':' + seconds.toString().padStart(2, '0');
+export const toFormattedDateTimeStringFromTimestamp = (timestamp: number | undefined): string => {
+  if (timestamp) {
+    return toFormattedDateTimeString(new Date(timestamp));
+  } else {
+    return '';
   }
-  return dateString;
 };
