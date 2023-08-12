@@ -4,7 +4,10 @@ import type { PropsWithChildren } from 'react';
 import { useDispatch } from 'react-redux';
 import Modal from 'src/components/utils/Modal';
 import type { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
-import { toFormattedDateTimeString } from 'src/services/utils/DateUtils';
+import {
+  toFormattedDateTimeString,
+  toFormattedDateTimeStringFromTimestamp,
+} from 'src/services/utils/DateUtils';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
 import { ToastMsg, toasterActions } from 'src/store/Store';
 
@@ -80,6 +83,12 @@ const DeleteWeightMeasurementForm: React.FC<Props> = (props) => {
           {props.measurement?.note !== undefined
             ? props.measurement?.note
             : DETAIL_NOT_AVAILABLE_STRING}
+          <br />
+          Last modified:{' '}
+          {props.measurement?.lastModified !== undefined
+            ? toFormattedDateTimeStringFromTimestamp(props.measurement?.lastModified)
+            : DETAIL_NOT_AVAILABLE_STRING}{' '}
+          {}
         </p>
         Measurements:
         <ul>

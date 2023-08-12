@@ -50,6 +50,7 @@ export default class WeightTargetsService {
       date: new Date(responseDto.timestamp),
       timestamp: responseDto.timestamp,
       targetWeight: responseDto.targetWeight,
+      lastModified: responseDto.lastModified,
     };
   }
 

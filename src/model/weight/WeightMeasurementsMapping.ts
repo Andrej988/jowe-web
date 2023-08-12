@@ -10,6 +10,7 @@ export const buildMeasurementFromResponseDto = (
     date: new Date(measurementDto.date),
     timestamp: measurementDto.timestamp,
     note: measurementDto.note,
+    lastModified: measurementDto.lastModified,
     measurements: {
       weight: measurementDto.measurements.weight,
       bodyFatPercentage: measurementDto.measurements.bodyFatPercentage,
