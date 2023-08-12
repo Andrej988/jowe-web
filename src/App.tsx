@@ -7,7 +7,7 @@ import AuthService from './services/auth/AuthService';
 import { CToaster } from '@coreui/react';
 import buildToast from './components/utils/Toaster';
 import { type ToastMsg } from './store/ToasterSlice';
-import { toasterActions, type RootState } from './store/Store';
+import { toasterActions, type RootState, ReduxStoreState } from './store/Store';
 import AutoLogoutForm from './views/pages/auth/AutoLogoutForm';
 
 // Containers
@@ -20,10 +20,10 @@ const Page404 = React.lazy(async () => await import('./views/pages/Page404'));
 
 const App: React.FC = () => {
   const [autoLogoutVisible, setAutoLogoutVisible] = useState(false);
-  const logoutTime = useSelector((state: any) => state.auth.autoLogoutAt);
+  const logoutTime = useSelector((state: ReduxStoreState) => state.auth.autoLogoutAt);
 
   const [isLoading, setLoading] = useState(false);
-  const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state: ReduxStoreState) => state.auth.isAuthenticated);
   const [toast, addToast] = useState<ReactElement | undefined>();
   const toaster = useRef<HTMLDivElement | null>(null);
   const toastMessages: ToastMsg[] = useSelector((state: RootState) => state.toaster.toasts);
@@ -43,7 +43,7 @@ const App: React.FC = () => {
   }, [toastMessages]);
 
   useEffect(() => {
-    if (isAuthenticated === true && logoutTime > Date.now()) {
+    if (isAuthenticated && logoutTime && logoutTime > Date.now()) {
       const showInMillis = logoutTime - Date.now() - AuthService.SHOW_SESSION_PROLONGATION_FORM;
 
       const timerId = setTimeout(() => {
@@ -59,11 +59,13 @@ const App: React.FC = () => {
     }
   }, [logoutTime, isAuthenticated]);
 
-  if (!isLoading && isAuthenticated === null) {
+  if (!isLoading && isAuthenticated === undefined) {
     setLoading(true);
     AuthService.getInstance()
       .autoLogin()
-      .catch(() => {})
+      .catch((err) => {
+        console.error(err);
+      })
       .finally(() => {
         setLoading(false);
       });

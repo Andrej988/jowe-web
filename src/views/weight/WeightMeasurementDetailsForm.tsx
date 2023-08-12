@@ -1,13 +1,13 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import Modal from 'src/components/utils/Modal';
-import type { Measurement } from 'src/model/weight/Measurements';
+import type { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
 import { toFormattedDateTimeString } from 'src/services/utils/DateUtils';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
-  measurement: Measurement | undefined;
+  measurement: UIWeightMeasurement | undefined;
 }
 
 const DETAIL_NOT_AVAILABLE_STRING = '/';

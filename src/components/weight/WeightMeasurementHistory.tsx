@@ -14,29 +14,30 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CTooltip,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilPencil, cilBalanceScale, cilInfo, cilTrash } from '@coreui/icons';
 
 import { getLocalDateString } from '../../services/utils/DateUtils';
-import type { Measurement } from 'src/model/weight/Measurements';
-import AddWeightMeasurementForm from 'src/views/weight/AddWeightMeasurementForm';
 import WeightMeasurementDetailsForm from 'src/views/weight/WeightMeasurementDetailsForm';
 import DeleteWeightMeasurementForm from 'src/views/weight/DeleteWeightMeasurementForm';
+import AddEditWeightMeasurementForm from 'src/views/weight/AddEditWeightMeasurementForm';
+import { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
 
 interface Props {
   title: string;
-  measurements: Measurement[];
+  measurements: UIWeightMeasurement[];
   showDeleteButton: boolean;
 }
 
 const MEASUREMENT_NOT_AVAILABLE_STRING = '-';
 
 const WeightMeasurementHistory: React.FC<Props> = (props) => {
-  const [addMeasurementsModalVisible, setAddMeasurementsModalVisibility] = useState(false);
+  const [addEditMeasurementsModalVisible, setAddEditMeasurementsModalVisibility] = useState(false);
   const [measurementDetailsModalVisible, setMeasurmentDetailsModalVisibility] = useState(false);
   const [deleteMeasurementModalVisible, setDeleteMeasurementModalVisibility] = useState(false);
-  const [currentMeasurement, setCurrentMeasurement] = useState<Measurement>();
+  const [currentMeasurement, setCurrentMeasurement] = useState<UIWeightMeasurement>();
 
   const onInfoHandler = (id: string): void => {
     setCurrentMeasurement(props.measurements.filter((x) => x.measurementId === id)[0]);
@@ -48,16 +49,23 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
     setDeleteMeasurementModalVisibility(true);
   };
 
+  const openEditMeasurementModalHandler = (id: string): void => {
+    setCurrentMeasurement(props.measurements.filter((x) => x.measurementId === id)[0]);
+    setAddEditMeasurementsModalVisibility(true);
+  };
+
   const openAddMeasurementModalHandler = (): void => {
-    setAddMeasurementsModalVisibility(true);
+    setAddEditMeasurementsModalVisibility(true);
   };
 
-  const closeAddMeasurementFormHandler = (): void => {
-    setAddMeasurementsModalVisibility(false);
+  const closeAddEditMeasurementFormHandler = (): void => {
+    setAddEditMeasurementsModalVisibility(false);
+    setCurrentMeasurement(undefined);
   };
 
-  const addMeasurementHandler = (): void => {
-    setAddMeasurementsModalVisibility(false);
+  const addOrEditMeasurementHandler = (): void => {
+    setAddEditMeasurementsModalVisibility(false);
+    setCurrentMeasurement(undefined);
   };
 
   const deleteMeasurementHandler = (): void => {
@@ -98,7 +106,7 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {props.measurements.map((item: Measurement, index: number) => (
+                  {props.measurements.map((item: UIWeightMeasurement, index: number) => (
                     <CTableRow v-for="item in tableItems" key={index}>
                       <CTableDataCell className="text-center"></CTableDataCell>
                       <CTableDataCell>{getLocalDateString(item.date)}</CTableDataCell>
@@ -136,23 +144,44 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
                           : MEASUREMENT_NOT_AVAILABLE_STRING}
                       </CTableDataCell>
                       <CTableDataCell className="text-center">
-                        <CButton
-                          color="secondary"
-                          variant="outline"
-                          key={`info_ ${index}`}
-                          onClick={onInfoHandler.bind(null, item.measurementId)}
-                        >
-                          <CIcon icon={cilInfo} />
-                        </CButton>{' '}
-                        {props.showDeleteButton ? (
+                        <CTooltip content="Details of measurement" animation={false}>
                           <CButton
-                            color="danger"
+                            color="secondary"
                             variant="outline"
-                            key={`delete_ ${index}`}
-                            onClick={onDeleteHandler.bind(null, item.measurementId)}
+                            key={`info_ ${index}`}
+                            onClick={onInfoHandler.bind(null, item.measurementId)}
                           >
-                            <CIcon icon={cilTrash} />
+                            <CIcon icon={cilInfo} />
                           </CButton>
+                        </CTooltip>{' '}
+                        {props.showDeleteButton ? (
+                          <CTooltip content="Edit measurement" animation={false}>
+                            <CButton
+                              color="secondary"
+                              variant="outline"
+                              key={`edit_ ${index}`}
+                              onClick={openEditMeasurementModalHandler.bind(
+                                null,
+                                item.measurementId,
+                              )}
+                            >
+                              <CIcon icon={cilPencil} />
+                            </CButton>
+                          </CTooltip>
+                        ) : (
+                          ''
+                        )}{' '}
+                        {props.showDeleteButton ? (
+                          <CTooltip content="Delete measurement" animation={false}>
+                            <CButton
+                              color="danger"
+                              variant="outline"
+                              key={`delete_ ${index}`}
+                              onClick={onDeleteHandler.bind(null, item.measurementId)}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
+                          </CTooltip>
                         ) : (
                           ''
                         )}
@@ -175,10 +204,11 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
         </CCol>
       </CRow>
 
-      <AddWeightMeasurementForm
-        visible={addMeasurementsModalVisible}
-        onCloseHandler={closeAddMeasurementFormHandler}
-        onSaveHandler={addMeasurementHandler}
+      <AddEditWeightMeasurementForm
+        visible={addEditMeasurementsModalVisible}
+        existingMeasurement={currentMeasurement}
+        onCloseHandler={closeAddEditMeasurementFormHandler}
+        onSaveHandler={addOrEditMeasurementHandler}
       />
       <WeightMeasurementDetailsForm
         measurement={currentMeasurement}

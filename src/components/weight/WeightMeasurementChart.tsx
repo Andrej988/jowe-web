@@ -4,17 +4,17 @@ import { CButton, CButtonGroup, CCard, CCardBody, CCol, CRow } from '@coreui/rea
 import { CChartLine } from '@coreui/react-chartjs';
 import { getStyle, hexToRgba } from '@coreui/utils';
 import { toFormattedDateString } from '../../services/utils/DateUtils';
-import type { SimpleMeasurements } from 'src/model/weight/Measurements';
 import { getStyleString } from 'src/services/utils/Utils';
+import { UISimpleWeightMeasurements } from 'src/model/weight/UIWeightMeasurements';
 
 const TIMEFRAME_ALL = 'All';
 const TIMEFRAME_YEAR = 'Year';
 const TIMEFRAME_YTD = 'YTD';
 
 const filterMeasurements = (
-  measurements: SimpleMeasurements,
+  measurements: UISimpleWeightMeasurements,
   timeframe: string,
-): SimpleMeasurements => {
+): UISimpleWeightMeasurements => {
   if (timeframe === TIMEFRAME_ALL) {
     return measurements.slice();
   } else {
@@ -33,7 +33,7 @@ interface Props {
   title: string;
   subtitle?: string;
   label: string;
-  measurements: SimpleMeasurements;
+  measurements: UISimpleWeightMeasurements;
 }
 
 const WeightMeasurementChart: React.FC<Props> = (props) => {

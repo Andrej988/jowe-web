@@ -1,6 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+export interface LayoutState {
+  showSidebar: boolean;
+}
+
+const initialState: LayoutState = {
   showSidebar: true,
 };
 

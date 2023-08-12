@@ -1,9 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit/';
 
-import authSlice, { actions as authActions } from './AuthSlice';
-import layoutSlice, { actions as layoutActions } from './LayoutSlice';
-import toasterSlice, { actions as toasterActions, ToastMsg } from './ToasterSlice';
-import WeightSlice, { actions as weightActions } from './WeightSlice';
+import authSlice, { actions as authActions, AuthState } from './AuthSlice';
+import layoutSlice, { actions as layoutActions, LayoutState } from './LayoutSlice';
+import toasterSlice, { actions as toasterActions, ToasterState, ToastMsg } from './ToasterSlice';
+import WeightSlice, { actions as weightActions, WeightState } from './WeightSlice';
+
+export interface ReduxStoreState {
+  auth: AuthState;
+  layour: LayoutState;
+  toaster: ToasterState;
+  weight: WeightState;
+}
 
 const store = configureStore({
   reducer: {

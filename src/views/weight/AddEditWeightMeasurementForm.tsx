@@ -35,9 +35,17 @@ import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsSer
 import { tryParseFloat, tryParseFloatStrict } from 'src/services/utils/Parsers';
 import { useDispatch } from 'react-redux';
 import { ToastMsg, toasterActions } from 'src/store/Store';
+import { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
+import {
+  AddWeightMeasurementRequestDto,
+  EditWeightMeasurementRequestDto,
+  buildAddWeightMeasurementRequestDto,
+  buildEditWeightMeasurementRequestDto,
+} from 'src/model/weight/WeightMeasurementDtos';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
+  existingMeasurement?: UIWeightMeasurement;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
 }
@@ -66,9 +74,14 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   energyExpenditureValid: false,
 };
 
+const TITLE_ADD_MEASUREMENT = 'Add Measurement';
+const TITLE_EDIT_MEASUREMENT = 'Edit Measurement';
 const TOAST_TITLE_ADD_MEASUREMENT_DEFAULT = 'Add Measurement';
 const TOAST_TITLE_ADD_MEASUREMENT_ERROR = 'Add Measurement Error';
 const TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL = 'Measurement was added successfully.';
+const TOAST_TITLE_EDIT_MEASUREMENT_DEFAULT = 'Edit Measurement';
+const TOAST_TITLE_EDIT_MEASUREMENT_ERROR = 'Edit Measurement Error';
+const TOAST_MESSAGE_EDIT_MEASUREMENT_SUCCESSFUL = 'Measurement was updated successfully.';
 
 const isDateInTheFuture = (dateString: string): boolean => {
   const date = Date.parse(dateString);
@@ -76,24 +89,28 @@ const isDateInTheFuture = (dateString: string): boolean => {
 };
 
 const getCurrentDate = (): string => {
-  const curDate = new Date();
+  return parseDate(new Date());
+};
 
+const parseDate = (date: Date): string => {
   const twoDigitValue = (val: number): string => {
     return `0${val}`.slice(-2);
   };
-  const hours = twoDigitValue(curDate.getHours());
-  const minutes = twoDigitValue(curDate.getMinutes());
+  const hours = twoDigitValue(date.getHours());
+  const minutes = twoDigitValue(date.getMinutes());
 
-  return `${curDate.toLocaleDateString('en-CA')} ${hours}:${minutes}`;
+  return `${date.toLocaleDateString('en-CA')} ${hours}:${minutes}`;
 };
 
-const AddWeightMeasurementForm: React.FC<Props> = (props) => {
+const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
 
+  const [title, setTitle] = useState(TITLE_ADD_MEASUREMENT);
+  const [measurementId, setMeasurementId] = useState('');
   const [date, setDate] = useState<string>(getCurrentDate());
   const [note, setNote] = useState<string>('');
   const [weight, setWeight] = useState<string>('');
@@ -171,6 +188,48 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
+    if (props.existingMeasurement) {
+      setTitle(TITLE_EDIT_MEASUREMENT);
+      setMeasurementId(props.existingMeasurement.measurementId);
+      setDate(parseDate(props.existingMeasurement.date));
+      setNote(props.existingMeasurement.note ? props.existingMeasurement.note : '');
+      setWeight(
+        props.existingMeasurement.measurements?.weight
+          ? props.existingMeasurement.measurements.weight + ''
+          : '',
+      );
+      setBodyFat(
+        props.existingMeasurement.measurements?.bodyFatPercentage
+          ? props.existingMeasurement.measurements.bodyFatPercentage + ''
+          : '',
+      );
+      setWater(
+        props.existingMeasurement.measurements?.waterPercentage
+          ? props.existingMeasurement.measurements.waterPercentage + ''
+          : '',
+      );
+      setMuscleMass(
+        props.existingMeasurement.measurements?.muscleMassPercentage
+          ? props.existingMeasurement.measurements.muscleMassPercentage + ''
+          : '',
+      );
+      setBoneMass(
+        props.existingMeasurement.measurements?.bonePercentage
+          ? props.existingMeasurement.measurements.bonePercentage + ''
+          : '',
+      );
+      setEnergyExpenditure(
+        props.existingMeasurement.measurements?.energyExpenditure
+          ? props.existingMeasurement.measurements.energyExpenditure + ''
+          : '',
+      );
+    } else {
+      setTitle(TITLE_ADD_MEASUREMENT);
+      setDate(getCurrentDate());
+    }
+  }, [props.existingMeasurement]);
+
+  useEffect(() => {
     if (isValidated) {
       const timerId = setTimeout(() => {
         validateForm();
@@ -183,52 +242,93 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
     }
   }, [date, note, weight, bodyFat, water, muscleMass, boneMass, energyExpenditure, isValidated]);
 
+  const addMeasurement = (measurementDto: AddWeightMeasurementRequestDto): void => {
+    WeightMeasurementsService.getInstance()
+      .addMeasurement(measurementDto)
+      .then(() => {
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(
+              cilBalanceScale,
+              TOAST_TITLE_ADD_MEASUREMENT_DEFAULT,
+              TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL,
+            ),
+          ),
+        );
+        props.onSaveHandler();
+        clearFormWithSlightTimeout();
+      })
+      .catch((err) => {
+        console.error(err);
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(cilWarning, TOAST_TITLE_ADD_MEASUREMENT_ERROR, err.message),
+          ),
+        );
+        setIsAddButtonDisabled(false);
+      });
+  };
+
+  const editMeasurement = (measurementDto: EditWeightMeasurementRequestDto): void => {
+    WeightMeasurementsService.getInstance()
+      .editMeasurement(measurementDto)
+      .then(() => {
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(
+              cilBalanceScale,
+              TOAST_TITLE_EDIT_MEASUREMENT_DEFAULT,
+              TOAST_MESSAGE_EDIT_MEASUREMENT_SUCCESSFUL,
+            ),
+          ),
+        );
+        props.onSaveHandler();
+        clearFormWithSlightTimeout();
+      })
+      .catch((err) => {
+        console.error(err);
+        dispatch(
+          toasterActions.addMessage(
+            new ToastMsg(cilWarning, TOAST_TITLE_EDIT_MEASUREMENT_ERROR, err.message),
+          ),
+        );
+        setIsAddButtonDisabled(false);
+      });
+  };
+
   const onAddMeasurementHandler = (): void => {
     const isFormValid = validateForm();
 
     if (isFormValid) {
       setIsAddButtonDisabled(true);
-
-      const weightValue = tryParseFloatStrict(weight);
-      const bodyFatValue = tryParseFloat(bodyFat);
-      const waterValue = tryParseFloat(water);
-      const muscleMassValue = tryParseFloat(muscleMass);
-      const boneMassValue = tryParseFloat(boneMass);
-      const energyExpenditureValue = tryParseFloat(energyExpenditure);
-
-      WeightMeasurementsService.getInstance()
-        .addMeasurement(
-          Date.parse(date),
-          note,
-          weightValue,
-          bodyFatValue,
-          waterValue,
-          muscleMassValue,
-          boneMassValue,
-          energyExpenditureValue,
-        )
-        .then(() => {
-          dispatch(
-            toasterActions.addMessage(
-              new ToastMsg(
-                cilBalanceScale,
-                TOAST_TITLE_ADD_MEASUREMENT_DEFAULT,
-                TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL,
-              ),
-            ),
-          );
-          props.onSaveHandler();
-          clearFormWithSlightTimeout();
-        })
-        .catch((err) => {
-          console.error(err);
-          dispatch(
-            toasterActions.addMessage(
-              new ToastMsg(cilWarning, TOAST_TITLE_ADD_MEASUREMENT_ERROR, err.message),
-            ),
-          );
-          setIsAddButtonDisabled(false);
-        });
+      if (!props.existingMeasurement) {
+        addMeasurement(
+          buildAddWeightMeasurementRequestDto(
+            Date.parse(date),
+            note,
+            tryParseFloatStrict(weight),
+            tryParseFloat(bodyFat),
+            tryParseFloat(water),
+            tryParseFloat(muscleMass),
+            tryParseFloat(boneMass),
+            tryParseFloat(energyExpenditure),
+          ),
+        );
+      } else {
+        editMeasurement(
+          buildEditWeightMeasurementRequestDto(
+            measurementId,
+            Date.parse(date),
+            note,
+            tryParseFloatStrict(weight),
+            tryParseFloat(bodyFat),
+            tryParseFloat(water),
+            tryParseFloat(muscleMass),
+            tryParseFloat(boneMass),
+            tryParseFloat(energyExpenditure),
+          ),
+        );
+      }
     }
   };
 
@@ -264,7 +364,7 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
 
   return (
     <Modal
-      title="Add Measurement"
+      title={title}
       visible={props.visible}
       size="lg"
       primaryButtonText="Save Measurement"
@@ -429,4 +529,4 @@ const AddWeightMeasurementForm: React.FC<Props> = (props) => {
   );
 };
 
-export default AddWeightMeasurementForm;
+export default AddEditWeightMeasurementForm;

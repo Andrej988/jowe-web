@@ -4,33 +4,25 @@ import type { ReactElement } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { CBadge } from '@coreui/react';
-import type { INavigation } from './Navigation';
+import type { IBadge, INavigation } from './Navigation';
 
-interface IExtendedNavigation extends INavigation {
-  badge?: any;
-  items?: any;
-  to?: any;
-}
-
-type ExtendedNavigationType = IExtendedNavigation[];
-
-const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) => {
+const AppSidebarNav: React.FC<{ items: INavigation[] }> = ({ items }) => {
   const location = useLocation();
-  const navLink = (name: string, icon: any, badge: any): ReactElement => {
+  const navLink = (name: string, icon?: React.JSX.Element, badge?: IBadge): ReactElement => {
     return (
       <>
         {Boolean(icon) && icon}
         {name.length > 0 && name}
         {Boolean(badge) && (
-          <CBadge color={badge.color} className="ms-auto">
-            {badge.text}
+          <CBadge color={badge?.color} className="ms-auto">
+            {badge?.text}
           </CBadge>
         )}
       </>
     );
   };
 
-  const navItem = (item: IExtendedNavigation, index: number): ReactElement => {
+  const navItem = (item: INavigation, index: number): ReactElement => {
     const { component, name, badge, icon, ...rest } = item;
     const Component = component;
     return (
@@ -46,18 +38,18 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
       </Component>
     );
   };
-  const navGroup = (item: IExtendedNavigation, index: number): ReactElement => {
+  const navGroup = (item: INavigation, index: number): ReactElement => {
     const { component, name, icon, to, ...rest } = item;
     const Component = component;
     return (
       <Component
         idx={String(index)}
         key={index}
-        toggler={navLink(name, icon, null)}
-        visible={location.pathname.startsWith(to)}
+        toggler={navLink(name, icon, undefined)}
+        visible={location.pathname.startsWith(to ? to : '')}
         {...rest}
       >
-        {item.items?.map((item: IExtendedNavigation, index: number) =>
+        {item.items?.map((item: INavigation, index: number) =>
           item.items ? navGroup(item, index) : navItem(item, index),
         )}
       </Component>
@@ -66,7 +58,9 @@ const AppSidebarNav: React.FC<{ items: ExtendedNavigationType }> = ({ items }) =
 
   return (
     <React.Fragment>
-      {items?.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
+      {items?.map((item: INavigation, index: number) =>
+        item.items ? navGroup(item, index) : navItem(item, index),
+      )}
     </React.Fragment>
   );
 };

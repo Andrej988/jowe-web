@@ -243,10 +243,10 @@ export default class AuthService {
 
   getAccessToken(): string {
     const tokens = store.getState().auth.tokens;
-    return tokens.idToken?.token !== undefined ? tokens.idToken.token : '';
+    return tokens?.idToken?.token !== undefined ? tokens.idToken.token : '';
   }
 
-  getUserData(): AuthenticatedUser {
+  getUserData(): AuthenticatedUser | undefined {
     return store.getState().auth.user;
   }
 
@@ -254,7 +254,7 @@ export default class AuthService {
     await new Promise<void>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .initForgotPasswordFlow(username)
-        .then((res) => {
+        .then(() => {
           resolve();
         })
         .catch((err) => {
@@ -271,7 +271,7 @@ export default class AuthService {
     await new Promise<void>((resolve, reject) => {
       CognitoAuthService.getInstance()
         .completeForgotPasswordFlow(username, verificationCode, newPassword)
-        .then((res) => {
+        .then(() => {
           resolve();
         })
         .catch((err) => {

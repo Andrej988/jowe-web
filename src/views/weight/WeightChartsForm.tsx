@@ -3,23 +3,31 @@ import { useSelector } from 'react-redux';
 import WeightMeasurementChart from 'src/components/weight/WeightMeasurementChart';
 import WeightMeasurementsDetailedChart from 'src/components/weight/WeightMeasurementsDetailedChart';
 
-import type { Measurement, SimpleMeasurements } from 'src/model/weight/Measurements';
+import type {
+  UIWeightMeasurement,
+  UISimpleWeightMeasurements,
+} from 'src/model/weight/UIWeightMeasurements';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
+import { ReduxStoreState } from 'src/store/Store';
 
 const WeightChartsForm: React.FC = () => {
-  const [bodyFatMeasurements, setBodyFatMeasurements] = useState<SimpleMeasurements>([]);
-  const [waterMeasurements, setWaterMeasurements] = useState<SimpleMeasurements>([]);
-  const [muscleMassMeasurements, setMuscleMassMeasurements] = useState<SimpleMeasurements>([]);
-  const [boneMassMeasurements, setBoneMassMeasurements] = useState<SimpleMeasurements>([]);
-  const [energyMeasurements, setEnergyMeasurements] = useState<SimpleMeasurements>([]);
+  const [bodyFatMeasurements, setBodyFatMeasurements] = useState<UISimpleWeightMeasurements>([]);
+  const [waterMeasurements, setWaterMeasurements] = useState<UISimpleWeightMeasurements>([]);
+  const [muscleMassMeasurements, setMuscleMassMeasurements] = useState<UISimpleWeightMeasurements>(
+    [],
+  );
+  const [boneMassMeasurements, setBoneMassMeasurements] = useState<UISimpleWeightMeasurements>([]);
+  const [energyMeasurements, setEnergyMeasurements] = useState<UISimpleWeightMeasurements>([]);
 
-  const isFetched: boolean = useSelector((state: any) => state.weight.isFetched);
-  const measurementsState = useSelector((state: any) => state.weight.measurements);
+  const isFetched: boolean = useSelector(
+    (state: ReduxStoreState) => state.weight.isFetchedMeasurements,
+  );
+  const measurementsState = useSelector((state: ReduxStoreState) => state.weight.measurements);
 
   useEffect(() => {
-    const measurements: Measurement[] = measurementsState
+    const measurements: UIWeightMeasurement[] = measurementsState
       .slice()
-      .sort((a: any, b: any) => b.date - a.date)
+      .sort((a: UIWeightMeasurement, b: UIWeightMeasurement) => b.date.valueOf() - a.date.valueOf())
       .reverse();
 
     setBodyFatMeasurements(
