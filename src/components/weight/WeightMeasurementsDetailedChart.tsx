@@ -27,6 +27,7 @@ import SetTargetWeightForm from 'src/views/weight/SetTargetWeightForm';
 import { useSelector } from 'react-redux';
 import { type TargetWeight } from 'src/model/weight/TargetWeights';
 import { getStyleString } from 'src/services/utils/Utils';
+import { ReduxStoreState } from 'src/store/Store';
 
 const filterMeasurements = (
   measurements: UISimpleWeightMeasurements,
@@ -53,10 +54,10 @@ interface Props {
 
 const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   const measurementsRedux: UIWeightMeasurement[] = useSelector(
-    (state: any) => state.weight.measurements,
+    (state: ReduxStoreState) => state.weight.measurements,
   );
   const targetWeightsRedux: TargetWeight[] = useSelector(
-    (state: any) => state.weight.targetWeights,
+    (state: ReduxStoreState) => state.weight.targetWeights,
   );
 
   const [timeframe, setTimeframe] = useState('All');
@@ -76,7 +77,12 @@ const WeightMeasurementsDetailedChart: React.FC<Props> = (props) => {
   useEffect(() => {
     const sortedMeasurements: UIWeightMeasurement[] =
       measurementsRedux.length > 0
-        ? measurementsRedux.slice().sort((a: any, b: any) => a.date - b.date)
+        ? measurementsRedux
+            .slice()
+            .sort(
+              (a: UIWeightMeasurement, b: UIWeightMeasurement) =>
+                a.date.valueOf() - b.date.valueOf(),
+            )
         : measurementsRedux;
 
     const sortedSimpleMeasurements = sortedMeasurements.slice().map((x) => {

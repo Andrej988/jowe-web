@@ -1,10 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export class ToastMsg {
-  constructor(public icon: string | string[], public title: string, public messsage: string) {}
+  constructor(
+    public icon: string | string[],
+    public title: string,
+    public messsage: string,
+  ) {}
 }
 
-interface ToasterState {
+export interface ToasterState {
   toasts: ToastMsg[];
 }
 

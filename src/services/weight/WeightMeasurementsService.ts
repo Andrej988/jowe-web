@@ -41,7 +41,7 @@ export default class WeightMeasurementsService {
     return `${this.SERVICE_URL}/weight/measurements`;
   }
 
-  private buildConfigWithAuthHeader(): AxiosRequestConfig<any> {
+  private buildConfigWithAuthHeader(): AxiosRequestConfig {
     return {
       headers: {
         'Content-Type': 'application/json',

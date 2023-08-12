@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import CIcon from '@coreui/icons-react';
 import {
   cilPencil,
@@ -10,7 +10,7 @@ import {
 } from '@coreui/icons';
 import { CNavItem, CNavTitle } from '@coreui/react';
 
-const Navigation = [
+const Navigation: NavigationType = [
   {
     component: CNavItem,
     name: 'Overview',
@@ -76,8 +76,22 @@ export default Navigation;
 export type NavigationType = INavigation[];
 
 export interface INavigation {
-  component: any;
+  component: React.FC<INavigationComponentProps>;
   name: string;
   to?: string;
-  icon?: any;
+  disabled?: boolean;
+  icon?: React.JSX.Element;
+  badge?: IBadge;
+  items?: INavigation[];
+}
+
+export interface INavigationComponentProps extends PropsWithChildren {
+  idx?: string;
+  toggler?: ReactElement;
+  visible?: boolean;
+}
+
+export interface IBadge {
+  color: string;
+  text: string;
 }

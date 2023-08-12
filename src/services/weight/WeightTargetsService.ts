@@ -34,7 +34,7 @@ export default class WeightTargetsService {
     return `${this.SERVICE_URL}/weight/targets`;
   }
 
-  private buildConfigWithAuthHeader(): AxiosRequestConfig<any> {
+  private buildConfigWithAuthHeader(): AxiosRequestConfig {
     return {
       headers: {
         'Content-Type': 'application/json',

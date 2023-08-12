@@ -2,15 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 import { AuthTokens } from '../services/auth/model/AuthTokens';
 import { AuthenticatedUser } from 'src/services/auth/model/AuthenticatedUser';
 
-const initialState = {
-  isAuthenticated: null,
+export interface AuthState {
+  isAuthenticated?: boolean;
+  user?: AuthenticatedUser;
+  tokens?: AuthTokens;
+  autoLogoutAt?: number;
+}
+
+const initialState: AuthState = {
+  isAuthenticated: undefined,
   user: new AuthenticatedUser(),
   tokens: new AuthTokens(),
-  autoLogoutAt: null,
+  autoLogoutAt: undefined,
 };
 
 const setAuthState = (
-  state: any,
+  state: AuthState,
   isAuthenticated: boolean,
   user?: AuthenticatedUser,
   tokens?: AuthTokens,
@@ -20,13 +27,13 @@ const setAuthState = (
   if (isAuthenticated) {
     state.user = user;
     state.tokens = tokens;
-    if (state.autoLogoutAt === null) {
+    if (state.autoLogoutAt === undefined) {
       state.autoLogoutAt = autoLogoutTime;
     }
   } else {
-    state.user = null;
+    state.user = undefined;
     state.tokens = new AuthTokens();
-    state.autoLogoutAt = null;
+    state.autoLogoutAt = undefined;
   }
 };
 

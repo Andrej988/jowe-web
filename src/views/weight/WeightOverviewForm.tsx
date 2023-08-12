@@ -7,25 +7,33 @@ import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsSer
 import { useSelector } from 'react-redux';
 import { type UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
 import WeightTargetsService from 'src/services/weight/WeightTargetsService';
+import { ReduxStoreState } from 'src/store/Store';
 
 const WeightOverviewForm: React.FC = () => {
-  const isAuthenticated: boolean = useSelector((state: any) => state.auth.isAuthenticated);
+  const isAuthenticated: boolean | undefined = useSelector(
+    (state: ReduxStoreState) => state.auth.isAuthenticated,
+  );
 
   const [measurements, setMeasurements] = useState<UIWeightMeasurement[]>([]);
   const isFetchedMeasurements: boolean = useSelector(
-    (state: any) => state.weight.isFetchedMeasurements,
+    (state: ReduxStoreState) => state.weight.isFetchedMeasurements,
   );
   const isFetchedTargetWeights: boolean = useSelector(
-    (state: any) => state.weight.isFetchedTargetWeights,
+    (state: ReduxStoreState) => state.weight.isFetchedTargetWeights,
   );
   const measurementsRedux: UIWeightMeasurement[] = useSelector(
-    (state: any) => state.weight.measurements,
+    (state: ReduxStoreState) => state.weight.measurements,
   );
 
   useEffect(() => {
     const measurements: UIWeightMeasurement[] =
       measurementsRedux.length > 0
-        ? measurementsRedux.slice().sort((a: any, b: any) => b.date - a.date)
+        ? measurementsRedux
+            .slice()
+            .sort(
+              (a: UIWeightMeasurement, b: UIWeightMeasurement) =>
+                b.date.valueOf() - a.date.valueOf(),
+            )
         : measurementsRedux;
     setMeasurements(measurements);
   }, [measurementsRedux]);

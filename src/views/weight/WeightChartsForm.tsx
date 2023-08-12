@@ -8,6 +8,7 @@ import type {
   UISimpleWeightMeasurements,
 } from 'src/model/weight/UIWeightMeasurements';
 import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
+import { ReduxStoreState } from 'src/store/Store';
 
 const WeightChartsForm: React.FC = () => {
   const [bodyFatMeasurements, setBodyFatMeasurements] = useState<UISimpleWeightMeasurements>([]);
@@ -18,13 +19,15 @@ const WeightChartsForm: React.FC = () => {
   const [boneMassMeasurements, setBoneMassMeasurements] = useState<UISimpleWeightMeasurements>([]);
   const [energyMeasurements, setEnergyMeasurements] = useState<UISimpleWeightMeasurements>([]);
 
-  const isFetched: boolean = useSelector((state: any) => state.weight.isFetched);
-  const measurementsState = useSelector((state: any) => state.weight.measurements);
+  const isFetched: boolean = useSelector(
+    (state: ReduxStoreState) => state.weight.isFetchedMeasurements,
+  );
+  const measurementsState = useSelector((state: ReduxStoreState) => state.weight.measurements);
 
   useEffect(() => {
     const measurements: UIWeightMeasurement[] = measurementsState
       .slice()
-      .sort((a: any, b: any) => b.date - a.date)
+      .sort((a: UIWeightMeasurement, b: UIWeightMeasurement) => b.date.valueOf() - a.date.valueOf())
       .reverse();
 
     setBodyFatMeasurements(

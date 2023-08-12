@@ -2,20 +2,27 @@ import { createSlice } from '@reduxjs/toolkit';
 import { type UIWeightMeasurement } from '../model/weight/UIWeightMeasurements';
 import { type TargetWeight } from 'src/model/weight/TargetWeights';
 
-const initialState = {
+export interface WeightState {
+  measurements: UIWeightMeasurement[];
+  isFetchedMeasurements: boolean;
+  targetWeights: TargetWeight[];
+  isFetchedTargetWeights: boolean;
+}
+
+const initialState: WeightState = {
   measurements: [],
   isFetchedMeasurements: false,
   targetWeights: [],
   isFetchedTargetWeights: false,
 };
 
-const addMeasurement = (state: any, measurement: UIWeightMeasurement): void => {
+const addMeasurement = (state: WeightState, measurement: UIWeightMeasurement): void => {
   const newMeasurements = [...state.measurements];
   newMeasurements.push(measurement);
   state.measurements = newMeasurements;
 };
 
-const updateMeasurement = (state: any, measurement: UIWeightMeasurement): void => {
+const updateMeasurement = (state: WeightState, measurement: UIWeightMeasurement): void => {
   const newMeasurements = [...state.measurements].filter(
     (x) => x.measurementId !== measurement.measurementId,
   );
@@ -23,18 +30,18 @@ const updateMeasurement = (state: any, measurement: UIWeightMeasurement): void =
   state.measurements = newMeasurements;
 };
 
-const removeMeasurement = (state: any, measurementId: string): void => {
+const removeMeasurement = (state: WeightState, measurementId: string): void => {
   const newMeasurements = [...state.measurements];
   state.measurements = newMeasurements.filter((x) => x.measurementId !== measurementId);
 };
 
-const addTargetWeight = (state: any, targetWeight: TargetWeight): void => {
+const addTargetWeight = (state: WeightState, targetWeight: TargetWeight): void => {
   const newTargetWeights = [...state.targetWeights];
   newTargetWeights.push(targetWeight);
   state.targetWeights = newTargetWeights;
 };
 
-const removeTargetWeight = (state: any, recordId: string): void => {
+const removeTargetWeight = (state: WeightState, recordId: string): void => {
   const newTargetWeights = [...state.targetWeights];
   state.targetWeights = newTargetWeights.filter((x) => x.recordId !== recordId);
 };

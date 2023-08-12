@@ -27,7 +27,7 @@ export default class AdminService {
     return `${this.SERVICE_URL}/admin/delete-user-data`;
   }
 
-  private buildConfigWithAuthHeader(): AxiosRequestConfig<any> {
+  private buildConfigWithAuthHeader(): AxiosRequestConfig {
     return {
       headers: {
         'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Modal from 'src/components/utils/Modal';
 import AuthService from 'src/services/auth/AuthService';
+import { ReduxStoreState } from 'src/store/Store';
 
 interface Props {
   visible: boolean;
@@ -13,7 +14,7 @@ const calculateRemainingTime = (logoutAt: number): number => {
 };
 
 const AutoLogoutForm: React.FC<Props> = (props) => {
-  const autoLogoutAt = useSelector((state: any) => state.auth.autoLogoutAt);
+  const autoLogoutAt = useSelector((state: ReduxStoreState) => state.auth.autoLogoutAt);
   const [remainingTime, setRemainingTime] = useState<number>(-1);
 
   const onProlongSession = (): void => {
@@ -23,7 +24,9 @@ const AutoLogoutForm: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (props.visible) {
-      setRemainingTime(calculateRemainingTime(autoLogoutAt));
+      if (autoLogoutAt) {
+        setRemainingTime(calculateRemainingTime(autoLogoutAt));
+      }
     }
   }, [props.visible]);
 

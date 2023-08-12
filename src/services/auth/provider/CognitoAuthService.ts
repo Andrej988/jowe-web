@@ -69,7 +69,7 @@ export default class CognitoAuthService {
     return new AuthenticatedUser(username, name, email, gender, emailVerified);
   }
 
-  private readonly parseErrorMsg = (err: any): string => {
+  private readonly parseErrorMsg = (err: Error | string): string => {
     let errMsg: string;
     if (err instanceof Error) {
       errMsg = err.message;
@@ -230,7 +230,12 @@ export default class CognitoAuthService {
               console.debug('Logout: Successful');
               resolve();
             } catch (err) {
-              reject(new LogoutError(this.parseErrorMsg(err)));
+              if (err instanceof Error || typeof err === 'string') {
+                reject(new LogoutError(this.parseErrorMsg(err)));
+              } else {
+                console.error(err);
+                reject(new LogoutError(this.parseErrorMsg('Unexpected error')));
+              }
             }
           }
         });
