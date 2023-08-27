@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { UIMealRecipe } from 'src/model/meals/UIMeals';
+import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 
 export interface MealPlannerState {
   recipes: UIMealRecipe[];

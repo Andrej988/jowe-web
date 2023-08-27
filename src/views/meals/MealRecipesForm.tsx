@@ -1,7 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import MealRecipes from 'src/components/meals/MealRecipes';
-import { UIMealRecipe } from 'src/model/meals/UIMeals';
+import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
+import MealRecipesService from 'src/services/meal/MealRecipesService';
 
 import { ReduxStoreState } from 'src/store/Store';
 
@@ -20,15 +21,14 @@ const MealRecipesForm: React.FC = () => {
 
   useEffect(() => {
     if (!isFetched) {
-      //TODO: Add service
-      /*WeightMeasurementsService.getInstance()
-        .retrieveMeasurements()
+      MealRecipesService.getInstance()
+        .retrieveRecipes()
         .then((res) => {
           console.log(res);
         })
         .catch((err) => {
           console.error(err);
-        });*/
+        });
     }
   }, [isFetched]);
 

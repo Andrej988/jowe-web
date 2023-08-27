@@ -1,10 +1,12 @@
+import { jsonEscape } from 'src/services/utils/Json';
+
 export interface MealRecipeIngredientDto {
   name: string;
 }
 
 export interface MealRecipeRequestDto {
   name: string;
-  ingredients: MealRecipeIngredientDto[];
+  ingredients: string;
   preparation: string;
   preparationTime: number;
 }
@@ -25,7 +27,7 @@ export interface MealRecipeResponseDto {
   userId: string;
   recipeId: string;
   name: string;
-  ingredients: MealRecipeIngredientDto[];
+  ingredients: string;
   preparation: string;
   preparationTime: number;
   created: number;
@@ -38,18 +40,16 @@ export interface MealRecipesResponseDto {
 
 export const buildAddMealRecipeRequestDto = (
   name: string,
-  ingredients: string[],
+  ingredients: string,
   preparation: string,
   preparationTime: number,
 ): AddMealRecipeRequestDto => {
   return {
     recipe: {
       name,
-      preparation,
+      ingredients: jsonEscape(ingredients),
+      preparation: jsonEscape(preparation),
       preparationTime,
-      ingredients: ingredients.map((x) => {
-        return { name: x };
-      }),
     },
   };
 };
@@ -57,7 +57,7 @@ export const buildAddMealRecipeRequestDto = (
 export const buildEditMealRecipeRequestDto = (
   recipeId: string,
   name: string,
-  ingredients: string[],
+  ingredients: string,
   preparation: string,
   preparationTime: number,
 ): EditMealRecipeRequestDto => {
@@ -65,11 +65,9 @@ export const buildEditMealRecipeRequestDto = (
     recipe: {
       recipeId,
       name,
-      preparation,
+      ingredients: jsonEscape(ingredients),
+      preparation: jsonEscape(preparation),
       preparationTime,
-      ingredients: ingredients.map((x) => {
-        return { name: x };
-      }),
     },
   };
 };

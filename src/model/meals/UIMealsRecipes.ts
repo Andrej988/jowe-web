@@ -1,14 +1,14 @@
-export interface UIMealRecipeIngredient {
-  name: string;
-}
-
 export interface UIMealRecipe {
   userId: string;
   recipeId: string;
   name: string;
-  ingredients: UIMealRecipeIngredient[];
+  ingredients: string;
   preparation: string;
   preparationTime: number;
   created: number;
   lastModified: number;
+}
+
+export interface UIMealRecipes {
+  recipes: UIMealRecipe[];
 }

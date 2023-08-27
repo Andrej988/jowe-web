@@ -8,19 +8,19 @@ import React, {
 import { CCol, CForm, CRow } from '@coreui/react';
 import Modal from 'src/components/utils/Modal';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
-import { cilBalanceScale, cilBurger, cilClock, cilNotes } from '@coreui/icons';
+import { cilBurger, cilClock, cilFastfood, cilNotes, cilWarning } from '@coreui/icons';
 import { isMoreThan, isLessThanOrEquals, isNotEmpty } from 'src/services/utils/Validators';
-//import WeightMeasurementsService from 'src/services/weight/WeightMeasurementsService';
-//import { useDispatch } from 'react-redux';
-//import { ToastMsg, toasterActions } from 'src/store/Store';
-import { UIMealRecipe } from 'src/model/meals/UIMeals';
+import { useDispatch } from 'react-redux';
+import { ToastMsg, toasterActions } from 'src/store/Store';
+import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 import {
   AddMealRecipeRequestDto,
   EditMealRecipeRequestDto,
   buildAddMealRecipeRequestDto,
   buildEditMealRecipeRequestDto,
-} from 'src/model/meals/MealDtos';
+} from 'src/model/meals/MealRecipeDtos';
 import FormTextAreaWithFeedback from 'src/components/utils/FormTextAreaWithFeedback';
+import MealRecipesService from 'src/services/meal/MealRecipesService';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -47,12 +47,12 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
 
 const TITLE_ADD = 'Add Meal Recipe';
 const TITLE_EDIT = 'Edit Meal Recipe';
-/*const TOAST_TITLE_ADD_DEFAULT = 'Add Meal Recipe';
+const TOAST_TITLE_ADD_DEFAULT = 'Add Meal Recipe';
 const TOAST_TITLE_ADD_ERROR = 'Add Meal Recipe Error';
 const TOAST_MESSAGE_ADD_SUCCESSFUL = 'Meal recipe was added successfully.';
 const TOAST_TITLE_EDIT_DEFAULT = 'Edit Meal Recipe';
 const TOAST_TITLE_EDIT_ERROR = 'Edit Meal Recipe Error';
-const TOAST_MESSAGE_EDIT_SUCCESSFUL = 'Meal recipe was updated successfully.';*/
+const TOAST_MESSAGE_EDIT_SUCCESSFUL = 'Meal recipe was updated successfully.';
 
 const DEFAULT_PREPARATION_TIME_VALUE = 60;
 const MAX_PREPARATION_TIME = 720;
@@ -70,7 +70,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [ingredients, setIngredients] = useState<string>('');
   const [preparation, setPreparation] = useState<string>('');
   const [preparationTime, setPreparationTime] = useState<number>(DEFAULT_PREPARATION_TIME_VALUE);
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const onNameInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value);
@@ -111,8 +111,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       setTitle(TITLE_EDIT);
       setRecipeId(props.existingItem.recipeId);
       setName(props.existingItem.name);
-      //TODO: fix
-      //setIngredients(props.existingItem.ingredients);
+      setIngredients(props.existingItem.ingredients);
       setPreparation(props.existingItem.preparation);
       setPreparationTime(props.existingItem.preparationTime);
     } else {
@@ -134,13 +133,12 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   }, [name, ingredients, preparation, preparationTime, isValidated]);
 
   const addItem = (dto: AddMealRecipeRequestDto): void => {
-    //TODO: Add Service
-    /*WeightMeasurementsService.getInstance()
-      .addMeasurement(dto)
+    MealRecipesService.getInstance()
+      .addRecipe(dto)
       .then(() => {
         dispatch(
           toasterActions.addMessage(
-            new ToastMsg(cilBalanceScale, TOAST_TITLE_ADD_DEFAULT, TOAST_MESSAGE_ADD_SUCCESSFUL),
+            new ToastMsg(cilFastfood, TOAST_TITLE_ADD_DEFAULT, TOAST_MESSAGE_ADD_SUCCESSFUL),
           ),
         );
         props.onSaveHandler();
@@ -152,18 +150,16 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
           toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_ADD_ERROR, err.message)),
         );
         setIsAddButtonDisabled(false);
-      });*/
-    console.log('add item called with args: ', dto);
+      });
   };
 
   const editItem = (dto: EditMealRecipeRequestDto): void => {
-    //TODO: Add service
-    /*WeightMeasurementsService.getInstance()
-      .editMeasurement(dto)
+    MealRecipesService.getInstance()
+      .editRecipe(dto)
       .then(() => {
         dispatch(
           toasterActions.addMessage(
-            new ToastMsg(cilBalanceScale, TOAST_TITLE_EDIT_DEFAULT, TOAST_MESSAGE_EDIT_SUCCESSFUL),
+            new ToastMsg(cilFastfood, TOAST_TITLE_EDIT_DEFAULT, TOAST_MESSAGE_EDIT_SUCCESSFUL),
           ),
         );
         props.onSaveHandler();
@@ -175,21 +171,19 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
           toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_EDIT_ERROR, err.message)),
         );
         setIsAddButtonDisabled(false);
-      });*/
-    console.log('edit meal called with args: ', dto);
+      });
   };
 
   const onAddItemHandler = (): void => {
     const isFormValid = validateForm();
-    const ingr: string[] = [];
     const prepTime: number = preparationTime ? preparationTime : 0;
 
     if (isFormValid) {
       setIsAddButtonDisabled(true);
       if (!props.existingItem) {
-        addItem(buildAddMealRecipeRequestDto(name, ingr, preparation, prepTime));
+        addItem(buildAddMealRecipeRequestDto(name, ingredients, preparation, prepTime));
       } else {
-        editItem(buildEditMealRecipeRequestDto(recipeId, name, ingr, preparation, prepTime));
+        editItem(buildEditMealRecipeRequestDto(recipeId, name, ingredients, preparation, prepTime));
       }
     }
   };
@@ -273,7 +267,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
               className="mt-2"
               id="preparation"
               rows={10}
-              icon={cilBalanceScale}
+              icon={cilFastfood}
               label="Preparation"
               normalLabel={USE_NORMAL_LABELS}
               autoComplete="preparation"

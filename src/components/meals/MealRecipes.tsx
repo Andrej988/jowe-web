@@ -22,7 +22,7 @@ import { cilPencil } from '@coreui/icons';
 //import DeleteWeightMeasurementForm from 'src/views/weight/DeleteWeightMeasurementForm';
 //import { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
 import AddEditMealRecipeForm from 'src/views/meals/AddEditMealRecipeForm';
-import { UIMealRecipe } from 'src/model/meals/UIMeals';
+import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 
 interface Props {
   title: string;
@@ -90,8 +90,8 @@ const MealRecipes: React.FC<Props> = (props) => {
                       onClick={onRowClickHandler.bind(null, item.recipeId)}
                       style={{ cursor: 'pointer' }}
                     >
-                      <CTableDataCell>dddd</CTableDataCell>
-                      <CTableDataCell>gggg</CTableDataCell>
+                      <CTableDataCell>{item.name}</CTableDataCell>
+                      <CTableDataCell>{item.preparationTime} min</CTableDataCell>
                     </CTableRow>
                   ))}
                 </CTableBody>
