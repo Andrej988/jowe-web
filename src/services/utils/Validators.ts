@@ -19,8 +19,20 @@ export const isNumber = (value: string): boolean => {
   return !isNaN(num);
 };
 
-export const isLargerThan = (value: number, boundary: number): boolean => {
+export const isMoreThan = (value: number, boundary: number): boolean => {
   return value > boundary;
+};
+
+export const isMoreThanOrEquals = (value: number, boundary: number): boolean => {
+  return value === boundary || isMoreThan(value, boundary);
+};
+
+export const isLessThan = (value: number, boundary: number): boolean => {
+  return value < boundary;
+};
+
+export const isLessThanOrEquals = (value: number, boundary: number): boolean => {
+  return value === boundary || isLessThan(value, boundary);
 };
 
 export const isValidDateString = (value: string): boolean => {

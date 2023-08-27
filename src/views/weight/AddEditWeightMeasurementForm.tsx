@@ -21,7 +21,7 @@ import {
 } from '@coreui/icons';
 import {
   isEmpty,
-  isLargerThan,
+  isMoreThan,
   isNumber,
   isValidDateString,
   isValidPercentageString,
@@ -45,7 +45,7 @@ import {
 
 interface Props extends PropsWithChildren {
   visible: boolean;
-  existingMeasurement?: UIWeightMeasurement;
+  existingItem?: UIWeightMeasurement;
   onCloseHandler: () => void;
   onSaveHandler: () => void;
 }
@@ -74,14 +74,14 @@ const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   energyExpenditureValid: false,
 };
 
-const TITLE_ADD_MEASUREMENT = 'Add Measurement';
-const TITLE_EDIT_MEASUREMENT = 'Edit Measurement';
-const TOAST_TITLE_ADD_MEASUREMENT_DEFAULT = 'Add Measurement';
-const TOAST_TITLE_ADD_MEASUREMENT_ERROR = 'Add Measurement Error';
-const TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL = 'Measurement was added successfully.';
-const TOAST_TITLE_EDIT_MEASUREMENT_DEFAULT = 'Edit Measurement';
-const TOAST_TITLE_EDIT_MEASUREMENT_ERROR = 'Edit Measurement Error';
-const TOAST_MESSAGE_EDIT_MEASUREMENT_SUCCESSFUL = 'Measurement was updated successfully.';
+const TITLE_ADD = 'Add Measurement';
+const TITLE_EDIT = 'Edit Measurement';
+const TOAST_TITLE_ADD_DEFAULT = 'Add Measurement';
+const TOAST_TITLE_ADD_ERROR = 'Add Measurement Error';
+const TOAST_MESSAGE_ADD_SUCCESSFUL = 'Measurement was added successfully.';
+const TOAST_TITLE_EDIT_DEFAULT = 'Edit Measurement';
+const TOAST_TITLE_EDIT_ERROR = 'Edit Measurement Error';
+const TOAST_MESSAGE_EDIT_SUCCESSFUL = 'Measurement was updated successfully.';
 
 const isDateInTheFuture = (dateString: string): boolean => {
   const date = Date.parse(dateString);
@@ -109,7 +109,7 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
     DEFAULT_FORM_VALIDITY_STATE,
   );
 
-  const [title, setTitle] = useState(TITLE_ADD_MEASUREMENT);
+  const [title, setTitle] = useState(TITLE_ADD);
   const [measurementId, setMeasurementId] = useState('');
   const [date, setDate] = useState<string>(getCurrentDate());
   const [note, setNote] = useState<string>('');
@@ -156,7 +156,7 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
   const validateForm = (): boolean => {
     const dateValid = isValidDateString(date) && !isDateInTheFuture(date);
     const noteValid = true;
-    const weightValid = isNumber(weight) && isLargerThan(parseFloat(weight), 0);
+    const weightValid = isNumber(weight) && isMoreThan(parseFloat(weight), 0);
     const bodyFatValid = isValidPercentageString(bodyFat, true);
     const waterValid = isValidPercentageString(water, true);
     const muscleMassValid = isValidPercentageString(muscleMass, true);
@@ -188,46 +188,44 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    if (props.existingMeasurement) {
-      setTitle(TITLE_EDIT_MEASUREMENT);
-      setMeasurementId(props.existingMeasurement.measurementId);
-      setDate(parseDate(props.existingMeasurement.date));
-      setNote(props.existingMeasurement.note ? props.existingMeasurement.note : '');
+    if (props.existingItem) {
+      setTitle(TITLE_EDIT);
+      setMeasurementId(props.existingItem.measurementId);
+      setDate(parseDate(props.existingItem.date));
+      setNote(props.existingItem.note ? props.existingItem.note : '');
       setWeight(
-        props.existingMeasurement.measurements?.weight
-          ? props.existingMeasurement.measurements.weight + ''
-          : '',
+        props.existingItem.measurements?.weight ? props.existingItem.measurements.weight + '' : '',
       );
       setBodyFat(
-        props.existingMeasurement.measurements?.bodyFatPercentage
-          ? props.existingMeasurement.measurements.bodyFatPercentage + ''
+        props.existingItem.measurements?.bodyFatPercentage
+          ? props.existingItem.measurements.bodyFatPercentage + ''
           : '',
       );
       setWater(
-        props.existingMeasurement.measurements?.waterPercentage
-          ? props.existingMeasurement.measurements.waterPercentage + ''
+        props.existingItem.measurements?.waterPercentage
+          ? props.existingItem.measurements.waterPercentage + ''
           : '',
       );
       setMuscleMass(
-        props.existingMeasurement.measurements?.muscleMassPercentage
-          ? props.existingMeasurement.measurements.muscleMassPercentage + ''
+        props.existingItem.measurements?.muscleMassPercentage
+          ? props.existingItem.measurements.muscleMassPercentage + ''
           : '',
       );
       setBoneMass(
-        props.existingMeasurement.measurements?.bonePercentage
-          ? props.existingMeasurement.measurements.bonePercentage + ''
+        props.existingItem.measurements?.bonePercentage
+          ? props.existingItem.measurements.bonePercentage + ''
           : '',
       );
       setEnergyExpenditure(
-        props.existingMeasurement.measurements?.energyExpenditure
-          ? props.existingMeasurement.measurements.energyExpenditure + ''
+        props.existingItem.measurements?.energyExpenditure
+          ? props.existingItem.measurements.energyExpenditure + ''
           : '',
       );
     } else {
-      setTitle(TITLE_ADD_MEASUREMENT);
+      setTitle(TITLE_ADD);
       setDate(getCurrentDate());
     }
-  }, [props.existingMeasurement]);
+  }, [props.existingItem]);
 
   useEffect(() => {
     if (isValidated) {
@@ -242,17 +240,13 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
     }
   }, [date, note, weight, bodyFat, water, muscleMass, boneMass, energyExpenditure, isValidated]);
 
-  const addMeasurement = (measurementDto: AddWeightMeasurementRequestDto): void => {
+  const addItem = (dto: AddWeightMeasurementRequestDto): void => {
     WeightMeasurementsService.getInstance()
-      .addMeasurement(measurementDto)
+      .addMeasurement(dto)
       .then(() => {
         dispatch(
           toasterActions.addMessage(
-            new ToastMsg(
-              cilBalanceScale,
-              TOAST_TITLE_ADD_MEASUREMENT_DEFAULT,
-              TOAST_MESSAGE_ADD_MEASUREMENT_SUCCESSFUL,
-            ),
+            new ToastMsg(cilBalanceScale, TOAST_TITLE_ADD_DEFAULT, TOAST_MESSAGE_ADD_SUCCESSFUL),
           ),
         );
         props.onSaveHandler();
@@ -261,25 +255,19 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
       .catch((err) => {
         console.error(err);
         dispatch(
-          toasterActions.addMessage(
-            new ToastMsg(cilWarning, TOAST_TITLE_ADD_MEASUREMENT_ERROR, err.message),
-          ),
+          toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_ADD_ERROR, err.message)),
         );
         setIsAddButtonDisabled(false);
       });
   };
 
-  const editMeasurement = (measurementDto: EditWeightMeasurementRequestDto): void => {
+  const editItem = (dto: EditWeightMeasurementRequestDto): void => {
     WeightMeasurementsService.getInstance()
-      .editMeasurement(measurementDto)
+      .editMeasurement(dto)
       .then(() => {
         dispatch(
           toasterActions.addMessage(
-            new ToastMsg(
-              cilBalanceScale,
-              TOAST_TITLE_EDIT_MEASUREMENT_DEFAULT,
-              TOAST_MESSAGE_EDIT_MEASUREMENT_SUCCESSFUL,
-            ),
+            new ToastMsg(cilBalanceScale, TOAST_TITLE_EDIT_DEFAULT, TOAST_MESSAGE_EDIT_SUCCESSFUL),
           ),
         );
         props.onSaveHandler();
@@ -288,21 +276,19 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
       .catch((err) => {
         console.error(err);
         dispatch(
-          toasterActions.addMessage(
-            new ToastMsg(cilWarning, TOAST_TITLE_EDIT_MEASUREMENT_ERROR, err.message),
-          ),
+          toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_EDIT_ERROR, err.message)),
         );
         setIsAddButtonDisabled(false);
       });
   };
 
-  const onAddMeasurementHandler = (): void => {
+  const onAddHandler = (): void => {
     const isFormValid = validateForm();
 
     if (isFormValid) {
       setIsAddButtonDisabled(true);
-      if (!props.existingMeasurement) {
-        addMeasurement(
+      if (!props.existingItem) {
+        addItem(
           buildAddWeightMeasurementRequestDto(
             Date.parse(date),
             note,
@@ -315,7 +301,7 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
           ),
         );
       } else {
-        editMeasurement(
+        editItem(
           buildEditWeightMeasurementRequestDto(
             measurementId,
             Date.parse(date),
@@ -359,7 +345,7 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
 
   const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    onAddMeasurementHandler();
+    onAddHandler();
   };
 
   return (
@@ -368,7 +354,7 @@ const AddEditWeightMeasurementForm: React.FC<Props> = (props) => {
       visible={props.visible}
       size="lg"
       primaryButtonText="Save Measurement"
-      primaryButtonHandler={onAddMeasurementHandler}
+      primaryButtonHandler={onAddHandler}
       primaryButtonDisabled={isAddButtonDisabled}
       showSecondaryButton={true}
       secondaryButtonColor="danger"

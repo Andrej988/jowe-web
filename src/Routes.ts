@@ -1,6 +1,7 @@
 import React from 'react';
 import WeightChartsForm from './views/weight/WeightChartsForm';
 import WeightMeasurementsForm from './views/weight/WeightMeasurementsForm';
+import MealRecipesForm from './views/meals/MealRecipesForm';
 
 const WeightOverviewForm = React.lazy(
   async () => await import('./views/weight/WeightOverviewForm'),
@@ -13,6 +14,8 @@ const Routes = [
   { path: '/weight/overview', name: 'Weight Overview', element: WeightOverviewForm },
   { path: '/weight/measurements', name: 'Weight Measurements', element: WeightMeasurementsForm },
   { path: '/weight/charts', name: 'Weight Charts', element: WeightChartsForm },
+  { path: '/meals', name: 'Meals', element: MealRecipesForm },
+  { path: '/meals/recipes', name: 'Recipes', element: MealRecipesForm },
   { path: '*', name: 'Overview', element: Page404 },
 ];
 

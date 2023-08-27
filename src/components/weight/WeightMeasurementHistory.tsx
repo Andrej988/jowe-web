@@ -206,7 +206,7 @@ const WeightMeasurementHistory: React.FC<Props> = (props) => {
 
       <AddEditWeightMeasurementForm
         visible={addEditMeasurementsModalVisible}
-        existingMeasurement={currentMeasurement}
+        existingItem={currentMeasurement}
         onCloseHandler={closeAddEditMeasurementFormHandler}
         onSaveHandler={addOrEditMeasurementHandler}
       />

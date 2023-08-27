@@ -7,6 +7,7 @@ import {
   cilBalanceScale,
   cilBike,
   cilHospital,
+  cilFastfood,
 } from '@coreui/icons';
 import { CNavItem, CNavTitle } from '@coreui/react';
 
@@ -68,6 +69,16 @@ const Navigation: NavigationType = [
       color: 'warning',
       text: 'SOON',
     },
+  },
+  {
+    component: CNavTitle,
+    name: 'Meal Planner',
+  },
+  {
+    component: CNavItem,
+    name: 'Recipes',
+    to: '/meals/recipes',
+    icon: <CIcon icon={cilFastfood} customClassName="nav-icon" />,
   },
 ];
 
