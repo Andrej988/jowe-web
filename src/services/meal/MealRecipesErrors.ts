@@ -1,31 +1,31 @@
-export class AddMeasurementError extends Error {
+export class AddRecipeError extends Error {
   constructor(message: string, stack: string | undefined = undefined) {
     super(message);
-    this.name = 'AddMeasurementError';
+    this.name = 'AddRecipeError';
     this.stack = stack;
   }
 }
 
-export class EditMeasurementError extends Error {
+export class EditRecipeError extends Error {
   constructor(message: string, stack: string | undefined = undefined) {
     super(message);
-    this.name = 'EditMeasurementError';
+    this.name = 'EditRecipeError';
     this.stack = stack;
   }
 }
 
-export class DeleteMeasurementError extends Error {
+export class DeleteRecipeError extends Error {
   constructor(message: string, stack: string | undefined = undefined) {
     super(message);
-    this.name = 'DeleteMeasurementError';
+    this.name = 'DeleteRecipeError';
     this.stack = stack;
   }
 }
 
-export class MeasurementsRetrievalError extends Error {
+export class RecipesRetrievalError extends Error {
   constructor(message: string, stack: string | undefined = undefined) {
     super(message);
-    this.name = 'MeasurementsRetrievalError';
+    this.name = 'RecipesRetrievalError';
     this.stack = stack;
   }
 }

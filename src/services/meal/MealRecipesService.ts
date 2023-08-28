@@ -3,25 +3,22 @@ import AccessTokenRetrievalService, {
   type AccessTokenRetrieval,
 } from '../auth/AccessTokenRetrievalService';
 import axios, { type AxiosRequestConfig } from 'axios';
-import store, { weightActions } from 'src/store/Store';
+import store, { mealPlannerActions } from 'src/store/Store';
 import {
-  AddMeasurementError,
-  DeleteMeasurementError,
-  EditMeasurementError,
-  MeasurementsRetrievalError,
-} from './WeightMeasurementErrors';
+  AddRecipeError,
+  DeleteRecipeError,
+  EditRecipeError,
+  RecipesRetrievalError,
+} from './MealRecipesErrors';
 import {
-  AddWeightMeasurementRequestDto,
-  EditWeightMeasurementRequestDto,
-} from 'src/model/weight/WeightMeasurementDtos';
-import {
-  buildMeasurementFromResponseDto,
-  buildMeasurementsFromResponseDto,
-} from 'src/model/weight/WeightMeasurementsMapping';
-import { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
+  buildRecipeFromResponseDto,
+  buildRecipesFromResponseDto,
+} from 'src/model/meals/MealRecipesMapping';
+import { AddMealRecipeRequestDto, EditMealRecipeRequestDto } from 'src/model/meals/MealRecipeDtos';
+import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 
-export default class WeightMeasurementsService {
-  private static readonly instance: WeightMeasurementsService = new WeightMeasurementsService();
+export default class MealRecipesService {
+  private static readonly instance: MealRecipesService = new MealRecipesService();
 
   private readonly tokenRetrievalService: AccessTokenRetrieval;
   private readonly SERVICE_URL: string | undefined;
@@ -31,7 +28,7 @@ export default class WeightMeasurementsService {
     this.SERVICE_URL = SERVICE_URL;
   }
 
-  public static getInstance(): WeightMeasurementsService {
+  public static getInstance(): MealRecipesService {
     return this.instance;
   }
 
@@ -39,7 +36,7 @@ export default class WeightMeasurementsService {
     if (this.SERVICE_URL === undefined) {
       throw Error('Missing service URL configuration!');
     }
-    return `${this.SERVICE_URL}/weight/measurements`;
+    return `${this.SERVICE_URL}/meal/recipes`;
   }
 
   private buildConfigWithAuthHeader(): AxiosRequestConfig {
@@ -51,7 +48,7 @@ export default class WeightMeasurementsService {
     };
   }
 
-  async retrieveMeasurements(): Promise<void> {
+  async retrieveRecipes(): Promise<void> {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
@@ -59,14 +56,14 @@ export default class WeightMeasurementsService {
       axios
         .get(serviceUrl, config)
         .then((response) => {
-          const measurements = buildMeasurementsFromResponseDto(response.data.measurements);
-          store.dispatch(weightActions.setMeasurements(measurements.measurements));
+          const recipes = buildRecipesFromResponseDto(response.data.recipes);
+          store.dispatch(mealPlannerActions.setRecipes(recipes.recipes));
         })
         .catch((err) => {
-          console.error('Error while retrieving measurements', err);
+          console.error('Error while retrieving recipes', err);
           if (err.response !== undefined) {
             console.error(
-              'Error while inserting measurement',
+              'Error while retrieving recipes',
               err.response.data.errorMsg !== undefined
                 ? err.response.data.errorMsg
                 : err.response.data !== undefined
@@ -76,36 +73,31 @@ export default class WeightMeasurementsService {
           }
 
           reject(
-            new MeasurementsRetrievalError(
-              'Error during retrieval of weight measurements!',
-              err.stack,
-            ),
+            new RecipesRetrievalError('Error during retrieval of weight measurements!', err.stack),
           );
         });
     });
   }
 
-  async addMeasurement(
-    measurementDto: AddWeightMeasurementRequestDto,
-  ): Promise<UIWeightMeasurement> {
+  async addRecipe(dto: AddMealRecipeRequestDto): Promise<UIMealRecipe> {
     const serviceUrl = this.getServiceURL();
     const config = this.buildConfigWithAuthHeader();
 
-    const requestBody = JSON.stringify(measurementDto);
+    const requestBody = JSON.stringify(dto);
 
     return await new Promise((resolve, reject) => {
       axios
         .post(serviceUrl, requestBody, config)
         .then((response) => {
-          const measurement = buildMeasurementFromResponseDto(response.data.measurement);
-          store.dispatch(weightActions.addMeasurement(measurement));
-          resolve(measurement);
+          const recipe = buildRecipeFromResponseDto(response.data.recipe);
+          store.dispatch(mealPlannerActions.addRecipe(recipe));
+          resolve(recipe);
         })
         .catch((err) => {
-          console.error('Error while inserting measurement', err);
+          console.error('Error while inserting recipe', err);
           if (err.response !== undefined) {
             console.error(
-              'Error while inserting measurement',
+              'Error while inserting recipe',
               err.response.data.errorMsg !== undefined
                 ? err.response.data.errorMsg
                 : err.response.data !== undefined
@@ -114,34 +106,30 @@ export default class WeightMeasurementsService {
             );
           }
 
-          reject(
-            new AddMeasurementError('Error during insertion of weight measurement!', err.stack),
-          );
+          reject(new AddRecipeError('Error during insertion of meal recipe!', err.stack));
         });
     });
   }
 
-  async editMeasurement(
-    measurementDto: EditWeightMeasurementRequestDto,
-  ): Promise<UIWeightMeasurement> {
-    const serviceUrl = this.getServiceURL() + `/${measurementDto.measurement.measurementId}`;
+  async editRecipe(dto: EditMealRecipeRequestDto): Promise<UIMealRecipe> {
+    const serviceUrl = this.getServiceURL() + `/${dto.recipe.recipeId}`;
     const config = this.buildConfigWithAuthHeader();
 
-    const requestBody = JSON.stringify(measurementDto);
+    const requestBody = JSON.stringify(dto);
 
     return await new Promise((resolve, reject) => {
       axios
         .put(serviceUrl, requestBody, config)
         .then((response) => {
-          const measurement = buildMeasurementFromResponseDto(response.data.measurement);
-          store.dispatch(weightActions.updateMeasurement(measurement));
-          resolve(measurement);
+          const recipe = buildRecipeFromResponseDto(response.data.recipe);
+          store.dispatch(mealPlannerActions.updateRecipe(recipe));
+          resolve(recipe);
         })
         .catch((err) => {
-          console.error('Error while editing measurement', err);
+          console.error('Error while editing recipe', err);
           if (err.response !== undefined) {
             console.error(
-              'Error while editing measurement',
+              'Error while editing recipe',
               err.response.data.errorMsg !== undefined
                 ? err.response.data.errorMsg
                 : err.response.data !== undefined
@@ -150,29 +138,27 @@ export default class WeightMeasurementsService {
             );
           }
 
-          reject(
-            new EditMeasurementError('Error during editing of weight measurement!', err.stack),
-          );
+          reject(new EditRecipeError('Error during editing of meal recipe!', err.stack));
         });
     });
   }
 
-  async deleteMeasurement(measurementId: string): Promise<boolean> {
-    const serviceUrl = this.getServiceURL() + `/${measurementId}`;
+  async deleteRecipe(recipeId: string): Promise<boolean> {
+    const serviceUrl = this.getServiceURL() + `/${recipeId}`;
     const config = this.buildConfigWithAuthHeader();
 
     return await new Promise((resolve, reject) => {
       axios
         .delete(serviceUrl, config)
         .then(() => {
-          store.dispatch(weightActions.removeMeasurement(measurementId));
+          store.dispatch(mealPlannerActions.removeRecipe(recipeId));
           resolve(true);
         })
         .catch((err) => {
-          console.error('Error while deleting measurement', err);
+          console.error('Error while deleting recipe', err);
           if (err.response !== undefined) {
             console.error(
-              'Error while deleting measurement',
+              'Error while deleting recipe',
               err.response.data.errorMsg !== undefined
                 ? err.response.data.errorMsg
                 : err.response.data !== undefined
@@ -181,9 +167,7 @@ export default class WeightMeasurementsService {
             );
           }
 
-          reject(
-            new DeleteMeasurementError('Error during deletion of weight measurement!', err.stack),
-          );
+          reject(new DeleteRecipeError('Error during deletion of meal recipe!', err.stack));
         });
     });
   }

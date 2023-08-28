@@ -10,7 +10,7 @@ import {
 interface Props extends PropsWithChildren {
   visible: boolean;
   onCloseHandler: () => void;
-  measurement: UIWeightMeasurement | undefined;
+  item: UIWeightMeasurement | undefined;
 }
 
 const DETAIL_NOT_AVAILABLE_STRING = '/';
@@ -27,18 +27,15 @@ const WeightMeasurementDetailsForm: React.FC<Props> = (props) => {
     >
       <div>
         <p>
-          Measurement ID: {props.measurement?.measurementId}
+          Measurement ID: {props.item?.measurementId}
           <br />
-          Date: {toFormattedDateTimeString(props.measurement?.date)}
+          Date: {toFormattedDateTimeString(props.item?.date)}
           <br />
-          Note:{' '}
-          {props.measurement?.note !== undefined
-            ? props.measurement?.note
-            : DETAIL_NOT_AVAILABLE_STRING}
+          Note: {props.item?.note !== undefined ? props.item?.note : DETAIL_NOT_AVAILABLE_STRING}
           <br />
           Last modified:{' '}
-          {props.measurement?.lastModified !== undefined
-            ? toFormattedDateTimeStringFromTimestamp(props.measurement?.lastModified)
+          {props.item?.lastModified !== undefined
+            ? toFormattedDateTimeStringFromTimestamp(props.item?.lastModified)
             : DETAIL_NOT_AVAILABLE_STRING}{' '}
           {}
         </p>
@@ -46,38 +43,38 @@ const WeightMeasurementDetailsForm: React.FC<Props> = (props) => {
         <ul>
           <li>
             Weight:{' '}
-            {props.measurement?.measurements.weight !== undefined
-              ? `${props.measurement?.measurements.weight} kg`
+            {props.item?.measurements.weight !== undefined
+              ? `${props.item?.measurements.weight} kg`
               : DETAIL_NOT_AVAILABLE_STRING}
           </li>
           <li>
             Body Fat:{' '}
-            {props.measurement?.measurements.bodyFatPercentage !== undefined
-              ? `${props.measurement?.measurements.bodyFatPercentage} %`
+            {props.item?.measurements.bodyFatPercentage !== undefined
+              ? `${props.item?.measurements.bodyFatPercentage} %`
               : DETAIL_NOT_AVAILABLE_STRING}
           </li>
           <li>
             Body Water:{' '}
-            {props.measurement?.measurements.waterPercentage !== undefined
-              ? `${props.measurement?.measurements.waterPercentage} %`
+            {props.item?.measurements.waterPercentage !== undefined
+              ? `${props.item?.measurements.waterPercentage} %`
               : DETAIL_NOT_AVAILABLE_STRING}
           </li>
           <li>
             Muscle Mass:{' '}
-            {props.measurement?.measurements.muscleMassPercentage !== undefined
-              ? `${props.measurement?.measurements.muscleMassPercentage} %`
+            {props.item?.measurements.muscleMassPercentage !== undefined
+              ? `${props.item?.measurements.muscleMassPercentage} %`
               : DETAIL_NOT_AVAILABLE_STRING}
           </li>
           <li>
             Bone Mass:{' '}
-            {props.measurement?.measurements.bonePercentage !== undefined
-              ? `${props.measurement?.measurements.bonePercentage} %`
+            {props.item?.measurements.bonePercentage !== undefined
+              ? `${props.item?.measurements.bonePercentage} %`
               : DETAIL_NOT_AVAILABLE_STRING}
           </li>
           <li>
             Energy Expenditure:{' '}
-            {props.measurement?.measurements.energyExpenditure !== undefined
-              ? `${props.measurement?.measurements.energyExpenditure} kcal`
+            {props.item?.measurements.energyExpenditure !== undefined
+              ? `${props.item?.measurements.energyExpenditure} kcal`
               : DETAIL_NOT_AVAILABLE_STRING}
           </li>
         </ul>

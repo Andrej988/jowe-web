@@ -33,21 +33,21 @@ interface Props {
   title: string;
   subtitle?: string;
   label: string;
-  measurements: UISimpleWeightMeasurements;
+  items: UISimpleWeightMeasurements;
 }
 
 const WeightMeasurementChart: React.FC<Props> = (props) => {
   const [timeframe, setTimeframe] = useState(TIMEFRAME_ALL);
-  const [measurements, setMeasurements] = useState(props.measurements);
+  const [measurements, setMeasurements] = useState(props.items);
 
   const onTimeframeChangeHandler = (value: string): void => {
     setTimeframe(value);
   };
 
   useEffect(() => {
-    const newMeasurements = filterMeasurements(props.measurements, timeframe);
+    const newMeasurements = filterMeasurements(props.items, timeframe);
     setMeasurements(newMeasurements);
-  }, [props.measurements, timeframe]);
+  }, [props.items, timeframe]);
 
   return (
     <Fragment>

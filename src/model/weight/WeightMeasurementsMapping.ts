@@ -2,36 +2,36 @@ import { UIWeightMeasurement, UIWeightMeasurements } from './UIWeightMeasurement
 import { WeightMeasurementResponseDto } from './WeightMeasurementDtos';
 
 export const buildMeasurementFromResponseDto = (
-  measurementDto: WeightMeasurementResponseDto,
+  dto: WeightMeasurementResponseDto,
 ): UIWeightMeasurement => {
   return {
-    userId: measurementDto.userId,
-    measurementId: measurementDto.measurementId,
-    date: new Date(measurementDto.date),
-    timestamp: measurementDto.timestamp,
-    note: measurementDto.note,
-    lastModified: measurementDto.lastModified,
+    userId: dto.userId,
+    measurementId: dto.measurementId,
+    date: new Date(dto.date),
+    timestamp: dto.timestamp,
+    note: dto.note,
+    lastModified: dto.lastModified,
     measurements: {
-      weight: measurementDto.measurements.weight,
-      bodyFatPercentage: measurementDto.measurements.bodyFatPercentage,
-      waterPercentage: measurementDto.measurements.waterPercentage,
-      muscleMassPercentage: measurementDto.measurements.muscleMassPercentage,
-      bonePercentage: measurementDto.measurements.bonePercentage,
-      energyExpenditure: measurementDto.measurements.energyExpenditure,
+      weight: dto.measurements.weight,
+      bodyFatPercentage: dto.measurements.bodyFatPercentage,
+      waterPercentage: dto.measurements.waterPercentage,
+      muscleMassPercentage: dto.measurements.muscleMassPercentage,
+      bonePercentage: dto.measurements.bonePercentage,
+      energyExpenditure: dto.measurements.energyExpenditure,
     },
   };
 };
 
 export const buildMeasurementsFromResponseDto = (
-  measurementsDto: WeightMeasurementResponseDto[],
+  dto: WeightMeasurementResponseDto[],
 ): UIWeightMeasurements => {
   const measurements: UIWeightMeasurements = {
     measurements: [],
   };
 
-  if (measurementsDto.length > 0) {
-    measurementsDto.forEach((measurement) => {
-      measurements.measurements.push(buildMeasurementFromResponseDto(measurement));
+  if (dto.length > 0) {
+    dto.forEach((item) => {
+      measurements.measurements.push(buildMeasurementFromResponseDto(item));
     });
   }
 
