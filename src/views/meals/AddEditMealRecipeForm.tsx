@@ -71,6 +71,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [ingredients, setIngredients] = useState<string>('');
   const [preparation, setPreparation] = useState<string>('');
   const [preparationTime, setPreparationTime] = useState<number>(DEFAULT_PREPARATION_TIME_VALUE);
+  const [favorite, setFavorite] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const onNameInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -115,6 +116,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       setIngredients(jsonRemoveEscape(props.existingItem.ingredients));
       setPreparation(jsonRemoveEscape(props.existingItem.preparation));
       setPreparationTime(props.existingItem.preparationTime);
+      setFavorite(props.existingItem.favorite);
     } else {
       setTitle(TITLE_ADD);
     }
@@ -182,9 +184,18 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     if (isFormValid) {
       setIsAddButtonDisabled(true);
       if (!props.existingItem) {
-        addItem(buildAddMealRecipeRequestDto(name, ingredients, preparation, prepTime));
+        addItem(buildAddMealRecipeRequestDto(name, ingredients, preparation, prepTime, favorite));
       } else {
-        editItem(buildEditMealRecipeRequestDto(recipeId, name, ingredients, preparation, prepTime));
+        editItem(
+          buildEditMealRecipeRequestDto(
+            recipeId,
+            name,
+            ingredients,
+            preparation,
+            prepTime,
+            favorite,
+          ),
+        );
       }
     }
   };
@@ -196,6 +207,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setIngredients('');
     setPreparation('');
     setPreparationTime(DEFAULT_PREPARATION_TIME_VALUE);
+    setFavorite(false);
     setFormValidityState(DEFAULT_FORM_VALIDITY_STATE);
     setIsAddButtonDisabled(false);
   };

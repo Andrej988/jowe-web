@@ -69,7 +69,7 @@ const DeleteMealRecipeForm: React.FC<Props> = (props) => {
       <div>
         <p>Are you sure you want to delete the following recipe?</p>
         <p>
-          Measurement ID: {props.recipe?.recipeId}
+          Recipe ID: {props.recipe?.recipeId}
           <br />
           Name: {props.recipe?.name}
         </p>

@@ -23,6 +23,11 @@ import AddEditMealRecipeForm from 'src/views/meals/AddEditMealRecipeForm';
 import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 import DeleteMealRecipeForm from 'src/views/meals/DeleteMealRecipeForm';
 import MealRecipeDetailsForm from 'src/views/meals/MealRecipeDetailsForm';
+import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import MealRecipesService from 'src/services/meal/MealRecipesService';
+import { buildEditMealRecipeRequestDto } from 'src/model/meals/MealRecipeDtos';
 
 interface Props {
   title: string;
@@ -84,6 +89,23 @@ const MealRecipes: React.FC<Props> = (props) => {
     console.log(id);
   };
 
+  const toggleFavoriteHandler = (item: UIMealRecipe): void => {
+    console.log('item', item);
+    const updatedItem = buildEditMealRecipeRequestDto(
+      item.recipeId,
+      item.name,
+      item.ingredients,
+      item.preparation,
+      item.preparationTime,
+      !item.favorite,
+    );
+    MealRecipesService.getInstance()
+      .editRecipe(updatedItem)
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <Fragment>
       <CRow>
@@ -95,6 +117,7 @@ const MealRecipes: React.FC<Props> = (props) => {
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
                   <CTableRow>
+                    <CTableHeaderCell className="text-center"></CTableHeaderCell>
                     <CTableHeaderCell>Recipe</CTableHeaderCell>
                     <CTableHeaderCell>Preparation time</CTableHeaderCell>
                     <CTableHeaderCell className="text-center">Actions</CTableHeaderCell>
@@ -108,6 +131,17 @@ const MealRecipes: React.FC<Props> = (props) => {
                       onClick={onRowClickHandler.bind(null, item.recipeId)}
                       style={{ cursor: 'pointer' }}
                     >
+                      <CTableDataCell className="text-center">
+                        <FontAwesomeIcon
+                          icon={item.favorite ? faStarSolid : faStarRegular}
+                          color="gold"
+                          size="lg"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavoriteHandler(item);
+                          }}
+                        />
+                      </CTableDataCell>
                       <CTableDataCell>{item.name}</CTableDataCell>
                       <CTableDataCell>{item.preparationTime} min</CTableDataCell>
                       <CTableDataCell className="text-center">

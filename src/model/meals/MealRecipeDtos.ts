@@ -9,6 +9,7 @@ export interface MealRecipeRequestDto {
   ingredients: string;
   preparation: string;
   preparationTime: number;
+  favorite: boolean;
 }
 
 export interface MealRecipeWithIdRequestDto extends MealRecipeRequestDto {
@@ -30,6 +31,7 @@ export interface MealRecipeResponseDto {
   ingredients: string;
   preparation: string;
   preparationTime: number;
+  favorite: boolean;
   created: number;
   lastModified: number;
 }
@@ -43,6 +45,7 @@ export const buildAddMealRecipeRequestDto = (
   ingredients: string,
   preparation: string,
   preparationTime: number,
+  favorite: boolean,
 ): AddMealRecipeRequestDto => {
   return {
     recipe: {
@@ -50,6 +53,7 @@ export const buildAddMealRecipeRequestDto = (
       ingredients: jsonEscape(ingredients),
       preparation: jsonEscape(preparation),
       preparationTime,
+      favorite,
     },
   };
 };
@@ -60,6 +64,7 @@ export const buildEditMealRecipeRequestDto = (
   ingredients: string,
   preparation: string,
   preparationTime: number,
+  favorite: boolean,
 ): EditMealRecipeRequestDto => {
   return {
     recipe: {
@@ -68,6 +73,7 @@ export const buildEditMealRecipeRequestDto = (
       ingredients: jsonEscape(ingredients),
       preparation: jsonEscape(preparation),
       preparationTime,
+      favorite,
     },
   };
 };

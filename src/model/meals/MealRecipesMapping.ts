@@ -9,6 +9,7 @@ export const buildRecipeFromResponseDto = (dto: MealRecipeResponseDto): UIMealRe
     ingredients: dto.ingredients,
     preparation: dto.preparation,
     preparationTime: dto.preparationTime,
+    favorite: dto.favorite,
     created: dto.created,
     lastModified: dto.lastModified,
   };

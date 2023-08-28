@@ -5,6 +5,7 @@ export interface UIMealRecipe {
   ingredients: string;
   preparation: string;
   preparationTime: number;
+  favorite: boolean;
   created: number;
   lastModified: number;
 }
