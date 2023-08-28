@@ -34,7 +34,13 @@ const MealRecipesForm: React.FC = () => {
 
   return (
     <Fragment>
-      <MealRecipes title="Recipes" items={recipes.slice()} showDeleteButton={true} />
+      <MealRecipes
+        title="Recipes"
+        items={recipes.slice()}
+        showDetailsButton={true}
+        showEditButton={true}
+        showDeleteButton={true}
+      />
     </Fragment>
   );
 };

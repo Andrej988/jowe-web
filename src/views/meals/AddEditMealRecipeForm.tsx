@@ -8,7 +8,7 @@ import React, {
 import { CCol, CForm, CRow } from '@coreui/react';
 import Modal from 'src/components/utils/Modal';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
-import { cilBurger, cilClock, cilFastfood, cilNotes, cilWarning } from '@coreui/icons';
+import { cilBasket, cilClock, cilFastfood, cilNotes, cilPencil, cilWarning } from '@coreui/icons';
 import { isMoreThan, isLessThanOrEquals, isNotEmpty } from 'src/services/utils/Validators';
 import { useDispatch } from 'react-redux';
 import { ToastMsg, toasterActions } from 'src/store/Store';
@@ -21,6 +21,7 @@ import {
 } from 'src/model/meals/MealRecipeDtos';
 import FormTextAreaWithFeedback from 'src/components/utils/FormTextAreaWithFeedback';
 import MealRecipesService from 'src/services/meal/MealRecipesService';
+import { jsonRemoveEscape } from 'src/services/utils/Json';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -111,8 +112,8 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       setTitle(TITLE_EDIT);
       setRecipeId(props.existingItem.recipeId);
       setName(props.existingItem.name);
-      setIngredients(props.existingItem.ingredients);
-      setPreparation(props.existingItem.preparation);
+      setIngredients(jsonRemoveEscape(props.existingItem.ingredients));
+      setPreparation(jsonRemoveEscape(props.existingItem.preparation));
       setPreparationTime(props.existingItem.preparationTime);
     } else {
       setTitle(TITLE_ADD);
@@ -234,7 +235,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
           <CCol sm={12}>
             <FormInputGroupWithFeedback
               id="name"
-              icon={cilClock}
+              icon={cilPencil}
               type="text"
               label="Name"
               normalLabel={USE_NORMAL_LABELS}
@@ -249,9 +250,10 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
         <CRow>
           <CCol sm={12}>
             <FormTextAreaWithFeedback
+              className="mt-2"
               id="ingredients"
               rows={5}
-              icon={cilNotes}
+              icon={cilBasket}
               label="Ingredients"
               normalLabel={USE_NORMAL_LABELS}
               autoComplete="note"
@@ -267,7 +269,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
               className="mt-2"
               id="preparation"
               rows={10}
-              icon={cilFastfood}
+              icon={cilNotes}
               label="Preparation"
               normalLabel={USE_NORMAL_LABELS}
               autoComplete="preparation"
@@ -283,7 +285,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
             <FormInputGroupWithFeedback
               className="mt-2"
               id="preparationTime"
-              icon={cilBurger}
+              icon={cilClock}
               type="number"
               label="Preparation time in minutes"
               normalLabel={USE_NORMAL_LABELS}

@@ -76,7 +76,9 @@ const WeightOverviewForm: React.FC = () => {
       <WeightMeasurementChart title="Weight" />
       <WeightMeasurementHistory
         title="Latest Measurements (5)"
-        measurements={getMeasurementsSlice(5)}
+        items={getMeasurementsSlice(5)}
+        showDetailsButton={true}
+        showEditButton={false}
         showDeleteButton={false}
       />
     </Fragment>

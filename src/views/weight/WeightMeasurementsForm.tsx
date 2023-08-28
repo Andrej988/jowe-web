@@ -40,7 +40,9 @@ const WeightMeasurementsForm: React.FC = () => {
     <Fragment>
       <WeightMeasurementHistory
         title="History of Measurements"
-        measurements={measurements.slice()}
+        items={measurements.slice()}
+        showDetailsButton={true}
+        showEditButton={true}
         showDeleteButton={true}
       />
     </Fragment>

@@ -14,53 +14,70 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CTooltip,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { cilPencil } from '@coreui/icons';
+import { cilInfo, cilPencil, cilTrash } from '@coreui/icons';
 
-//import WeightMeasurementDetailsForm from 'src/views/weight/WeightMeasurementDetailsForm';
-//import DeleteWeightMeasurementForm from 'src/views/weight/DeleteWeightMeasurementForm';
-//import { UIWeightMeasurement } from 'src/model/weight/UIWeightMeasurements';
 import AddEditMealRecipeForm from 'src/views/meals/AddEditMealRecipeForm';
 import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
+import DeleteMealRecipeForm from 'src/views/meals/DeleteMealRecipeForm';
+import MealRecipeDetailsForm from 'src/views/meals/MealRecipeDetailsForm';
 
 interface Props {
   title: string;
   items: UIMealRecipe[];
+  showDetailsButton: boolean;
+  showEditButton: boolean;
   showDeleteButton: boolean;
 }
 
 const MealRecipes: React.FC<Props> = (props) => {
-  const [addEditRecipeModalVisible, setAddEditRecipeModalVisibility] = useState(false);
-  //const [measurementDetailsModalVisible, setMeasurmentDetailsModalVisibility] = useState(false);
-  //const [deleteMeasurementModalVisible, setDeleteMeasurementModalVisibility] = useState(false);
+  const [addEditModalVisible, setAddEditModalVisibility] = useState(false);
+  const [detailsModalVisible, setDetailsModalVisibility] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisibility] = useState(false);
   const [currentItem, setCurrentItem] = useState<UIMealRecipe>();
 
+  const onInfoHandler = (id: string): void => {
+    setCurrentItem(props.items.filter((x) => x.recipeId === id)[0]);
+    setDetailsModalVisibility(true);
+  };
+
+  const onDeleteHandler = (id: string): void => {
+    setCurrentItem(props.items.filter((x) => x.recipeId === id)[0]);
+    setDeleteModalVisibility(true);
+  };
+
+  const openEditMeasurementModalHandler = (id: string): void => {
+    setCurrentItem(props.items.filter((x) => x.recipeId === id)[0]);
+    setAddEditModalVisibility(true);
+  };
+
   const openAddRecipeModalHandler = (): void => {
-    setAddEditRecipeModalVisibility(true);
+    setAddEditModalVisibility(true);
   };
 
   const closeAddEditRecipeFormHandler = (): void => {
-    setAddEditRecipeModalVisibility(false);
+    setAddEditModalVisibility(false);
     setCurrentItem(undefined);
   };
 
   const addOrEditRecipeHandler = (): void => {
-    setAddEditRecipeModalVisibility(false);
+    setAddEditModalVisibility(false);
     setCurrentItem(undefined);
   };
 
-  /*const deleteMeasurementHandler = (): void => {
-    setDeleteMeasurementModalVisibility(false);
+  const deleteRecipeHandler = (): void => {
+    setDeleteModalVisibility(false);
   };
 
-  const closeMeasurementDetailsModalHandler = (): void => {
-    setMeasurmentDetailsModalVisibility(false);
+  const closeDetailsModalHandler = (): void => {
+    setDetailsModalVisibility(false);
   };
 
-  const closeDeleteMeasurementModalHandler = (): void => {
-    setDeleteMeasurementModalVisibility(false);
-  };*/
+  const closeDeleteRecipeModalHandler = (): void => {
+    setDeleteModalVisibility(false);
+  };
 
   const onRowClickHandler = (id: string): void => {
     console.log('clicked');
@@ -80,6 +97,7 @@ const MealRecipes: React.FC<Props> = (props) => {
                   <CTableRow>
                     <CTableHeaderCell>Recipe</CTableHeaderCell>
                     <CTableHeaderCell>Preparation time</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">Actions</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -92,6 +110,50 @@ const MealRecipes: React.FC<Props> = (props) => {
                     >
                       <CTableDataCell>{item.name}</CTableDataCell>
                       <CTableDataCell>{item.preparationTime} min</CTableDataCell>
+                      <CTableDataCell className="text-center">
+                        {props.showDetailsButton ? (
+                          <CTooltip content="Show recipe" animation={false}>
+                            <CButton
+                              color="secondary"
+                              variant="outline"
+                              key={`info_ ${index}`}
+                              onClick={onInfoHandler.bind(null, item.recipeId)}
+                            >
+                              <CIcon icon={cilInfo} />
+                            </CButton>
+                          </CTooltip>
+                        ) : (
+                          ''
+                        )}{' '}
+                        {props.showEditButton ? (
+                          <CTooltip content="Edit recipe" animation={false}>
+                            <CButton
+                              color="secondary"
+                              variant="outline"
+                              key={`edit_ ${index}`}
+                              onClick={openEditMeasurementModalHandler.bind(null, item.recipeId)}
+                            >
+                              <CIcon icon={cilPencil} />
+                            </CButton>
+                          </CTooltip>
+                        ) : (
+                          ''
+                        )}{' '}
+                        {props.showDeleteButton ? (
+                          <CTooltip content="Delete recipe" animation={false}>
+                            <CButton
+                              color="danger"
+                              variant="outline"
+                              key={`delete_ ${index}`}
+                              onClick={onDeleteHandler.bind(null, item.recipeId)}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
+                          </CTooltip>
+                        ) : (
+                          ''
+                        )}
+                      </CTableDataCell>
                     </CTableRow>
                   ))}
                 </CTableBody>
@@ -105,29 +167,25 @@ const MealRecipes: React.FC<Props> = (props) => {
           </CCard>
         </CCol>
       </CRow>
-
       <AddEditMealRecipeForm
-        visible={addEditRecipeModalVisible}
+        visible={addEditModalVisible}
         existingItem={currentItem}
         onCloseHandler={closeAddEditRecipeFormHandler}
         onSaveHandler={addOrEditRecipeHandler}
       />
+      <MealRecipeDetailsForm
+        item={currentItem}
+        visible={detailsModalVisible}
+        onCloseHandler={closeDetailsModalHandler}
+      />
+      <DeleteMealRecipeForm
+        recipe={currentItem}
+        visible={deleteModalVisible}
+        onCloseHandler={closeDeleteRecipeModalHandler}
+        onDeleteHandler={deleteRecipeHandler}
+      />
     </Fragment>
   );
-
-  /*
-  <WeightMeasurementDetailsForm
-        measurement={currentMeasurement}
-        visible={measurementDetailsModalVisible}
-        onCloseHandler={closeMeasurementDetailsModalHandler}
-      />
-      <DeleteWeightMeasurementForm
-        measurement={currentMeasurement}
-        visible={deleteMeasurementModalVisible}
-        onCloseHandler={closeDeleteMeasurementModalHandler}
-        onDeleteHandler={deleteMeasurementHandler}
-      />
-      */
 };
 
 export default MealRecipes;
