@@ -1,14 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { UIListValues } from 'src/model/masterdata/UIListValues';
 import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 
 export interface MealPlannerState {
   recipes: UIMealRecipe[];
+  ingredients: UIListValues[];
   isFetchedMealRecipes: boolean;
+  isFetchedMealIngredients: boolean;
 }
 
 const initialState: MealPlannerState = {
   recipes: [],
+  ingredients: [],
   isFetchedMealRecipes: false,
+  isFetchedMealIngredients: false,
 };
 
 const addRecipe = (state: MealPlannerState, recipe: UIMealRecipe): void => {
@@ -36,6 +41,10 @@ const MealPlannerSlice = createSlice({
       state.recipes = action.payload;
       state.isFetchedMealRecipes = true;
     },
+    setIngredients(state, action) {
+      state.ingredients = action.payload;
+      state.isFetchedMealIngredients = true;
+    },
     addRecipe(state, action) {
       addRecipe(state, action.payload);
     },
@@ -47,7 +56,9 @@ const MealPlannerSlice = createSlice({
     },
     resetState(state) {
       state.recipes = [];
+      state.ingredients = [];
       state.isFetchedMealRecipes = false;
+      state.isFetchedMealIngredients = false;
     },
   },
 });

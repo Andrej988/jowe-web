@@ -1,15 +1,20 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import MealRecipes from 'src/components/meals/MealRecipes';
+import { LISTS_OF_VALUES_MEAL_INGREDIENTS } from 'src/config/ListsOfValues';
 import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
+import ListValuesService from 'src/services/masterdata/ListValuesService';
 import MealRecipesService from 'src/services/meal/MealRecipesService';
 
 import { ReduxStoreState } from 'src/store/Store';
 
 const MealRecipesForm: React.FC = () => {
   const [recipes, setRecipes] = useState<UIMealRecipe[]>([]);
-  const isFetched: boolean = useSelector(
+  const isFetchedRecipes: boolean = useSelector(
     (state: ReduxStoreState) => state.mealPlanner.isFetchedMealRecipes,
+  );
+  const isFetchedIngredients: boolean = useSelector(
+    (state: ReduxStoreState) => state.mealPlanner.isFetchedMealIngredients,
   );
   const recipesState = useSelector((state: ReduxStoreState) => state.mealPlanner.recipes);
 
@@ -20,7 +25,7 @@ const MealRecipesForm: React.FC = () => {
   }, [recipesState]);
 
   useEffect(() => {
-    if (!isFetched) {
+    if (!isFetchedRecipes) {
       MealRecipesService.getInstance()
         .retrieveRecipes()
         .then((res) => {
@@ -30,7 +35,20 @@ const MealRecipesForm: React.FC = () => {
           console.error(err);
         });
     }
-  }, [isFetched]);
+  }, [isFetchedRecipes]);
+
+  useEffect(() => {
+    if (!isFetchedIngredients) {
+      ListValuesService.getInstance()
+        .retrieveValues(LISTS_OF_VALUES_MEAL_INGREDIENTS)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [isFetchedIngredients]);
 
   return (
     <Fragment>
