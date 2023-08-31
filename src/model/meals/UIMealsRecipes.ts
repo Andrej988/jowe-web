@@ -13,3 +13,13 @@ export interface UIMealRecipe {
 export interface UIMealRecipes {
   recipes: UIMealRecipe[];
 }
+
+export interface UIMealIngredient {
+  value: string;
+  quantities?: string[];
+  variations?: string[];
+}
+
+export interface UIMealIngredients {
+  ingredients: UIMealIngredient[];
+}

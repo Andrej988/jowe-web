@@ -3,8 +3,8 @@ import AccessTokenRetrievalService, {
   type AccessTokenRetrieval,
 } from '../auth/AccessTokenRetrievalService';
 import axios, { type AxiosRequestConfig } from 'axios';
-//import store, { mealPlannerActions } from 'src/store/Store';
 import { ListValuesRetrievalError } from './ListValuesErrors';
+import { ListValuesDto } from 'src/model/masterdata/ListValuesDto';
 
 export default class ListValuesService {
   private static readonly instance: ListValuesService = new ListValuesService();
@@ -37,17 +37,16 @@ export default class ListValuesService {
     };
   }
 
-  async retrieveValues(listId: string): Promise<void> {
+  async retrieveValues(listId: string): Promise<ListValuesDto> {
     const serviceUrl = this.getServiceURL() + `/${listId}`;
     const config = this.buildConfigWithAuthHeader();
 
-    await new Promise((_resolve, reject) => {
+    return new Promise((resolve, reject) => {
       axios
         .get(serviceUrl, config)
         .then((response) => {
-          const values = response.data.values;
-          //store.dispatch(mealPlannerActions.setRecipes(recipes.recipes));
-          console.log(values);
+          const values: ListValuesDto = response.data;
+          resolve(values);
         })
         .catch((err) => {
           console.error('Error while retrieving list values', err);

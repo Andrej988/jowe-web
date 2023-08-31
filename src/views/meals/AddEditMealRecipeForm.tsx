@@ -10,8 +10,8 @@ import Modal from 'src/components/utils/Modal';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
 import { cilBasket, cilClock, cilFastfood, cilNotes, cilPencil, cilWarning } from '@coreui/icons';
 import { isMoreThan, isLessThanOrEquals, isNotEmpty } from 'src/services/utils/Validators';
-import { useDispatch } from 'react-redux';
-import { ToastMsg, toasterActions } from 'src/store/Store';
+import { useDispatch, useSelector } from 'react-redux';
+import { ReduxStoreState, ToastMsg, toasterActions } from 'src/store/Store';
 import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 import {
   AddMealRecipeRequestDto,
@@ -22,6 +22,7 @@ import {
 import FormTextAreaWithFeedback from 'src/components/utils/FormTextAreaWithFeedback';
 import MealRecipesService from 'src/services/meal/MealRecipesService';
 import { jsonRemoveEscape } from 'src/services/utils/Json';
+import FormSelectGroupWithFeedbackEnhanced from 'src/components/utils/FormSelectGroupWithFeedbackEnhanced';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -73,6 +74,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [preparationTime, setPreparationTime] = useState<number>(DEFAULT_PREPARATION_TIME_VALUE);
   const [favorite, setFavorite] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const ingredientsListValues = useSelector(
+    (state: ReduxStoreState) => state.mealPlanner.ingredients,
+  );
 
   const onNameInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value);
@@ -256,6 +260,24 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
               onChange={onNameInputChangeHandler}
               invalid={isValidated && !formValidtyState.nameValid}
               //feedbackMsg={NAME_FEEDBACK}
+            />
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol sm={12}>
+            <FormSelectGroupWithFeedbackEnhanced
+              icon={cilBasket}
+              id="ingredients-select"
+              label="Add Ingredient"
+              placeholder="Select ingredient..."
+              className="mt-2"
+              options={ingredientsListValues.map((x) => {
+                return {
+                  value: x.value,
+                  label: x.value.charAt(0).toUpperCase() + x.value.slice(1),
+                };
+              })}
+              feedbackMsg="Please select ingredient..."
             />
           </CCol>
         </CRow>
