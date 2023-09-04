@@ -61,8 +61,10 @@ const TOAST_MESSAGE_EDIT_SUCCESSFUL = 'Meal recipe was updated successfully.';
 const DEFAULT_PREPARATION_TIME_VALUE = 60;
 const MAX_PREPARATION_TIME = 720;
 
-const INGREDIENT_VARIATIONS = 'variations';
-const INGREDIENT_QUANTITIES = 'quantities';
+enum IngredientsSubset {
+  Variations,
+  Quantities,
+}
 
 const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
@@ -122,11 +124,11 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setIngredientAmount(Number(event.target.value));
   };
 
-  const getSelectedIngredientOptions = (subset: string): ListOption[] =>
+  const getSelectedIngredientOptions = (dataSubset: IngredientsSubset): ListOption[] =>
     ingredientsListValues
       .filter((x) => x.value === selectedIngredient?.value)
-      .filter((x) => (subset === INGREDIENT_VARIATIONS ? x.variations : x.quantities))
-      .flatMap((x) => (subset === INGREDIENT_VARIATIONS ? x.variations : x.quantities))
+      .filter((x) => (dataSubset === IngredientsSubset.Variations ? x.variations : x.quantities))
+      .flatMap((x) => (dataSubset === IngredientsSubset.Variations ? x.variations : x.quantities))
       .map((x) => {
         return {
           value: x ? x : 'N/A',
@@ -329,12 +331,12 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
               onChange={onSelectedVariationChange}
               label=""
               placeholder={
-                getSelectedIngredientOptions(INGREDIENT_VARIATIONS).length > 0
+                getSelectedIngredientOptions(IngredientsSubset.Variations).length > 0
                   ? 'Select variation...'
                   : 'Variations not available'
               }
               className="mt-2"
-              options={getSelectedIngredientOptions(INGREDIENT_VARIATIONS)}
+              options={getSelectedIngredientOptions(IngredientsSubset.Variations)}
             />
           </CCol>
         </CRow>
@@ -360,12 +362,12 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
               value={selectedQuantity}
               onChange={onSelectedQuantityChange}
               placeholder={
-                getSelectedIngredientOptions(INGREDIENT_QUANTITIES).length > 0
+                getSelectedIngredientOptions(IngredientsSubset.Quantities).length > 0
                   ? 'Select quantity...'
                   : 'Quantities not available'
               }
               className="mt-2"
-              options={getSelectedIngredientOptions(INGREDIENT_QUANTITIES)}
+              options={getSelectedIngredientOptions(IngredientsSubset.Quantities)}
             />
           </CCol>
         </CRow>
