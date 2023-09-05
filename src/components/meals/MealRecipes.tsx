@@ -85,6 +85,7 @@ const MealRecipes: React.FC<Props> = (props) => {
   };
 
   const onRowClickHandler = (id: string): void => {
+    //TODO: Remove??
     console.log('clicked');
     console.log(id);
   };
