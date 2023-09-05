@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   type FormEvent,
+  Fragment,
 } from 'react';
 import { CCol, CForm, CRow } from '@coreui/react';
 import Modal from 'src/components/utils/Modal';
@@ -66,9 +67,20 @@ enum IngredientsSubset {
   Quantities,
 }
 
+enum FormState {
+  Step1_BaseData = 1,
+  Step2_Ingredients = 2,
+  Step3_Preparation = 3,
+}
+
+const isNameValid = (name: string): boolean => {
+  return isNotEmpty(name);
+};
+
 const AddEditMealRecipeForm: React.FC<Props> = (props) => {
-  const [isValidated, setIsValidated] = useState(DEFAULT_IS_VALIDATED);
-  const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
+  const [formState, setFormState] = useState<FormState>(FormState.Step1_BaseData);
+  const [isValidated, setIsValidated] = useState<boolean>(DEFAULT_IS_VALIDATED);
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(false);
   const [formValidtyState, setFormValidityState] = useState<FormValidityState>(
     DEFAULT_FORM_VALIDITY_STATE,
   );
@@ -136,12 +148,43 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
         };
       });
 
-  const validateForm = (): boolean => {
-    const nameValid = isNotEmpty(name);
-    const ingredientsValid = isNotEmpty(ingredients);
-    const preparationValid = isNotEmpty(preparation);
-    const preparationTimeValid =
-      isMoreThan(preparationTime, 0) && isLessThanOrEquals(preparationTime, MAX_PREPARATION_TIME);
+  const validateFormStep = (): boolean => {
+    let nameValid = false;
+    let ingredientsValid = false;
+    let preparationValid = false;
+    let preparationTimeValid = false;
+
+    switch (formState) {
+      case FormState.Step1_BaseData: {
+        nameValid = isNameValid(name);
+        ingredientsValid = true;
+        preparationValid = true;
+        preparationTimeValid = true;
+        setIsValidated(true);
+        break;
+      }
+      case FormState.Step2_Ingredients: {
+        //TODO:
+        nameValid = isNameValid(name);
+        //ingredientsValid = isNotEmpty(ingredients);
+        preparationValid = true;
+        preparationTimeValid = true;
+        break;
+      }
+      case FormState.Step3_Preparation: {
+        nameValid = isNameValid(name);
+        //TODO INGREDIENTS VALIDATION
+        //ingredientsValid = isNotEmpty(ingredients);
+        preparationValid = isNotEmpty(preparation);
+        preparationTimeValid =
+          isMoreThan(preparationTime, 0) &&
+          isLessThanOrEquals(preparationTime, MAX_PREPARATION_TIME);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
 
     setIsValidated(true);
     setFormValidityState({
@@ -171,7 +214,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   useEffect(() => {
     if (isValidated) {
       const timerId = setTimeout(() => {
-        validateForm();
+        validateFormStep();
       }, 250);
 
       // Cleanup
@@ -198,7 +241,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
         dispatch(
           toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_ADD_ERROR, err.message)),
         );
-        setIsAddButtonDisabled(false);
+        setIsSaveButtonDisabled(false);
       });
   };
 
@@ -219,16 +262,16 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
         dispatch(
           toasterActions.addMessage(new ToastMsg(cilWarning, TOAST_TITLE_EDIT_ERROR, err.message)),
         );
-        setIsAddButtonDisabled(false);
+        setIsSaveButtonDisabled(false);
       });
   };
 
   const onAddItemHandler = (): void => {
-    const isFormValid = validateForm();
+    const isFormValid = validateFormStep();
     const prepTime: number = preparationTime ? preparationTime : 0;
 
     if (isFormValid) {
-      setIsAddButtonDisabled(true);
+      setIsSaveButtonDisabled(true);
       if (!props.existingItem) {
         addItem(buildAddMealRecipeRequestDto(name, ingredients, preparation, prepTime, favorite));
       } else {
@@ -247,6 +290,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   };
 
   const clearForm = (): void => {
+    setFormState(FormState.Step1_BaseData);
     setIsValidated(DEFAULT_IS_VALIDATED);
     setRecipeId('');
     setName('');
@@ -255,7 +299,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setPreparationTime(DEFAULT_PREPARATION_TIME_VALUE);
     setFavorite(false);
     setFormValidityState(DEFAULT_FORM_VALIDITY_STATE);
-    setIsAddButtonDisabled(false);
+    setIsSaveButtonDisabled(false);
   };
 
   const clearFormWithSlightTimeout = (): void => {
@@ -269,9 +313,28 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     clearFormWithSlightTimeout();
   };
 
+  const onBackHandler = (): void => {
+    if (formState > FormState.Step1_BaseData) {
+      setFormState(formState - 1);
+    } else {
+      onCloseFormHandler();
+    }
+  };
+
+  const onNextHandler = (): void => {
+    if (formState < FormState.Step3_Preparation) {
+      const isValid = validateFormStep();
+      if (isValid) {
+        setFormState(formState + 1);
+      }
+    } else {
+      onAddItemHandler();
+    }
+  };
+
   const onSubmitHandler = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    onAddItemHandler();
+    onNextHandler();
   };
 
   return (
@@ -279,13 +342,13 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       title={title}
       visible={props.visible}
       size="lg"
-      primaryButtonText="Save Recipe"
-      primaryButtonHandler={onAddItemHandler}
-      primaryButtonDisabled={isAddButtonDisabled}
+      primaryButtonText={formState === FormState.Step1_BaseData ? 'Close' : 'Back'}
+      primaryButtonHandler={onBackHandler}
+      primaryButtonColor="danger"
       showSecondaryButton={true}
-      secondaryButtonColor="danger"
-      secondaryButtonText="Close"
-      secondaryButtonHandler={onCloseFormHandler}
+      secondaryButtonText={formState === FormState.Step3_Preparation ? 'Submit' : 'Next'}
+      secondaryButtonHandler={onNextHandler}
+      secondaryButtonDisabled={formState === FormState.Step3_Preparation && isSaveButtonDisabled}
       onCloseButtonHandler={onCloseFormHandler}
     >
       <CForm onSubmit={onSubmitHandler}>
@@ -295,136 +358,145 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
               id="name"
               icon={cilPencil}
               type="text"
-              label="Name"
+              label="Recipe Name"
               normalLabel={USE_NORMAL_LABELS}
               autoComplete="name"
               value={name}
               onChange={onNameInputChangeHandler}
               invalid={isValidated && !formValidtyState.nameValid}
+              disabled={formState !== FormState.Step1_BaseData}
               //feedbackMsg={NAME_FEEDBACK}
             />
           </CCol>
         </CRow>
-        <CRow>
-          <CCol sm={6}>
-            <FormSelectGroupWithFeedbackEnhanced
-              icon={cilBasket}
-              id="ingredients-select"
-              value={selectedIngredient}
-              onChange={onSelectedIngredientChange}
-              placeholder="Select ingredient..."
-              className="mt-2"
-              options={ingredientsListValues.map((x) => {
-                return {
-                  value: x.value,
-                  label: x.value.charAt(0).toUpperCase() + x.value.slice(1),
-                };
-              })}
-              feedbackMsg="Please select ingredient..."
-            />
-          </CCol>
-          <CCol sm={6}>
-            <FormSelectGroupWithFeedbackEnhanced
-              icon={cilBasket}
-              id="variations-select"
-              value={selectedVariation}
-              onChange={onSelectedVariationChange}
-              label=""
-              placeholder={
-                getSelectedIngredientOptions(IngredientsSubset.Variations).length > 0
-                  ? 'Select variation...'
-                  : 'Variations not available'
-              }
-              className="mt-2"
-              options={getSelectedIngredientOptions(IngredientsSubset.Variations)}
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol sm={6}>
-            <FormInputGroupWithFeedback
-              className="mt-2"
-              id="quantity"
-              icon={cilClock}
-              type="number"
-              label="Amount"
-              normalLabel={false}
-              autoComplete="amount"
-              pattern="[0-9]*"
-              value={ingredientAmount}
-              onChange={onIngredientAmountChange}
-            />
-          </CCol>
-          <CCol sm={6}>
-            <FormSelectGroupWithFeedbackEnhanced
-              icon={cilBasket}
-              id="quantities-select"
-              value={selectedQuantity}
-              onChange={onSelectedQuantityChange}
-              placeholder={
-                getSelectedIngredientOptions(IngredientsSubset.Quantities).length > 0
-                  ? 'Select quantity...'
-                  : 'Quantities not available'
-              }
-              className="mt-2"
-              options={getSelectedIngredientOptions(IngredientsSubset.Quantities)}
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol sm={12}>
-            <FormTextAreaWithFeedback
-              className="mt-2"
-              id="ingredients"
-              rows={5}
-              icon={cilBasket}
-              label="Ingredients"
-              normalLabel={USE_NORMAL_LABELS}
-              autoComplete="note"
-              value={ingredients}
-              onChange={onIngredientsInputChangeHandler}
-              invalid={isValidated && !formValidtyState.ingredientsValid}
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol sm={12}>
-            <FormTextAreaWithFeedback
-              className="mt-2"
-              id="preparation"
-              rows={10}
-              icon={cilNotes}
-              label="Preparation"
-              normalLabel={USE_NORMAL_LABELS}
-              autoComplete="preparation"
-              value={preparation}
-              onChange={onPreparationInputChangeHandler}
-              invalid={isValidated && !formValidtyState.preparationValid}
-              //feedbackMsg={PREPARATION_FEEDBACK}
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol sm={4}>
-            <FormInputGroupWithFeedback
-              className="mt-2"
-              id="preparationTime"
-              icon={cilClock}
-              type="number"
-              label="Preparation time in minutes"
-              normalLabel={USE_NORMAL_LABELS}
-              autoComplete="preparation-time"
-              pattern="[0-9]*"
-              min={1}
-              max={MAX_PREPARATION_TIME}
-              value={preparationTime}
-              maxLength={3}
-              onChange={onPreparationTimeInputChangeHandler}
-              invalid={isValidated && !formValidtyState.preparationTimeValid}
-              //feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
-            />
-          </CCol>
-        </CRow>
+        {formState === FormState.Step2_Ingredients && (
+          <Fragment>
+            <CRow>
+              <CCol sm={6}>
+                <FormSelectGroupWithFeedbackEnhanced
+                  icon={cilBasket}
+                  id="ingredients-select"
+                  value={selectedIngredient}
+                  onChange={onSelectedIngredientChange}
+                  placeholder="Select ingredient..."
+                  className="mt-2"
+                  options={ingredientsListValues.map((x) => {
+                    return {
+                      value: x.value,
+                      label: x.value.charAt(0).toUpperCase() + x.value.slice(1),
+                    };
+                  })}
+                  feedbackMsg="Please select ingredient..."
+                />
+              </CCol>
+              <CCol sm={6}>
+                <FormSelectGroupWithFeedbackEnhanced
+                  icon={cilBasket}
+                  id="variations-select"
+                  value={selectedVariation}
+                  onChange={onSelectedVariationChange}
+                  label=""
+                  placeholder={
+                    getSelectedIngredientOptions(IngredientsSubset.Variations).length > 0
+                      ? 'Select variation...'
+                      : 'Variations not available'
+                  }
+                  className="mt-2"
+                  options={getSelectedIngredientOptions(IngredientsSubset.Variations)}
+                />
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol sm={6}>
+                <FormInputGroupWithFeedback
+                  className="mt-2"
+                  id="quantity"
+                  icon={cilClock}
+                  type="number"
+                  label="Amount"
+                  normalLabel={false}
+                  autoComplete="amount"
+                  pattern="[0-9]*"
+                  value={ingredientAmount}
+                  onChange={onIngredientAmountChange}
+                />
+              </CCol>
+              <CCol sm={6}>
+                <FormSelectGroupWithFeedbackEnhanced
+                  icon={cilBasket}
+                  id="quantities-select"
+                  value={selectedQuantity}
+                  onChange={onSelectedQuantityChange}
+                  placeholder={
+                    getSelectedIngredientOptions(IngredientsSubset.Quantities).length > 0
+                      ? 'Select quantity...'
+                      : 'Quantities not available'
+                  }
+                  className="mt-2"
+                  options={getSelectedIngredientOptions(IngredientsSubset.Quantities)}
+                />
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol sm={12}>
+                <FormTextAreaWithFeedback
+                  className="mt-2"
+                  id="ingredients"
+                  rows={5}
+                  icon={cilBasket}
+                  label="Ingredients"
+                  normalLabel={USE_NORMAL_LABELS}
+                  autoComplete="note"
+                  value={ingredients}
+                  onChange={onIngredientsInputChangeHandler}
+                  invalid={isValidated && !formValidtyState.ingredientsValid}
+                />
+              </CCol>
+            </CRow>
+          </Fragment>
+        )}
+        {formState === FormState.Step3_Preparation && (
+          <Fragment>
+            <CRow>
+              <CCol sm={12}>
+                <FormTextAreaWithFeedback
+                  className="mt-2"
+                  id="preparation"
+                  rows={10}
+                  icon={cilNotes}
+                  label="Preparation"
+                  normalLabel={USE_NORMAL_LABELS}
+                  autoComplete="preparation"
+                  value={preparation}
+                  onChange={onPreparationInputChangeHandler}
+                  invalid={isValidated && !formValidtyState.preparationValid}
+                  //feedbackMsg={PREPARATION_FEEDBACK}
+                />
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol sm={4}>
+                <FormInputGroupWithFeedback
+                  className="mt-2"
+                  id="preparationTime"
+                  icon={cilClock}
+                  type="number"
+                  label="Preparation time in minutes"
+                  normalLabel={USE_NORMAL_LABELS}
+                  autoComplete="preparation-time"
+                  pattern="[0-9]*"
+                  min={1}
+                  max={MAX_PREPARATION_TIME}
+                  value={preparationTime}
+                  maxLength={3}
+                  onChange={onPreparationTimeInputChangeHandler}
+                  invalid={isValidated && !formValidtyState.preparationTimeValid}
+                  //feedbackMsg={STRICT_PERCENTAGE_VALUE_FEEDBACK}
+                />
+              </CCol>
+            </CRow>
+          </Fragment>
+        )}
       </CForm>
     </Modal>
   );
