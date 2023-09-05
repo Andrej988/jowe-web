@@ -23,3 +23,10 @@ export interface UIMealIngredient {
 export interface UIMealIngredients {
   ingredients: UIMealIngredient[];
 }
+
+export interface UIMealRecipeIngredient {
+  ingredient: string;
+  variation?: string;
+  quantity: number;
+  quantityUnit: string;
+}
