@@ -27,10 +27,10 @@ interface Props {
 
 const FormSelectGroupWithFeedbackEnhanced: React.FC<Props> = (props) => {
   useEffect(() => {
-    if (props.setValue) {
-      props.setValue(props.options.length === 1 ? props.options[0] : null);
+    if (props.setValue && props.value === null) {
+      props.setValue(props.options.length === 1 ? props.options[0] : props.value);
     }
-  }, [props.options, props.setValue]);
+  }, [props.options, props.setValue, props.value]);
 
   return (
     <div className={props.className}>
