@@ -26,6 +26,9 @@ import { jsonRemoveEscape } from 'src/services/utils/Json';
 import FormSelectGroupWithFeedbackEnhanced, {
   ListOption,
 } from 'src/components/utils/FormSelectGroupWithFeedbackEnhanced';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { capitalizeFirstWord } from 'src/services/utils/StringUtils';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -61,6 +64,7 @@ const TOAST_MESSAGE_EDIT_SUCCESSFUL = 'Meal recipe was updated successfully.';
 
 const NAME_FEEDBACK = 'Please enter meal recipe name.';
 
+const DEFAULT_INGREDIENT_QUANTITY = 1;
 const DEFAULT_PREPARATION_TIME_VALUE = 60;
 const MAX_PREPARATION_TIME = 720;
 
@@ -80,7 +84,7 @@ const isNameValid = (name: string): boolean => {
 };
 
 const printMealRecipeIngredient = (ingredient: UIMealRecipeIngredient): string => {
-  let printout = ingredient.ingredient;
+  let printout = capitalizeFirstWord(ingredient.ingredient);
   if (ingredient.variation) {
     printout += ' (' + ingredient.variation + ')';
   }
@@ -110,7 +114,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [selectedIngredient, setSelectedIngredient] = useState<ListOption | null>(null);
   const [selectedVariation, setSelectedVariation] = useState<ListOption | null>(null);
   const [selectedQuantityUnit, setSelectedQuantityUnit] = useState<ListOption | null>(null);
-  const [ingredientQuantity, setIngredientQuantity] = useState<number>(0);
+  const [ingredientQuantity, setIngredientQuantity] = useState<number>(DEFAULT_INGREDIENT_QUANTITY);
   const [ingredients, setIngredients] = useState<UIMealRecipeIngredient[]>([]);
 
   const onNameInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -129,6 +133,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setSelectedIngredient(option);
     setSelectedVariation(null);
     setSelectedQuantityUnit(null);
+    setIngredientQuantity(DEFAULT_INGREDIENT_QUANTITY);
   };
 
   const onSelectedVariationChange = (option: ListOption | null) => {
@@ -360,6 +365,14 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     }
   };
 
+  const onIngredientRemoveHandler = (item: UIMealRecipeIngredient): void => {
+    console.log('clicked', item);
+    const currentIngredients = ingredients
+      .slice()
+      .filter((x) => x.ingredient !== item.ingredient || x.variation !== item.variation);
+    setIngredients(currentIngredients);
+  };
+
   return (
     <Modal
       title={title}
@@ -395,94 +408,143 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
         {formState === FormState.Step2_Ingredients && (
           <Fragment>
             <CRow className="mt-4">
-              <CCol sm={12}>
-                <hr />
+              <CCol sm={12} md={6} style={{ borderRight: '1px dashed gray' }}>
+                <CRow>
+                  <CCol sm={12}>Ingredients:</CCol>
+                </CRow>
+                <CRow>
+                  <CCol sm={12}>
+                    <hr />
+                  </CCol>
+                </CRow>
+                <CRow className="mt-2">
+                  <CCol sm={12}>
+                    {ingredients.length > 0 && (
+                      <div className="ingredients-content">
+                        <ul
+                          className="ingredients-todos"
+                          style={{ listStyle: 'none', padding: '0' }}
+                        >
+                          {ingredients.map((x, index) => (
+                            <li
+                              key={index}
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '10px 0',
+                              }}
+                            >
+                              <label key={index}>{printMealRecipeIngredient(x)}</label>
+                              <FontAwesomeIcon
+                                icon={faTrashCan}
+                                size="lg"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onIngredientRemoveHandler(x);
+                                }}
+                                style={{ cursor: 'pointer', marginLeft: 'auto' }}
+                              />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </CCol>
+                </CRow>
               </CCol>
-            </CRow>
-            <CRow>
-              <CCol sm={6}>
-                <FormSelectGroupWithFeedbackEnhanced
-                  icon={cilBasket}
-                  id="ingredients-select"
-                  label="Ingredient"
-                  value={selectedIngredient}
-                  onChange={onSelectedIngredientChange}
-                  placeholder="Select ingredient..."
-                  options={ingredientsListValues.map((x) => {
-                    return {
-                      value: x.value,
-                      label: x.value.charAt(0).toUpperCase() + x.value.slice(1),
-                    };
-                  })}
-                  feedbackMsg="Please select ingredient..."
-                />
-              </CCol>
-              <CCol sm={6}>
-                <FormSelectGroupWithFeedbackEnhanced
-                  icon={cilBasket}
-                  id="variations-select"
-                  label="Variation"
-                  value={selectedVariation}
-                  onChange={onSelectedVariationChange}
-                  placeholder={
-                    getSelectedIngredientOptions(IngredientsSubset.Variations).length > 0
-                      ? 'Select variation...'
-                      : 'Variations not available'
-                  }
-                  options={getSelectedIngredientOptions(IngredientsSubset.Variations)}
-                />
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol sm={6}>
-                <FormInputGroupWithFeedback
-                  className="mt-2"
-                  id="quantity"
-                  icon={cilClock}
-                  type="number"
-                  label="Amount"
-                  normalLabel={USE_NORMAL_LABELS}
-                  autoComplete="amount"
-                  pattern="[0-9]*"
-                  value={ingredientQuantity}
-                  onChange={onIngredientQuantityChange}
-                />
-              </CCol>
-              <CCol sm={6}>
-                <FormSelectGroupWithFeedbackEnhanced
-                  icon={cilBasket}
-                  id="quantities-select"
-                  label="Unit of Measurement"
-                  value={selectedQuantityUnit}
-                  onChange={onSelectedQuantityUnitChange}
-                  placeholder={
-                    getSelectedIngredientOptions(IngredientsSubset.Quantities).length > 0
-                      ? 'Select quantity...'
-                      : 'Quantities not available'
-                  }
-                  className="mt-2"
-                  options={getSelectedIngredientOptions(IngredientsSubset.Quantities)}
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mt-2 justify-content-end">
-              <CCol sm={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <CButton variant="outline" color="secondary" onClick={onAddIngredientHandler}>
-                  Add ingredient
-                </CButton>
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol sm={12}>
-                <hr />
-                List of Ingredients:
-                {ingredients.length > 0 && (
-                  <ul>
-                    {ingredients.map((x, index) => (
-                      <li key={index}>{printMealRecipeIngredient(x)}</li>
-                    ))}
-                  </ul>
-                )}
+              <CCol sm={12} md={6}>
+                <CRow>
+                  <CCol sm={12}>Add ingredient:</CCol>
+                </CRow>
+                <CRow>
+                  <CCol sm={12}>
+                    <hr />
+                  </CCol>
+                </CRow>
+                <CRow className="mt-2">
+                  <CCol sm={12}>
+                    <FormSelectGroupWithFeedbackEnhanced
+                      icon={cilBasket}
+                      id="ingredients-select"
+                      label="Ingredient"
+                      value={selectedIngredient}
+                      setValue={setSelectedIngredient}
+                      onChange={onSelectedIngredientChange}
+                      placeholder="Select ingredient..."
+                      options={ingredientsListValues.map((x) => {
+                        return {
+                          value: x.value,
+                          label: capitalizeFirstWord(x.value),
+                        };
+                      })}
+                      feedbackMsg="Please select ingredient..."
+                    />
+                  </CCol>
+                </CRow>
+                <CRow className="mt-2">
+                  <CCol sm={12}>
+                    <FormSelectGroupWithFeedbackEnhanced
+                      icon={cilBasket}
+                      id="variations-select"
+                      label="Variation"
+                      value={selectedVariation}
+                      setValue={setSelectedVariation}
+                      onChange={onSelectedVariationChange}
+                      placeholder={
+                        getSelectedIngredientOptions(IngredientsSubset.Variations).length > 0
+                          ? 'Select variation...'
+                          : 'Variations not available'
+                      }
+                      options={getSelectedIngredientOptions(IngredientsSubset.Variations)}
+                    />
+                  </CCol>
+                </CRow>
+                <CRow className="mt-2">
+                  <CCol sm={12}>
+                    <FormInputGroupWithFeedback
+                      className="mt-2"
+                      id="quantity"
+                      icon={cilClock}
+                      type="number"
+                      label="Amount"
+                      normalLabel={USE_NORMAL_LABELS}
+                      autoComplete="amount"
+                      pattern="[0-9]*"
+                      value={ingredientQuantity}
+                      onChange={onIngredientQuantityChange}
+                    />
+                  </CCol>
+                </CRow>
+                <CRow className="mt-2">
+                  <CCol sm={12}>
+                    <FormSelectGroupWithFeedbackEnhanced
+                      icon={cilBasket}
+                      id="quantities-select"
+                      label="Unit of Measurement"
+                      value={selectedQuantityUnit}
+                      setValue={setSelectedQuantityUnit}
+                      onChange={onSelectedQuantityUnitChange}
+                      placeholder={
+                        getSelectedIngredientOptions(IngredientsSubset.Quantities).length > 0
+                          ? 'Select quantity...'
+                          : 'Quantities not available'
+                      }
+                      className="mt-2"
+                      options={getSelectedIngredientOptions(IngredientsSubset.Quantities)}
+                    />
+                  </CCol>
+                </CRow>
+                <CRow className="mt-2 justify-content-end">
+                  <CCol sm={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <CButton variant="outline" color="secondary" onClick={onAddIngredientHandler}>
+                      Add ingredient
+                    </CButton>
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol sm={12}></CCol>
+                </CRow>
               </CCol>
             </CRow>
           </Fragment>
