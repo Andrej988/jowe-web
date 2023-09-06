@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Select, { ActionMeta, SingleValue } from 'react-select';
 import './FormSelectGroupWithFeedbackEnhanced.css';
 import { CFormLabel, CInputGroup, CInputGroupText } from '@coreui/react';
@@ -15,6 +15,7 @@ interface Props {
   icon: string | string[];
   id: string;
   value: ListOption | null;
+  setValue?: React.Dispatch<React.SetStateAction<ListOption | null>>;
   onChange?: (newValue: SingleValue<ListOption>, actionMeta: ActionMeta<ListOption>) => void;
   label?: string;
   placeholder: string;
@@ -25,6 +26,12 @@ interface Props {
 }
 
 const FormSelectGroupWithFeedbackEnhanced: React.FC<Props> = (props) => {
+  useEffect(() => {
+    if (props.setValue) {
+      props.setValue(props.options.length === 1 ? props.options[0] : null);
+    }
+  }, [props.options, props.setValue]);
+
   return (
     <div className={props.className}>
       {props.label && <CFormLabel htmlFor={props.id}>{props.label}</CFormLabel>}
