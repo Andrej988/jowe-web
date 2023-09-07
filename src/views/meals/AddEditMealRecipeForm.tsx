@@ -29,6 +29,7 @@ import FormSelectGroupWithFeedbackEnhanced, {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { capitalizeFirstWord } from 'src/services/utils/StringUtils';
+import FormElementFeedback from 'src/components/utils/FormElementFeedback';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -62,7 +63,10 @@ const TOAST_TITLE_EDIT_DEFAULT = 'Edit Meal Recipe';
 const TOAST_TITLE_EDIT_ERROR = 'Edit Meal Recipe Error';
 const TOAST_MESSAGE_EDIT_SUCCESSFUL = 'Meal recipe was updated successfully.';
 
-const NAME_FEEDBACK = 'Please enter meal recipe name.';
+const FEEDBACK_MESSAGES = {
+  Name: 'Please enter meal recipe name!',
+  Ingredients: 'Please add ingredients!',
+};
 
 const DEFAULT_INGREDIENT_QUANTITY = 1;
 const DEFAULT_PREPARATION_TIME_VALUE = 60;
@@ -81,6 +85,10 @@ enum FormState {
 
 const isNameValid = (name: string): boolean => {
   return isNotEmpty(name);
+};
+
+const isIngredientsValid = (ingredients: UIMealRecipeIngredient[]): boolean => {
+  return ingredients !== null && ingredients.length > 0;
 };
 
 const printMealRecipeIngredient = (ingredient: UIMealRecipeIngredient): string => {
@@ -176,17 +184,15 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
         break;
       }
       case FormState.Step2_Ingredients: {
-        //TODO:
         nameValid = isNameValid(name);
-        //ingredientsValid = isNotEmpty(ingredients);
+        ingredientsValid = isIngredientsValid(ingredients);
         preparationValid = true;
         preparationTimeValid = true;
         break;
       }
       case FormState.Step3_Preparation: {
         nameValid = isNameValid(name);
-        //TODO INGREDIENTS VALIDATION
-        //ingredientsValid = isNotEmpty(ingredients);
+        ingredientsValid = isIngredientsValid(ingredients);
         preparationValid = isNotEmpty(preparation);
         preparationTimeValid =
           isMoreThan(preparationTime, 0) &&
@@ -323,6 +329,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const onBackHandler = (): void => {
     if (formState > FormState.Step1_BaseData) {
       setFormState(formState - 1);
+      setIsValidated(false);
     } else {
       onCloseFormHandler();
     }
@@ -333,6 +340,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       const isValid = validateFormStep();
       if (isValid) {
         setFormState(formState + 1);
+        setIsValidated(false);
       }
     } else {
       onAddItemHandler();
@@ -401,7 +409,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
               onChange={onNameInputChangeHandler}
               invalid={isValidated && !formValidtyState.nameValid}
               disabled={formState !== FormState.Step1_BaseData}
-              feedbackMsg={NAME_FEEDBACK}
+              feedbackMsg={FEEDBACK_MESSAGES.Name}
             />
           </CCol>
         </CRow>
@@ -419,6 +427,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                 </CRow>
                 <CRow className="mt-2">
                   <CCol sm={12}>
+                    {ingredients.length === 0 && isValidated && (
+                      <FormElementFeedback feedbackMsg={FEEDBACK_MESSAGES.Ingredients} />
+                    )}
                     {ingredients.length > 0 && (
                       <div className="ingredients-content">
                         <ul
@@ -502,26 +513,10 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                 </CRow>
                 <CRow className="mt-2">
                   <CCol sm={12}>
-                    <FormInputGroupWithFeedback
-                      className="mt-2"
-                      id="quantity"
-                      icon={cilClock}
-                      type="number"
-                      label="Amount"
-                      normalLabel={USE_NORMAL_LABELS}
-                      autoComplete="amount"
-                      pattern="[0-9]*"
-                      value={ingredientQuantity}
-                      onChange={onIngredientQuantityChange}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow className="mt-2">
-                  <CCol sm={12}>
                     <FormSelectGroupWithFeedbackEnhanced
                       icon={cilBasket}
                       id="quantities-select"
-                      label="Unit of Measurement"
+                      label="Quantity Unit"
                       value={selectedQuantityUnit}
                       setValue={setSelectedQuantityUnit}
                       onChange={onSelectedQuantityUnitChange}
@@ -535,7 +530,24 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                     />
                   </CCol>
                 </CRow>
-                <CRow className="mt-2 justify-content-end">
+                <CRow className="mt-2 mb-5">
+                  <CCol sm={12}>
+                    <FormInputGroupWithFeedback
+                      className="mt-2"
+                      id="quantity"
+                      icon={cilClock}
+                      type="number"
+                      label="Quantity"
+                      normalLabel={USE_NORMAL_LABELS}
+                      autoComplete="quantity"
+                      pattern="[0-9]*"
+                      value={ingredientQuantity}
+                      onChange={onIngredientQuantityChange}
+                    />
+                  </CCol>
+                </CRow>
+
+                <CRow className="mt-5 mb-5 justify-content-end">
                   <CCol sm={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <CButton variant="outline" color="secondary" onClick={onAddIngredientHandler}>
                       Add ingredient

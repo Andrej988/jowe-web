@@ -47,7 +47,11 @@ const FormSelectGroupWithFeedbackEnhanced: React.FC<Props> = (props) => {
           className="react-select-container"
           classNamePrefix="react-select"
           placeholder={props.placeholder}
-          isDisabled={props.disabled || props.options.length === 0}
+          isDisabled={
+            props.disabled ||
+            props.options.length === 0 ||
+            (props.value !== null && props.options.length === 1)
+          }
         />
       </CInputGroup>
       {props.feedbackMsg != null && !props.value && props.showFeedbackMsg === true && (
