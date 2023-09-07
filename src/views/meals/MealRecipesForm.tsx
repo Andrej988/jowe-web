@@ -1,9 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import MealRecipes from 'src/components/meals/MealRecipes';
-import { LISTS_OF_VALUES_MEAL_INGREDIENTS } from 'src/config/ListsOfValues';
 import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
-import ListValuesService from 'src/services/masterdata/ListValuesService';
 import MealRecipesService from 'src/services/meal/MealRecipesService';
 
 import { ReduxStoreState } from 'src/store/Store';
@@ -28,9 +26,6 @@ const MealRecipesForm: React.FC = () => {
     if (!isFetchedRecipes) {
       MealRecipesService.getInstance()
         .retrieveRecipes()
-        .then((res) => {
-          console.log(res);
-        })
         .catch((err) => {
           console.error(err);
         });
@@ -39,8 +34,8 @@ const MealRecipesForm: React.FC = () => {
 
   useEffect(() => {
     if (!isFetchedIngredients) {
-      ListValuesService.getInstance()
-        .retrieveValues(LISTS_OF_VALUES_MEAL_INGREDIENTS)
+      MealRecipesService.getInstance()
+        .retrieveIngredients()
         .then((res) => {
           console.log(res);
         })

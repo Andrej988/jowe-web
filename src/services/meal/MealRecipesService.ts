@@ -13,9 +13,18 @@ import {
 import {
   buildRecipeFromResponseDto,
   buildRecipesFromResponseDto,
+  mapListValuesToUIMealIngredients,
 } from 'src/model/meals/MealRecipesMapping';
 import { AddMealRecipeRequestDto, EditMealRecipeRequestDto } from 'src/model/meals/MealRecipeDtos';
-import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
+import {
+  UIMealIngredients,
+  UIMealRecipe,
+  UIMealRecipeIngredient,
+} from 'src/model/meals/UIMealsRecipes';
+import { LISTS_OF_VALUES_MEAL_INGREDIENTS } from 'src/config/ListsOfValues';
+import ListValuesService from '../masterdata/ListValuesService';
+import { ListValuesDto } from 'src/model/masterdata/ListValuesDto';
+import { capitalizeFirstWord } from '../utils/StringUtils';
 
 export default class MealRecipesService {
   private static readonly instance: MealRecipesService = new MealRecipesService();
@@ -75,6 +84,21 @@ export default class MealRecipesService {
           reject(
             new RecipesRetrievalError('Error during retrieval of weight measurements!', err.stack),
           );
+        });
+    });
+  }
+
+  async retrieveIngredients(): Promise<void> {
+    await new Promise((_resolve, reject) => {
+      ListValuesService.getInstance()
+        .retrieveValues(LISTS_OF_VALUES_MEAL_INGREDIENTS)
+        .then((res: ListValuesDto) => {
+          const ingredients: UIMealIngredients = mapListValuesToUIMealIngredients(res);
+          store.dispatch(mealPlannerActions.setIngredients(ingredients.ingredients));
+        })
+        .catch((err) => {
+          console.error(err);
+          reject(err);
         });
     });
   }
@@ -170,5 +194,14 @@ export default class MealRecipesService {
           reject(new DeleteRecipeError('Error during deletion of meal recipe!', err.stack));
         });
     });
+  }
+
+  printMealRecipeIngredient(ingredient: UIMealRecipeIngredient): string {
+    let printout = capitalizeFirstWord(ingredient.ingredient);
+    if (ingredient.variation) {
+      printout += ' (' + ingredient.variation + ')';
+    }
+    printout += `: ${ingredient.quantity} ${ingredient.quantityUnit}`;
+    return printout;
   }
 }

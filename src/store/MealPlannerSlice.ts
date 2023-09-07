@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { UIListValues } from 'src/model/masterdata/UIListValues';
-import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
+import { UIMealIngredient, UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
 
 export interface MealPlannerState {
   recipes: UIMealRecipe[];
-  ingredients: UIListValues[];
+  ingredients: UIMealIngredient[];
   isFetchedMealRecipes: boolean;
   isFetchedMealIngredients: boolean;
 }

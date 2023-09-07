@@ -1,12 +1,13 @@
+import { ListValuesDto } from '../masterdata/ListValuesDto';
 import { MealRecipeResponseDto } from './MealRecipeDtos';
-import { UIMealRecipe, UIMealRecipes } from './UIMealsRecipes';
+import { UIMealIngredients, UIMealRecipe, UIMealRecipes } from './UIMealsRecipes';
 
 export const buildRecipeFromResponseDto = (dto: MealRecipeResponseDto): UIMealRecipe => {
   return {
     userId: dto.userId,
     recipeId: dto.recipeId,
     name: dto.name,
-    ingredients: dto.ingredients,
+    ingredients: JSON.parse(dto.ingredients),
     preparation: dto.preparation,
     preparationTime: dto.preparationTime,
     favorite: dto.favorite,
@@ -27,4 +28,16 @@ export const buildRecipesFromResponseDto = (dto: MealRecipeResponseDto[]): UIMea
   }
 
   return recipes;
+};
+
+export const mapListValuesToUIMealIngredients = (dto: ListValuesDto): UIMealIngredients => {
+  return {
+    ingredients: dto.values.map((x) => {
+      return {
+        value: x.value,
+        quantities: x.stringSet1,
+        variations: x.stringSet2,
+      };
+    }),
+  };
 };

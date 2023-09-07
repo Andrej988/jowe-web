@@ -84,11 +84,6 @@ const MealRecipes: React.FC<Props> = (props) => {
     setDeleteModalVisibility(false);
   };
 
-  const onRowClickHandler = (id: string): void => {
-    console.log('clicked');
-    console.log(id);
-  };
-
   const toggleFavoriteHandler = (item: UIMealRecipe): void => {
     console.log('item', item);
     const updatedItem = buildEditMealRecipeRequestDto(
@@ -125,12 +120,7 @@ const MealRecipes: React.FC<Props> = (props) => {
                 </CTableHead>
                 <CTableBody>
                   {props.items.map((item: UIMealRecipe, index: number) => (
-                    <CTableRow
-                      v-for="item in tableItems"
-                      key={index}
-                      onClick={onRowClickHandler.bind(null, item.recipeId)}
-                      style={{ cursor: 'pointer' }}
-                    >
+                    <CTableRow v-for="item in tableItems" key={index} style={{ cursor: 'pointer' }}>
                       <CTableDataCell className="text-center">
                         <FontAwesomeIcon
                           icon={item.favorite ? faStarSolid : faStarRegular}
