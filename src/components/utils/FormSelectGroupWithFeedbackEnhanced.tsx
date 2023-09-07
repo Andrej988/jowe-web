@@ -21,7 +21,7 @@ interface Props {
   placeholder: string;
   options: ListOption[];
   feedbackMsg?: string;
-  showFeedbackMsg?: boolean;
+  invalid?: boolean;
   disabled?: boolean;
 }
 
@@ -54,7 +54,7 @@ const FormSelectGroupWithFeedbackEnhanced: React.FC<Props> = (props) => {
           }
         />
       </CInputGroup>
-      {props.feedbackMsg != null && !props.value && props.showFeedbackMsg === true && (
+      {props.feedbackMsg != null && !props.value && props.invalid === true && (
         <FormElementFeedback feedbackMsg={props.feedbackMsg} />
       )}
     </div>

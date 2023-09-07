@@ -1,4 +1,5 @@
 import { jsonEscape } from 'src/services/utils/Json';
+import { UIMealRecipeIngredient } from './UIMealsRecipes';
 
 export interface MealRecipeIngredientDto {
   name: string;
@@ -42,7 +43,7 @@ export interface MealRecipesResponseDto {
 
 export const buildAddMealRecipeRequestDto = (
   name: string,
-  ingredients: string,
+  ingredients: UIMealRecipeIngredient[],
   preparation: string,
   preparationTime: number,
   favorite: boolean,
@@ -50,7 +51,7 @@ export const buildAddMealRecipeRequestDto = (
   return {
     recipe: {
       name,
-      ingredients: jsonEscape(ingredients),
+      ingredients: JSON.stringify(ingredients),
       preparation: jsonEscape(preparation),
       preparationTime,
       favorite,
@@ -61,7 +62,7 @@ export const buildAddMealRecipeRequestDto = (
 export const buildEditMealRecipeRequestDto = (
   recipeId: string,
   name: string,
-  ingredients: string,
+  ingredients: UIMealRecipeIngredient[],
   preparation: string,
   preparationTime: number,
   favorite: boolean,
@@ -70,7 +71,7 @@ export const buildEditMealRecipeRequestDto = (
     recipe: {
       recipeId,
       name,
-      ingredients: jsonEscape(ingredients),
+      ingredients: JSON.stringify(ingredients),
       preparation: jsonEscape(preparation),
       preparationTime,
       favorite,

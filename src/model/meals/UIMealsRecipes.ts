@@ -2,7 +2,7 @@ export interface UIMealRecipe {
   userId: string;
   recipeId: string;
   name: string;
-  ingredients: string;
+  ingredients: UIMealRecipeIngredient[];
   preparation: string;
   preparationTime: number;
   favorite: boolean;

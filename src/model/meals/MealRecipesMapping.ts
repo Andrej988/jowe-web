@@ -7,7 +7,7 @@ export const buildRecipeFromResponseDto = (dto: MealRecipeResponseDto): UIMealRe
     userId: dto.userId,
     recipeId: dto.recipeId,
     name: dto.name,
-    ingredients: dto.ingredients,
+    ingredients: JSON.parse(dto.ingredients),
     preparation: dto.preparation,
     preparationTime: dto.preparationTime,
     favorite: dto.favorite,
