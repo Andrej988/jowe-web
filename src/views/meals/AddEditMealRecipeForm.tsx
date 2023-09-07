@@ -6,13 +6,13 @@ import React, {
   type FormEvent,
   Fragment,
 } from 'react';
-import { CButton, CCol, CForm, CRow } from '@coreui/react';
+import { CCol, CForm, CRow } from '@coreui/react';
 import Modal from 'src/components/utils/Modal';
 import FormInputGroupWithFeedback from 'src/components/utils/FormInputGroupWithFeedback';
-import { cilBasket, cilClock, cilFastfood, cilNotes, cilPencil, cilWarning } from '@coreui/icons';
+import { cilClock, cilFastfood, cilNotes, cilPencil, cilWarning } from '@coreui/icons';
 import { isMoreThan, isLessThanOrEquals, isNotEmpty } from 'src/services/utils/Validators';
-import { useDispatch, useSelector } from 'react-redux';
-import { ReduxStoreState, ToastMsg, toasterActions } from 'src/store/Store';
+import { useDispatch } from 'react-redux';
+import { ToastMsg, toasterActions } from 'src/store/Store';
 import { UIMealRecipe, UIMealRecipeIngredient } from 'src/model/meals/UIMealsRecipes';
 import {
   AddMealRecipeRequestDto,
@@ -23,13 +23,10 @@ import {
 import FormTextAreaWithFeedback from 'src/components/utils/FormTextAreaWithFeedback';
 import MealRecipesService from 'src/services/meal/MealRecipesService';
 import { jsonRemoveEscape } from 'src/services/utils/Json';
-import FormSelectGroupWithFeedbackEnhanced, {
-  ListOption,
-} from 'src/components/utils/FormSelectGroupWithFeedbackEnhanced';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-import { capitalizeFirstWord } from 'src/services/utils/StringUtils';
 import FormElementFeedback from 'src/components/utils/FormElementFeedback';
+import AddMealRecipeIngredient from 'src/components/meals/AddMealRecipeIngredient';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -68,14 +65,8 @@ const FEEDBACK_MESSAGES = {
   Ingredients: 'Please add ingredients!',
 };
 
-const DEFAULT_INGREDIENT_QUANTITY = 1;
 const DEFAULT_PREPARATION_TIME_VALUE = 60;
 const MAX_PREPARATION_TIME = 720;
-
-enum IngredientsSubset {
-  Variations,
-  Quantities,
-}
 
 enum FormState {
   Step1_BaseData = 1,
@@ -91,15 +82,6 @@ const isIngredientsValid = (ingredients: UIMealRecipeIngredient[]): boolean => {
   return ingredients !== null && ingredients.length > 0;
 };
 
-const printMealRecipeIngredient = (ingredient: UIMealRecipeIngredient): string => {
-  let printout = capitalizeFirstWord(ingredient.ingredient);
-  if (ingredient.variation) {
-    printout += ' (' + ingredient.variation + ')';
-  }
-  printout += `: ${ingredient.quantity} ${ingredient.quantityUnit}`;
-  return printout;
-};
-
 const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [formState, setFormState] = useState<FormState>(FormState.Step1_BaseData);
   const [isValidated, setIsValidated] = useState<boolean>(DEFAULT_IS_VALIDATED);
@@ -111,19 +93,11 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [title, setTitle] = useState(TITLE_ADD);
   const [recipeId, setRecipeId] = useState<string>('');
   const [name, setName] = useState<string>('');
+  const [ingredients, setIngredients] = useState<UIMealRecipeIngredient[]>([]);
   const [preparation, setPreparation] = useState<string>('');
   const [preparationTime, setPreparationTime] = useState<number>(DEFAULT_PREPARATION_TIME_VALUE);
   const [favorite, setFavorite] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const ingredientsListValues = useSelector(
-    (state: ReduxStoreState) => state.mealPlanner.ingredients,
-  );
-
-  const [selectedIngredient, setSelectedIngredient] = useState<ListOption | null>(null);
-  const [selectedVariation, setSelectedVariation] = useState<ListOption | null>(null);
-  const [selectedQuantityUnit, setSelectedQuantityUnit] = useState<ListOption | null>(null);
-  const [ingredientQuantity, setIngredientQuantity] = useState<number>(DEFAULT_INGREDIENT_QUANTITY);
-  const [ingredients, setIngredients] = useState<UIMealRecipeIngredient[]>([]);
 
   const onNameInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value);
@@ -137,37 +111,6 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setPreparationTime(Number(event.target.value));
   };
 
-  const onSelectedIngredientChange = (option: ListOption | null) => {
-    setSelectedIngredient(option);
-    setSelectedVariation(null);
-    setSelectedQuantityUnit(null);
-    setIngredientQuantity(DEFAULT_INGREDIENT_QUANTITY);
-  };
-
-  const onSelectedVariationChange = (option: ListOption | null) => {
-    setSelectedVariation(option);
-  };
-
-  const onSelectedQuantityUnitChange = (option: ListOption | null) => {
-    setSelectedQuantityUnit(option);
-  };
-
-  const onIngredientQuantityChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setIngredientQuantity(Number(event.target.value));
-  };
-
-  const getSelectedIngredientOptions = (dataSubset: IngredientsSubset): ListOption[] =>
-    ingredientsListValues
-      .filter((x) => x.value === selectedIngredient?.value)
-      .filter((x) => (dataSubset === IngredientsSubset.Variations ? x.variations : x.quantities))
-      .flatMap((x) => (dataSubset === IngredientsSubset.Variations ? x.variations : x.quantities))
-      .map((x) => {
-        return {
-          value: x ? x : 'N/A',
-          label: x ? x : 'N/A',
-        };
-      });
-
   const validateFormStep = (): boolean => {
     let nameValid = false;
     let ingredientsValid = false;
@@ -180,7 +123,6 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
         ingredientsValid = true;
         preparationValid = true;
         preparationTimeValid = true;
-        setIsValidated(true);
         break;
       }
       case FormState.Step2_Ingredients: {
@@ -220,8 +162,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       setTitle(TITLE_EDIT);
       setRecipeId(props.existingItem.recipeId);
       setName(props.existingItem.name);
-      //TODO:
-      //setIngredients(jsonRemoveEscape(props.existingItem.ingredients));
+      setIngredients(props.existingItem.ingredients);
       setPreparation(jsonRemoveEscape(props.existingItem.preparation));
       setPreparationTime(props.existingItem.preparationTime);
       setFavorite(props.existingItem.favorite);
@@ -291,12 +232,18 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
 
     if (isFormValid) {
       setIsSaveButtonDisabled(true);
-      //TODO: ingredients is currently dummy string
       if (!props.existingItem) {
-        addItem(buildAddMealRecipeRequestDto(name, 'DUMMY', preparation, prepTime, favorite));
+        addItem(buildAddMealRecipeRequestDto(name, ingredients, preparation, prepTime, favorite));
       } else {
         editItem(
-          buildEditMealRecipeRequestDto(recipeId, name, 'DUMMY', preparation, prepTime, favorite),
+          buildEditMealRecipeRequestDto(
+            recipeId,
+            name,
+            ingredients,
+            preparation,
+            prepTime,
+            favorite,
+          ),
         );
       }
     }
@@ -352,25 +299,14 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     onNextHandler();
   };
 
-  const onAddIngredientHandler = (): void => {
-    if (selectedIngredient && selectedQuantityUnit) {
-      const ingredientToAdd: UIMealRecipeIngredient = {
-        ingredient: selectedIngredient?.value,
-        variation: selectedVariation?.value,
-        quantity: ingredientQuantity,
-        quantityUnit: selectedQuantityUnit?.value,
-      };
-
-      const currentIngredients = ingredients
-        .slice()
-        .filter(
-          (x) =>
-            x.ingredient !== ingredientToAdd.ingredient ||
-            x.variation !== ingredientToAdd.variation,
-        );
-      currentIngredients.push(ingredientToAdd);
-      setIngredients(currentIngredients);
-    }
+  const onAddIngredientHandler = (newIngredient: UIMealRecipeIngredient): void => {
+    const currentIngredients = ingredients
+      .slice()
+      .filter(
+        (x) => x.ingredient !== newIngredient.ingredient || x.variation !== newIngredient.variation,
+      );
+    currentIngredients.push(newIngredient);
+    setIngredients(currentIngredients);
   };
 
   const onIngredientRemoveHandler = (item: UIMealRecipeIngredient): void => {
@@ -431,11 +367,8 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                       <FormElementFeedback feedbackMsg={FEEDBACK_MESSAGES.Ingredients} />
                     )}
                     {ingredients.length > 0 && (
-                      <div className="ingredients-content">
-                        <ul
-                          className="ingredients-todos"
-                          style={{ listStyle: 'none', padding: '0' }}
-                        >
+                      <div>
+                        <ul style={{ listStyle: 'none', padding: '0' }}>
                           {ingredients.map((x, index) => (
                             <li
                               key={index}
@@ -446,7 +379,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                                 padding: '10px 0',
                               }}
                             >
-                              <label key={index}>{printMealRecipeIngredient(x)}</label>
+                              <label key={index}>
+                                {MealRecipesService.getInstance().printMealRecipeIngredient(x)}
+                              </label>
                               <FontAwesomeIcon
                                 icon={faTrashCan}
                                 size="lg"
@@ -465,98 +400,7 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                 </CRow>
               </CCol>
               <CCol sm={12} md={6}>
-                <CRow>
-                  <CCol sm={12}>Add ingredient:</CCol>
-                </CRow>
-                <CRow>
-                  <CCol sm={12}>
-                    <hr />
-                  </CCol>
-                </CRow>
-                <CRow className="mt-2">
-                  <CCol sm={12}>
-                    <FormSelectGroupWithFeedbackEnhanced
-                      icon={cilBasket}
-                      id="ingredients-select"
-                      label="Ingredient"
-                      value={selectedIngredient}
-                      setValue={setSelectedIngredient}
-                      onChange={onSelectedIngredientChange}
-                      placeholder="Select ingredient..."
-                      options={ingredientsListValues.map((x) => {
-                        return {
-                          value: x.value,
-                          label: capitalizeFirstWord(x.value),
-                        };
-                      })}
-                      feedbackMsg="Please select ingredient..."
-                    />
-                  </CCol>
-                </CRow>
-                <CRow className="mt-2">
-                  <CCol sm={12}>
-                    <FormSelectGroupWithFeedbackEnhanced
-                      icon={cilBasket}
-                      id="variations-select"
-                      label="Variation"
-                      value={selectedVariation}
-                      setValue={setSelectedVariation}
-                      onChange={onSelectedVariationChange}
-                      placeholder={
-                        getSelectedIngredientOptions(IngredientsSubset.Variations).length > 0
-                          ? 'Select variation...'
-                          : 'Variations not available'
-                      }
-                      options={getSelectedIngredientOptions(IngredientsSubset.Variations)}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow className="mt-2">
-                  <CCol sm={12}>
-                    <FormSelectGroupWithFeedbackEnhanced
-                      icon={cilBasket}
-                      id="quantities-select"
-                      label="Quantity Unit"
-                      value={selectedQuantityUnit}
-                      setValue={setSelectedQuantityUnit}
-                      onChange={onSelectedQuantityUnitChange}
-                      placeholder={
-                        getSelectedIngredientOptions(IngredientsSubset.Quantities).length > 0
-                          ? 'Select quantity...'
-                          : 'Quantities not available'
-                      }
-                      className="mt-2"
-                      options={getSelectedIngredientOptions(IngredientsSubset.Quantities)}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow className="mt-2 mb-5">
-                  <CCol sm={12}>
-                    <FormInputGroupWithFeedback
-                      className="mt-2"
-                      id="quantity"
-                      icon={cilClock}
-                      type="number"
-                      label="Quantity"
-                      normalLabel={USE_NORMAL_LABELS}
-                      autoComplete="quantity"
-                      pattern="[0-9]*"
-                      value={ingredientQuantity}
-                      onChange={onIngredientQuantityChange}
-                    />
-                  </CCol>
-                </CRow>
-
-                <CRow className="mt-5 mb-5 justify-content-end">
-                  <CCol sm={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <CButton variant="outline" color="secondary" onClick={onAddIngredientHandler}>
-                      Add ingredient
-                    </CButton>
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol sm={12}></CCol>
-                </CRow>
+                <AddMealRecipeIngredient onAddIngredientHandler={onAddIngredientHandler} />
               </CCol>
             </CRow>
           </Fragment>

@@ -2,6 +2,7 @@ import React from 'react';
 import type { PropsWithChildren } from 'react';
 import Modal from 'src/components/utils/Modal';
 import { UIMealRecipe } from 'src/model/meals/UIMealsRecipes';
+import MealRecipesService from 'src/services/meal/MealRecipesService';
 
 interface Props extends PropsWithChildren {
   visible: boolean;
@@ -31,7 +32,15 @@ const MealRecipeDetailsForm: React.FC<Props> = (props) => {
           <b>Preparation time:</b> {props.item?.preparationTime} min(s)
         </p>
         <b>Ingredients:</b> <br />
-        <p style={{ whiteSpace: 'pre-line' }}>{props.item?.ingredients}</p>
+        <ul>
+          {props.item?.ingredients.map((x, index) => (
+            <li key={index}>
+              <label key={index}>
+                {MealRecipesService.getInstance().printMealRecipeIngredient(x)}
+              </label>
+            </li>
+          ))}
+        </ul>
         <b>Preparation:</b>
         <p style={{ whiteSpace: 'pre-line' }}>{props.item?.preparation}</p>
       </div>
