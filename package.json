@@ -33,7 +33,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@types/jest": "^29.5.4",
     "@types/node": "^20.4.10",
-    "@types/react": "^18.2.15",
+    "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "amazon-cognito-identity-js": "^6.3.5",
     "axios": "^1.5.0",
