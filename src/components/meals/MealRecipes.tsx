@@ -90,7 +90,9 @@ const MealRecipes: React.FC<Props> = (props) => {
       item.recipeId,
       item.name,
       item.ingredients,
+      item.servingSize,
       item.preparation,
+      item.notes,
       item.preparationTime,
       !item.favorite,
     );
