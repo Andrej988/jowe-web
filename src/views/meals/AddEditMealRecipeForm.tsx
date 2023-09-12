@@ -38,7 +38,9 @@ interface Props extends PropsWithChildren {
 interface FormValidityState {
   nameValid: boolean;
   ingredientsValid: boolean;
+  servingSizeValid: boolean;
   preparationValid: boolean;
+  notesValid: boolean;
   preparationTimeValid: boolean;
 }
 
@@ -47,7 +49,9 @@ const DEFAULT_IS_VALIDATED = false;
 const DEFAULT_FORM_VALIDITY_STATE: FormValidityState = {
   nameValid: false,
   ingredientsValid: false,
+  servingSizeValid: false,
   preparationValid: false,
+  notesValid: false,
   preparationTimeValid: false,
 };
 
@@ -94,7 +98,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const [recipeId, setRecipeId] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [ingredients, setIngredients] = useState<UIMealRecipeIngredient[]>([]);
+  const [servingSize, setServingSize] = useState<string>('');
   const [preparation, setPreparation] = useState<string>('');
+  const [notes, setNotes] = useState<string>('');
   const [preparationTime, setPreparationTime] = useState<number>(DEFAULT_PREPARATION_TIME_VALUE);
   const [favorite, setFavorite] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -103,8 +109,16 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setName(event.target.value);
   };
 
+  const onServingSizeInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+    setServingSize(event.target.value);
+  };
+
   const onPreparationInputChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>): void => {
     setPreparation(event.target.value);
+  };
+
+  const onNotesInputChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>): void => {
+    setNotes(event.target.value);
   };
 
   const onPreparationTimeInputChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -114,7 +128,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
   const validateFormStep = (): boolean => {
     let nameValid = false;
     let ingredientsValid = false;
+    const servingSizeValid = true;
     let preparationValid = false;
+    const notesValid = true;
     let preparationTimeValid = false;
 
     switch (formState) {
@@ -150,11 +166,20 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setFormValidityState({
       nameValid,
       ingredientsValid,
+      servingSizeValid,
       preparationValid,
+      notesValid,
       preparationTimeValid,
     });
 
-    return nameValid && ingredientsValid && preparationValid && preparationTimeValid;
+    return (
+      nameValid &&
+      ingredientsValid &&
+      servingSizeValid &&
+      preparationValid &&
+      notesValid &&
+      preparationTimeValid
+    );
   };
 
   useEffect(() => {
@@ -163,7 +188,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       setRecipeId(props.existingItem.recipeId);
       setName(props.existingItem.name);
       setIngredients(props.existingItem.ingredients);
+      setServingSize(props.existingItem.servingSize);
       setPreparation(jsonRemoveEscape(props.existingItem.preparation));
+      setNotes(jsonRemoveEscape(props.existingItem.notes));
       setPreparationTime(props.existingItem.preparationTime);
       setFavorite(props.existingItem.favorite);
     } else {
@@ -233,14 +260,26 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     if (isFormValid) {
       setIsSaveButtonDisabled(true);
       if (!props.existingItem) {
-        addItem(buildAddMealRecipeRequestDto(name, ingredients, preparation, prepTime, favorite));
+        addItem(
+          buildAddMealRecipeRequestDto(
+            name,
+            ingredients,
+            servingSize,
+            preparation,
+            notes,
+            prepTime,
+            favorite,
+          ),
+        );
       } else {
         editItem(
           buildEditMealRecipeRequestDto(
             recipeId,
             name,
             ingredients,
+            servingSize,
             preparation,
+            notes,
             prepTime,
             favorite,
           ),
@@ -255,7 +294,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
     setRecipeId('');
     setName('');
     setIngredients([]);
+    setServingSize('');
     setPreparation('');
+    setNotes('');
     setPreparationTime(DEFAULT_PREPARATION_TIME_VALUE);
     setFavorite(false);
     setFormValidityState(DEFAULT_FORM_VALIDITY_STATE);
@@ -403,6 +444,26 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                 <AddMealRecipeIngredient onAddIngredientHandler={onAddIngredientHandler} />
               </CCol>
             </CRow>
+            <CRow>
+              <CCol sm={12}>
+                <hr />
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol sm={6}>
+                <FormInputGroupWithFeedback
+                  id="servingSize"
+                  icon={cilPencil}
+                  type="text"
+                  label="Serving Size"
+                  normalLabel={USE_NORMAL_LABELS}
+                  autoComplete="serving-size"
+                  value={servingSize}
+                  onChange={onServingSizeInputChangeHandler}
+                  invalid={isValidated && !formValidtyState.servingSizeValid}
+                />
+              </CCol>
+            </CRow>
           </Fragment>
         )}
         {formState === FormState.Step3_Preparation && (
@@ -421,6 +482,22 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
                   onChange={onPreparationInputChangeHandler}
                   invalid={isValidated && !formValidtyState.preparationValid}
                   //feedbackMsg={PREPARATION_FEEDBACK}
+                />
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol sm={12}>
+                <FormTextAreaWithFeedback
+                  className="mt-2"
+                  id="notes"
+                  rows={10}
+                  icon={cilNotes}
+                  label="Notes"
+                  normalLabel={USE_NORMAL_LABELS}
+                  autoComplete="notes"
+                  value={notes}
+                  onChange={onNotesInputChangeHandler}
+                  invalid={isValidated && !formValidtyState.notesValid}
                 />
               </CCol>
             </CRow>

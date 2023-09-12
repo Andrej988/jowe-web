@@ -8,7 +8,9 @@ export interface MealRecipeIngredientDto {
 export interface MealRecipeRequestDto {
   name: string;
   ingredients: string;
+  servingSize: string;
   preparation: string;
+  notes: string;
   preparationTime: number;
   favorite: boolean;
 }
@@ -30,7 +32,9 @@ export interface MealRecipeResponseDto {
   recipeId: string;
   name: string;
   ingredients: string;
+  servingSize: string;
   preparation: string;
+  notes: string;
   preparationTime: number;
   favorite: boolean;
   created: number;
@@ -44,7 +48,9 @@ export interface MealRecipesResponseDto {
 export const buildAddMealRecipeRequestDto = (
   name: string,
   ingredients: UIMealRecipeIngredient[],
+  servingSize: string,
   preparation: string,
+  notes: string,
   preparationTime: number,
   favorite: boolean,
 ): AddMealRecipeRequestDto => {
@@ -52,7 +58,9 @@ export const buildAddMealRecipeRequestDto = (
     recipe: {
       name,
       ingredients: JSON.stringify(ingredients),
+      servingSize,
       preparation: jsonEscape(preparation),
+      notes: jsonEscape(notes),
       preparationTime,
       favorite,
     },
@@ -63,7 +71,9 @@ export const buildEditMealRecipeRequestDto = (
   recipeId: string,
   name: string,
   ingredients: UIMealRecipeIngredient[],
+  servingSize: string,
   preparation: string,
+  notes: string,
   preparationTime: number,
   favorite: boolean,
 ): EditMealRecipeRequestDto => {
@@ -72,7 +82,9 @@ export const buildEditMealRecipeRequestDto = (
       recipeId,
       name,
       ingredients: JSON.stringify(ingredients),
+      servingSize,
       preparation: jsonEscape(preparation),
+      notes: jsonEscape(notes),
       preparationTime,
       favorite,
     },

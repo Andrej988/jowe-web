@@ -31,6 +31,9 @@ const MealRecipeDetailsForm: React.FC<Props> = (props) => {
         <p>
           <b>Preparation time:</b> {props.item?.preparationTime} min(s)
         </p>
+        <p>
+          <b>Serving size:</b> {props.item?.servingSize}
+        </p>
         <b>Ingredients:</b> <br />
         <ul>
           {props.item?.ingredients.map((x, index) => (
@@ -43,6 +46,8 @@ const MealRecipeDetailsForm: React.FC<Props> = (props) => {
         </ul>
         <b>Preparation:</b>
         <p style={{ whiteSpace: 'pre-line' }}>{props.item?.preparation}</p>
+        <b>Notes:</b>
+        <p style={{ whiteSpace: 'pre-line' }}>{props.item?.notes}</p>
       </div>
     </Modal>
   );
