@@ -1,4 +1,4 @@
-import store, { weightActions } from 'src/store/Store';
+import store, { mealPlannerActions, weightActions } from 'src/store/Store';
 
 export default class ClearReduxStateService {
   private static readonly instance: ClearReduxStateService = new ClearReduxStateService();
@@ -12,5 +12,6 @@ export default class ClearReduxStateService {
 
   clearReduxState(): void {
     store.dispatch(weightActions.resetState());
+    store.dispatch(mealPlannerActions.resetState());
   }
 }
