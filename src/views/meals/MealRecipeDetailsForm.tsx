@@ -32,7 +32,7 @@ const MealRecipeDetailsForm: React.FC<Props> = (props) => {
           <b>Preparation time:</b> {props.item?.preparationTime} min(s)
         </p>
         <p>
-          <b>Serving size:</b> {props.item?.servingSize}
+          <b>Serving size:</b> {props.item?.servingSize ? props.item?.servingSize : '/'}
         </p>
         <b>Ingredients:</b> <br />
         <ul>
@@ -47,7 +47,7 @@ const MealRecipeDetailsForm: React.FC<Props> = (props) => {
         <b>Preparation:</b>
         <p style={{ whiteSpace: 'pre-line' }}>{props.item?.preparation}</p>
         <b>Notes:</b>
-        <p style={{ whiteSpace: 'pre-line' }}>{props.item?.notes}</p>
+        <p style={{ whiteSpace: 'pre-line' }}>{props.item?.notes ? props.item?.notes : '/'}</p>
       </div>
     </Modal>
   );

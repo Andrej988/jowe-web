@@ -188,9 +188,9 @@ const AddEditMealRecipeForm: React.FC<Props> = (props) => {
       setRecipeId(props.existingItem.recipeId);
       setName(props.existingItem.name);
       setIngredients(props.existingItem.ingredients);
-      setServingSize(props.existingItem.servingSize);
+      setServingSize(props.existingItem.servingSize ? props.existingItem.servingSize : '');
       setPreparation(jsonRemoveEscape(props.existingItem.preparation));
-      setNotes(jsonRemoveEscape(props.existingItem.notes));
+      setNotes(props.existingItem.notes ? jsonRemoveEscape(props.existingItem.notes) : '');
       setPreparationTime(props.existingItem.preparationTime);
       setFavorite(props.existingItem.favorite);
     } else {
