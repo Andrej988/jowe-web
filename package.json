@@ -50,7 +50,7 @@
     "react-select": "^5.7.5",
     "redux": "4.2.1",
     "simplebar-react": "^3.2.4",
-    "web-vitals": "^3.3.0"
+    "web-vitals": "^3.5.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -73,7 +73,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.68.0",
     "typescript": "^5.2.2",
-    "web-vitals": "^3.4.0"
+    "web-vitals": "^3.5.0"
   },
   "engines": {
     "node": ">=16",
