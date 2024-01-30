@@ -1,11 +1,6 @@
 name: Deploy on Development Environment
 
-on:
-  workflow_run:
-    workflows: ['CI main']
-    branches: [main]
-    types:
-      - completed
+on: workflow_dispatch
 
 env:
   TF_CLOUD_ORGANIZATION: '${{ secrets.TF_CLOUD_ORGANIZATION }}'

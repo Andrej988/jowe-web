@@ -2,7 +2,7 @@ name: Release on Github
 
 on:
   workflow_run:
-    workflows: ['Deploy on Development Environment']
+    workflows: ['Deploy on Production Environment']
     branches: [main]
     types:
       - completed
