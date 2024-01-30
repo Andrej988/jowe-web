@@ -3,14 +3,18 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
-      day: 'saturday'
-      time: '09:00'
+      interval: 'daily'
+      time: '08:00'
       timezone: 'Europe/Ljubljana'
+    open-pull-requests-limit: 100
+    commit-message:
+      prefix: '[dependabot-npm]'
   - package-ecosystem: 'terraform'
     directory: '/'
     schedule:
-      interval: 'weekly'
-      day: 'saturday'
-      time: '09:00'
+      interval: 'daily'
+      time: '08:00'
       timezone: 'Europe/Ljubljana'
+    open-pull-requests-limit: 100
+    commit-message:
+      prefix: '[dependabot-terraform]'
