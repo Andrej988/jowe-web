@@ -2,7 +2,6 @@
   "name": "jowe-web",
   "version": "1.0.135",
   "description": "JoWe (Journal for Wellness)",
-  "homepage": ".",
   "repository": {
     "type": "git",
     "url": "git@github.com:Andrej988/jowe-web.git"
