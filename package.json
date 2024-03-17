@@ -33,7 +33,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.28",
     "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.21",
+    "@types/react-dom": "^18.2.22",
     "amazon-cognito-identity-js": "^6.3.12",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
