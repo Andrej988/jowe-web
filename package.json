@@ -71,7 +71,7 @@
     "prettier": "3.2.5",
     "react-scripts": "5.0.1",
     "sass": "^1.72.0",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.4",
     "web-vitals": "^3.5.2"
   },
   "engines": {
