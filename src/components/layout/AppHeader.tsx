@@ -36,7 +36,7 @@ const AppHeader: React.FC = () => {
         </CHeaderBrand>
         <CHeaderNav className="d-none d-md-flex me-auto">
           <CNavItem>
-            <CNavLink to="/" component={NavLink}>
+            <CNavLink to="/" as={NavLink}>
               JoWe - Journal for Wellness
             </CNavLink>
           </CNavItem>

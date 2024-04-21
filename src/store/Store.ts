@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit/';
+import { configureStore } from '@reduxjs/toolkit';
 
 import authSlice, { actions as authActions, AuthState } from './AuthSlice';
 import layoutSlice, { actions as layoutActions, LayoutState } from './LayoutSlice';
