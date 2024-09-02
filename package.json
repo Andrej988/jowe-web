@@ -31,7 +31,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^1.9.7",
     "@types/jest": "^29.5.12",
-    "@types/node": "^22.5.0",
+    "@types/node": "^22.5.2",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
     "amazon-cognito-identity-js": "^6.3.12",
