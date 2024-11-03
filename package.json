@@ -37,7 +37,7 @@
     "amazon-cognito-identity-js": "^6.3.12",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
-    "chart.js": "^4.4.5",
+    "chart.js": "^4.4.6",
     "classnames": "^2.5.1",
     "core-js": "^3.39.0",
     "prop-types": "^15.8.1",
