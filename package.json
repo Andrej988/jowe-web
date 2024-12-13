@@ -70,7 +70,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "prettier": "3.4.2",
     "react-scripts": "5.0.1",
-    "sass": "^1.82.0",
+    "sass": "^1.83.0",
     "typescript": "^5.7.2",
     "web-vitals": "^3.5.2"
   },
